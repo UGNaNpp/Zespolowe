@@ -7,15 +7,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Component;
 
-import java.lang.reflect.Array;
-import java.util.HashMap;
-import java.util.TreeMap;
+
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 @EnableAsync
-@Component
+@Component("StreamProvider")
 public class StreamProvider {
 
     @Autowired
@@ -49,7 +47,6 @@ public class StreamProvider {
     }
 
     public void cancelWaiting(Long deviceID) {
-        // Cancel the CompletableFuture if it exists.
         Pair<Long, CompletableFuture<Byte[]>> currentPair = lastFrames.get(deviceID);
         if (currentPair != null) {
             currentPair.getRight().cancel(true);
