@@ -1,22 +1,39 @@
 package org.server.devices;
 
 import java.util.HashMap;
+import java.util.NoSuchElementException;
+import java.util.TreeMap;
 
 import org.springframework.stereotype.Component;
 
 @Component
 public class DeviceMapper {
-    private HashMap<String, Device> deviceMap;
+    private HashMap<String, Device> deviceIPMap;
+    private TreeMap<Long, Device> deviceIDMap;
+
 
     public DeviceMapper() {
-        deviceMap = new HashMap<>();
+        deviceIPMap = new HashMap<>();
+        deviceIDMap = new TreeMap<>();
     }
 
-    public void addDevice(String ipv4, Device device) {
-        deviceMap.put(ipv4, device);
+    public void addDeviceByIP(String ipv4, Device device) {
+        deviceIPMap.put(ipv4, device);
+        try{
+            Long highestKey = deviceIDMap.lastKey();
+            deviceIDMap.put(highestKey+1, device);
+        }
+        catch(NoSuchElementException e)
+        {
+            deviceIDMap.put(0L, device);
+        }
     }
 
-    public Device getDevice(String ipv4) {
-        return deviceMap.get(ipv4);
+    public Device getDeviceByIP(String ipv4) {
+        return deviceIPMap.get(ipv4);
+    }
+
+    public Device getDeviceByID(Long id) {
+        return deviceIDMap.get(id);
     }
 }

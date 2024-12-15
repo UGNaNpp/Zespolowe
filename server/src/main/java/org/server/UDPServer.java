@@ -32,7 +32,7 @@ public class UDPServer
             String sender_ip_hostname = message.getHeaders().get("ip_hostname").toString();
 
 
-            Device sender_device = DeviceMapper.getDevice(sender_ipv4);
+            Device sender_device = DeviceMapper.getDeviceByIP(sender_ipv4);
             sender_device.newPacket(payload_bytes);
 
         }
