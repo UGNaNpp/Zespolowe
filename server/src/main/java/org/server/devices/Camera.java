@@ -2,6 +2,8 @@ package org.server.devices;
 
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.server.StreamProvider;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Arrays;
 
@@ -10,6 +12,9 @@ import static org.server.UDPConfig.UDP_PREHEADER_INFO_SIZE;
 
 
 public class Camera {
+    @Autowired
+    private StreamProvider streamProvider;
+
     final protected PacketAccumulator packetAccumulator = new PacketAccumulator();
 
     protected int heightResolution = -1;
