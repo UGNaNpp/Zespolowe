@@ -1,4 +1,4 @@
-package org.example.server;
+package org.server;
 
 import org.junit.jupiter.api.Test;
 import org.server.UDPConfig;
