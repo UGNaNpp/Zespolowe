@@ -18,8 +18,14 @@ public abstract class Device {
 
 class PacketAccumulator{
     public Byte[] AccumulatedBytes = new Byte[0];
+    public int transmissionID = -1;
+    public int PacketSequenceNumber = -1;
+    public int expectedPacketNumber = -1;
 
     public PacketAccumulator(){}
+    public PacketAccumulator(int PacketSequenceNumber){
+        this.PacketSequenceNumber = PacketSequenceNumber;
+    }
 
     public void addPacket(Byte[] packet)
     {
