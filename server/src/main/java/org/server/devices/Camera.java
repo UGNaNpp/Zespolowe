@@ -72,10 +72,7 @@ public class Camera extends Device {
         }
 
         // extract the valuable data from the packet
-
         Byte[] valuable_data = Arrays.copyOfRange(packetObject, UDP_PREHEADER_INFO_SIZE, UDP_PREHEADER_INFO_SIZE + sizeOfThisPayload);
-
-
 
         packetAccumulator.addPacket(valuable_data); // add the packet to the accumulator
         packetAccumulator.PacketSequenceNumber++;

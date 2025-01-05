@@ -27,7 +27,7 @@ public class Controller {
                 while (!Thread.currentThread().isInterrupted()) {
                     try {
                         // Get the latest frame asynchronously with a timeout of 300ms
-                        Byte[] frame = streamProvider.getLastFrame(id, 300).join();
+                        Byte[] frame = streamProvider.getLastFrameTimeout(id, 300).join();
 
                         // Convert Byte[] to byte[] and write to the output stream
                         byte[] frameData = new byte[frame.length];
