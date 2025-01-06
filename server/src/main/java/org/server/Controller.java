@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 import java.io.IOException;
+import java.util.Random;
 
 
 @RestController
@@ -18,7 +19,7 @@ public class Controller {
 
     @GetMapping(
             value = "/{id}/stream",
-            produces = MediaType.IMAGE_JPEG_VALUE)
+            produces = "multipart/x-mixed-replace;boundary=frame")
     public ResponseEntity<StreamingResponseBody> cameraStream(
             @PathVariable("id") Long id
     ) {
@@ -27,7 +28,7 @@ public class Controller {
                 while (!Thread.currentThread().isInterrupted()) {
                     try {
                         // Get the latest frame asynchronously with a timeout of 300ms
-                        Byte[] frame = streamProvider.getLastFrameTimeout(id, 300).join();
+                        Byte[] frame = streamProvider.getLastFrame(id).get();
 
                         // Convert Byte[] to byte[] and write to the output stream
                         byte[] frameData = new byte[frame.length];

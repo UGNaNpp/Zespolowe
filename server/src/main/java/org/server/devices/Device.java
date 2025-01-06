@@ -63,8 +63,8 @@ class PacketAccumulator{
 
         int placeholder_length = PacketMap.get(0L).length;
         Byte[] placeholder = new Byte[placeholder_length];
-        for (Byte b : placeholder) {
-            b = 66;
+        for (int j = 0; j < placeholder_length; j++){
+            placeholder[j] = 66;
         }
 
         for(long i = 0L; i < transmissionPacketNumber; i++){

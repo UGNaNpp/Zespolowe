@@ -188,7 +188,7 @@ public class PacketingTests {
         doAnswer( invocation -> {
             Byte[] frame = (Byte[]) invocation.getArguments()[1];
 
-            assertNotEquals(frame.length, packetsPayloadCombined.length);
+            assertEquals(frame.length, packetsPayloadCombined.length);
             //assertArrayEquals(frame, packetsPayloadCombined);
 
             return null;

@@ -40,4 +40,20 @@ public class StreamTest{
         assertEquals(streamProvider.getLastFrame(0L).get(), frame);
     }
 
+    @Test
+    public void streamTimeoutTest() throws ExecutionException, InterruptedException {
+        streamProvider = new StreamProvider();
+
+        Byte[] frame = new Byte[]{1,2};
+
+        when(deviceMapper.getDeviceByID(0L)).thenReturn(mockCam);
+
+        streamProvider.getLastFrameTimeout(0L, 1000).thenApply(f -> {
+            return f;
+        });
+
+        streamProvider.newFrame(0L,frame);
+
+        assertEquals(streamProvider.getLastFrameTimeout(0L, 1000).get(), frame);
+    }
 }

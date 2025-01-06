@@ -85,7 +85,7 @@ public class Camera extends Device {
         if (packetAccumulator.PacketMap.size() == totalNumberOfPackets) {
             // If all packets are accumulated successfully
             if (packetAccumulator.missingPacketsFuture != null) {
-                packetAccumulator.missingPacketsFuture.cancel(true);
+                packetAccumulator.missingPacketsFuture.cancel(false);
             }
 
             Byte[] entire_data = packetAccumulator.getZippedAccumulatedBytes();
@@ -95,7 +95,7 @@ public class Camera extends Device {
             newTransmission(entire_data);
         } else if (packetSequenceNumber == totalNumberOfPackets - 1) {
             // If not all packets are accumulated, set up a delayed future
-            Executor executor = CompletableFuture.delayedExecutor(100, TimeUnit.MILLISECONDS);
+            Executor executor = CompletableFuture.delayedExecutor(20, TimeUnit.MILLISECONDS);
             packetAccumulator.missingPacketsFuture = CompletableFuture.supplyAsync(() -> {
                 // Check if all packets arrived before execution
                 if (packetAccumulator.PacketMap.size() == totalNumberOfPackets) {
