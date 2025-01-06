@@ -34,14 +34,14 @@ public class LoginApiController {
             String message = userService.validateUser(identifier, password);
             String jwt = jwtUtil.generateToken(message);
 
-            Cookie cookie = new Cookie("JWT", jwt);
-            cookie.setHttpOnly(true);
-            cookie.setSecure(false);
-            cookie.setPath("/");
-            cookie.setMaxAge(60 * 60);
-            response.addCookie(cookie);
+//            Cookie cookie = new Cookie("JWT", jwt);
+//            cookie.setHttpOnly(true);
+//            cookie.setSecure(false);
+//            cookie.setPath("/");
+//            cookie.setMaxAge(60 * 60);
+//            response.addCookie(cookie);
 
-            return ResponseEntity.ok("Login successful");
+            return ResponseEntity.ok(jwt);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body("Invalid password");
         } catch (NoSuchElementException e) {
