@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'login_screen.dart';
 import 'home_screen.dart';
 import 'notifications_screen.dart';
 import 'files_screen.dart';
@@ -13,6 +15,7 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   int _currentIndex = 0;
+  bool _isLoggedIn = false;
 
   final List<Widget> _screens = [
     HomeScreen(),
@@ -21,6 +24,21 @@ class _MainScreenState extends State<MainScreen> {
     AccountScreen(),
   ];
 
+  void _checkLoginStatus() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('tokenKey');
+    if (token == null || token.isEmpty) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => LoginScreen()),
+      );
+    } else {
+      setState(() {
+        _isLoggedIn = true;
+      });
+    }
+  }
+
   void _onTabSelected(int index) {
     setState(() {
       _currentIndex = index;
@@ -28,7 +46,19 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    _checkLoginStatus();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    if (!_isLoggedIn) {
+      return Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
+
     return Scaffold(
       body: _screens[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
