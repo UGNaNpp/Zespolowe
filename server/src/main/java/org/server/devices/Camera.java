@@ -7,6 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.nio.ByteBuffer;
 import java.util.Arrays;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
+import java.util.concurrent.TimeUnit;
 
 import static java.util.Arrays.stream;
 import static org.server.UDPConfig.UDP_PREHEADER_INFO_SIZE;
@@ -34,13 +37,17 @@ import static org.server.UDPConfig.UDP_PREHEADER_INFO_SIZE;
 public class Camera extends Device {
     @Autowired
     private StreamProvider streamProvider;
-    final protected PacketAccumulator packetAccumulator = new PacketAccumulator();
+    protected PacketAccumulator packetAccumulator = new PacketAccumulator();
+    protected long id = -1;
     protected int heightResolution = -1;
     protected int widthResolution = -1;
     public boolean recordingMode = false;
     public boolean recordingVideo = false;
 
-    public void newTransmission(byte[] transmission) {
+    public void newTransmission(Byte[] transmission) {
+
+        streamProvider.newFrame(this.id, transmission);
+
     }
     public void newPacket(byte[] packet)
     {
@@ -61,37 +68,44 @@ public class Camera extends Device {
             packetAccumulator.PacketSequenceNumber = 0;
             packetAccumulator.expectedPacketNumber = 0;
             packetAccumulator.transmissionID = transmissionID;
-        }
 
-        // packet out of expected sequence
-        if(packetSequenceNumber != packetAccumulator.PacketSequenceNumber)
-        {
-
-
-            return;
+            packetAccumulator = new PacketAccumulator(transmissionID, totalNumberOfPackets);
         }
 
         // extract the valuable data from the packet
         Byte[] valuable_data = Arrays.copyOfRange(packetObject, UDP_PREHEADER_INFO_SIZE, UDP_PREHEADER_INFO_SIZE + sizeOfThisPayload);
 
+        // add the packet to the accumulator
+        packetAccumulator.addPacketWithSequenceNumber(packetSequenceNumber, valuable_data);
+
         packetAccumulator.addPacket(valuable_data); // add the packet to the accumulator
         packetAccumulator.PacketSequenceNumber++;
 
-        if(
-                packetSequenceNumber == totalNumberOfPackets - 1
-        )
-        {
-            Byte[] entire_data = packetAccumulator.getAccumulatedBytes();        // do something with this
-            if(entire_data.length != totalSizeOfTransmission)
-            {
 
+        if (packetAccumulator.PacketMap.size() == totalNumberOfPackets) {
+            // If all packets are accumulated successfully
+            if (packetAccumulator.missingPacketsFuture != null) {
+                packetAccumulator.missingPacketsFuture.cancel(true);
+            }
 
+            Byte[] entire_data = packetAccumulator.getZippedAccumulatedBytes();
+            if (entire_data.length != totalSizeOfTransmission) {
                 return;
             }
-            newTransmission(packetAccumulator.getAccumulatedBytesPrimitive());
-
-            packetAccumulator.clear();
-            return;
+            newTransmission(entire_data);
+        } else if (packetSequenceNumber == totalNumberOfPackets - 1) {
+            // If not all packets are accumulated, set up a delayed future
+            Executor executor = CompletableFuture.delayedExecutor(100, TimeUnit.MILLISECONDS);
+            packetAccumulator.missingPacketsFuture = CompletableFuture.supplyAsync(() -> {
+                // Check if all packets arrived before execution
+                if (packetAccumulator.PacketMap.size() == totalNumberOfPackets) {
+                    return null;
+                }
+                newTransmission(packetAccumulator.getZippedAccumulatedBytes());
+                return null;
+            }, executor).thenAcceptAsync((v) -> {
+                packetAccumulator.clear();
+            });
         }
 
     }
@@ -100,9 +114,10 @@ public class Camera extends Device {
     {
 
     }
-    public Camera(int heightResolution, int widthResolution)
+    public Camera(int heightResolution, int widthResolution, long id)
     {
         this.heightResolution = heightResolution;
         this.widthResolution = widthResolution;
+        this.id = id;
     }
 }

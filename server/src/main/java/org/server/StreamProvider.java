@@ -34,7 +34,7 @@ public class StreamProvider {
             future.complete(frame);
         else {
             future = new CompletableFuture<>();
-            future.completeOnTimeout(frame,100,TimeUnit.MILLISECONDS);
+            future.completeOnTimeout(frame,10,TimeUnit.MILLISECONDS);
         }
         //lastFrames.put(deviceID, new ImmutablePair<>(newFrameId, new CompletableFuture<>()));
     }

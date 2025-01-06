@@ -9,6 +9,8 @@ import org.junit.jupiter.api.Test;
 import org.server.devices.Camera;
 import org.server.devices.DeviceMapper;
 
+import java.util.concurrent.ExecutionException;
+
 public class StreamTest{
     private StreamProvider streamProvider;
     private DeviceMapper deviceMapper;
@@ -22,25 +24,20 @@ public class StreamTest{
     }
 
     @Test
-    public void continousStreamMock()
-    {
+    public void streamBasicTest() throws ExecutionException, InterruptedException {
         streamProvider = new StreamProvider();
 
         Byte[] frame = new Byte[]{1,2};
 
         when(deviceMapper.getDeviceByID(0L)).thenReturn(mockCam);
 
-
-        //when(streamProvider.getLastFrame(0L, 300)).thenReturn(CompletableFuture.completedFuture(frame));
-        streamProvider.getLastFrameTimeout(0L,3000).thenApply(f -> {
-            assertEquals(f, frame);
+        streamProvider.getLastFrame(0L).thenApply(f -> {
             return f;
         });
 
         streamProvider.newFrame(0L,frame);
 
-
-
-
+        assertEquals(streamProvider.getLastFrame(0L).get(), frame);
     }
+
 }
