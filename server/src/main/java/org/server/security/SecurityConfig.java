@@ -35,7 +35,7 @@ public class SecurityConfig {
                 .and()
                 .authorizeHttpRequests(auth -> auth
                         // TODO endpoint /device bez logowania tylko w fazie testowej
-                        .requestMatchers("/", "/login", "/api/auth/login","/public/**", "/devices/*").permitAll()
+                        .requestMatchers("/", "/login", "/api/auth/login","/public/**", "/devices/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)

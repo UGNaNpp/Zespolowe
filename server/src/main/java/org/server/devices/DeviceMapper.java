@@ -1,10 +1,7 @@
 package org.server.devices;
 
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.TreeMap;
+import java.util.*;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -54,8 +51,10 @@ public class DeviceMapper {
         }
     }
 
-    public List<Device> getAllDevices() {
-        return List.copyOf(deviceIDMap.values());
+
+
+    public Map<Long, Device> getAllDevices() {
+        return this.deviceIDMap;
     }
 
 
