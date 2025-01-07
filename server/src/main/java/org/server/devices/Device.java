@@ -1,4 +1,6 @@
 package org.server.devices;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.persistence.Transient;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
@@ -86,5 +88,7 @@ class PacketAccumulator{
     public Byte[] getAccumulatedBytes(){
         return AccumulatedBytes;
     }
+
+
 }
 

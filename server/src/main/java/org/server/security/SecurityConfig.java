@@ -34,7 +34,8 @@ public class SecurityConfig {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/login", "/api/auth/login","/public/**").permitAll()
+                        // TODO endpoint /device bez logowania tylko w fazie testowej
+                        .requestMatchers("/", "/login", "/api/auth/login","/public/**", "/devices/*").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
