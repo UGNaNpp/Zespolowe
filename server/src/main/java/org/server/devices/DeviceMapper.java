@@ -55,7 +55,7 @@ public class DeviceMapper {
     }
 
     public List<Device> getAllDevices() {
-        return List.copyOf(deviceIPMap.values());
+        return List.copyOf(deviceIDMap.values());
     }
 
 
@@ -66,6 +66,5 @@ public class DeviceMapper {
     public Device getDeviceByID(Long id) {
         return deviceIDMap.get(id);
     }
-
 
 }

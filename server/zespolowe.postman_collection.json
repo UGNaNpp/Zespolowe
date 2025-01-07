@@ -1,7 +1,7 @@
 {
 	"info": {
-		"_postman_id": "e5b35f44-2a87-4d4d-a7f0-1866bb4e6ea9",
-		"name": "GoodReads",
+		"_postman_id": "b1fb2872-8e72-4051-8f7d-b83be05723d8",
+		"name": "Zespolowe",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "31033105"
 	},
@@ -21,11 +21,12 @@
 					}
 				},
 				"url": {
-					"raw": "{{base_url}}/user/register",
+					"raw": "{{base_url}}public/api/user/register",
 					"host": [
-						"{{base_url}}"
+						"{{base_url}}public"
 					],
 					"path": [
+						"api",
 						"user",
 						"register"
 					]
@@ -39,11 +40,12 @@
 				"method": "POST",
 				"header": [],
 				"url": {
-					"raw": "{{base_url}}/login?identifier=admin&password=admin",
+					"raw": "{{base_url}}api/auth/login?identifier=admin&password=admin",
 					"host": [
-						"{{base_url}}"
+						"{{base_url}}api"
 					],
 					"path": [
+						"auth",
 						"login"
 					],
 					"query": [
@@ -55,6 +57,40 @@
 							"key": "password",
 							"value": "admin"
 						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Wszystkie urządzenia",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}devices/",
+					"host": [
+						"{{base_url}}devices"
+					],
+					"path": [
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Urządzenie by ipv4",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}devices/192.168.1.12",
+					"host": [
+						"{{base_url}}devices"
+					],
+					"path": [
+						"192.168.1.12"
 					]
 				}
 			},
