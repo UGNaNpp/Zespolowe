@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/devices")
@@ -17,13 +18,19 @@ class DeviceController {
     }
 
     @GetMapping("/")
-    ResponseEntity<List<Device>> getDevices() {
+    ResponseEntity<Map<Long, Device>> getDevices() {
         return ResponseEntity.ok(mapper.getAllDevices());
     }
 
-    @GetMapping("/{ipv4}")
+    @GetMapping("/ip/{ipv4}")
     ResponseEntity<Device> getDeviceByIP(@PathVariable("ipv4") String ipv4) {
         Device device = mapper.getDeviceByIP(ipv4);
+        return device!=null? ResponseEntity.ok(device): ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("/id/{id}")
+    ResponseEntity<Device> getDeviceByIP(@PathVariable("id") long id) {
+        Device device = mapper.getDeviceByID(id);
         return device!=null? ResponseEntity.ok(device): ResponseEntity.notFound().build();
     }
 }
