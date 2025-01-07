@@ -140,6 +140,52 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "EditDevice",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"AssociatedIP\": \"192.168.1.11\",\r\n    \"AssociatedMAC\": \"00:1A:2B:3C:4D:5F\",\r\n    \"heightResolution\": 720,\r\n    \"widthResolution\": 1280,\r\n    \"recordingMode\": false,\r\n    \"recordingVideo\": true\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}devices/edit/id/1",
+					"host": [
+						"{{base_url}}devices"
+					],
+					"path": [
+						"edit",
+						"id",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Usuwanie urządzenia",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}devices/id/1",
+					"host": [
+						"{{base_url}}devices"
+					],
+					"path": [
+						"id",
+						"1"
+					]
+				}
+			},
+			"response": []
 		}
 	],
 	"event": [

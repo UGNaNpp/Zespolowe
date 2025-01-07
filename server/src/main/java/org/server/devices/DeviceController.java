@@ -49,4 +49,14 @@ class DeviceController {
         mapper.updateCameraById(id, camera);
         return ResponseEntity.ok(camera);
     }
+
+    @DeleteMapping("/id/{id}")
+    ResponseEntity<Void> deleteCamera(@PathVariable("id") long id) {
+        Device existingDevice = mapper.getDeviceByID(id);
+        if (existingDevice == null) {
+            return ResponseEntity.notFound().build();
+        }
+        mapper.deleteCameraById(id);
+        return ResponseEntity.noContent().build();
+    }
 }
