@@ -1,4 +1,6 @@
 package org.server.devices;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.persistence.Transient;
 import org.apache.commons.lang3.ArrayUtils;
 public abstract class Device {
     public String AssociatedIP;
@@ -42,5 +44,7 @@ class PacketAccumulator{
     public Byte[] getAccumulatedBytes(){
         return AccumulatedBytes;
     }
+
+
 }
 

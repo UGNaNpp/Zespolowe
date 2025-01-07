@@ -108,4 +108,48 @@ public class Camera extends Device {
         this.heightResolution = heightResolution;
         this.widthResolution = widthResolution;
     }
+
+    public int getHeightResolution() {
+        return heightResolution;
+    }
+
+    public void setHeightResolution(int heightResolution) {
+        this.heightResolution = heightResolution;
+    }
+
+    public int getWidthResolution() {
+        return widthResolution;
+    }
+
+    public void setWidthResolution(int widthResolution) {
+        this.widthResolution = widthResolution;
+    }
+
+    public boolean isRecordingMode() {
+        return recordingMode;
+    }
+
+    public void setRecordingMode(boolean recordingMode) {
+        this.recordingMode = recordingMode;
+    }
+
+    public boolean isRecordingVideo() {
+        return recordingVideo;
+    }
+
+    public void setRecordingVideo(boolean recordingVideo) {
+        this.recordingVideo = recordingVideo;
+    }
+
+    @Override
+    public String toString() {
+        return "Camera{" +
+                "AssociatedMAC='" + AssociatedMAC + '\'' +
+                ", AssociatedIP='" + AssociatedIP + '\'' +
+                ", recordingVideo=" + recordingVideo +
+                ", recordingMode=" + recordingMode +
+                ", widthResolution=" + widthResolution +
+                ", heightResolution=" + heightResolution +
+                '}';
+    }
 }
