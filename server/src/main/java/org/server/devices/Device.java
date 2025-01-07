@@ -18,6 +18,10 @@ public abstract class Device {
     public String AssociatedIP;
     public String AssociatedMAC;
 
+    public String getAssociatedIP() {
+        return AssociatedIP;
+    }
+
     public Device() {
     }
     public Device(String AssociatedIP){

@@ -33,4 +33,10 @@ class DeviceController {
         Device device = mapper.getDeviceByID(id);
         return device!=null? ResponseEntity.ok(device): ResponseEntity.notFound().build();
     }
+
+    @PostMapping("/")
+    ResponseEntity<Device> addCamera(@RequestBody Camera device) {
+        mapper.addDeviceByIP(device.getAssociatedIP(), device);
+        return ResponseEntity.created(null).body(device);
+    }
 }
