@@ -67,4 +67,7 @@ public class DeviceMapper {
         return deviceIDMap.get(id);
     }
 
+    public void updateCameraById(Long id, Camera camera) {
+        deviceIDMap.put(id, camera);
+    }
 }
