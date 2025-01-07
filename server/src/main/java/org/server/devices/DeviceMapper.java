@@ -69,4 +69,8 @@ public class DeviceMapper {
     public void updateCameraById(Long id, Camera camera) {
         deviceIDMap.put(id, camera);
     }
+
+    public void deleteCameraById(Long id) {
+        deviceIDMap.remove(id);
+    }
 }
