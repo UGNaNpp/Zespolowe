@@ -39,4 +39,14 @@ class DeviceController {
         mapper.addDeviceByIP(device.getAssociatedIP(), device);
         return ResponseEntity.created(null).body(device);
     }
+
+    @PostMapping("/edit/id/{id}")
+    ResponseEntity<Device> editCamera(@PathVariable("id") long id, @RequestBody Camera camera) {
+        Device existingDevice = mapper.getDeviceByID(id);
+        if (existingDevice == null) {
+            return ResponseEntity.notFound().build();
+        }
+        mapper.updateCameraById(id, camera);
+        return ResponseEntity.ok(camera);
+    }
 }
