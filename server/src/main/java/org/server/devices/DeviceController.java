@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.SQLOutput;
 import java.util.List;
 import java.util.Map;
 
@@ -36,7 +37,7 @@ class DeviceController {
 
     @PostMapping("/")
     ResponseEntity<Device> addCamera(@RequestBody Camera device) {
-        mapper.addDeviceByIP(device.getAssociatedIP(), device);
+        mapper.addDeviceByIP(device.AssociatedIP, device);
         return ResponseEntity.created(null).body(device);
     }
 

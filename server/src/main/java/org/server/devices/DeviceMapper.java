@@ -1,6 +1,11 @@
 package org.server.devices;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -44,7 +49,7 @@ public class DeviceMapper {
         try{
             Long highestKey = deviceIDMap.lastKey();
             deviceIDMap.put(highestKey+1, device);
-            device.id = highestKey+1;
+            saveDevicesToJSON();
         }
         catch(NoSuchElementException e)
         {
@@ -69,9 +74,27 @@ public class DeviceMapper {
 
     public void updateCameraById(Long id, Camera camera) {
         deviceIDMap.put(id, camera);
+        saveDevicesToJSON();
     }
 
     public void deleteCameraById(Long id) {
         deviceIDMap.remove(id);
+        saveDevicesToJSON();
+    }
+
+    private void saveDevicesToJSON() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        String absolutePath = new File("src/main/resources/devices.json").getAbsolutePath();
+        try {
+            List<Device> values = List.copyOf(this.deviceIDMap.values());
+            File file = new File(absolutePath);
+            objectMapper.writeValue(file, values);
+
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
