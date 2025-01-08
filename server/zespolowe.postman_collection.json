@@ -186,6 +186,29 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "GetVideo",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}public/video?fileName=/tiktok.mp4",
+					"host": [
+						"{{base_url}}public"
+					],
+					"path": [
+						"video"
+					],
+					"query": [
+						{
+							"key": "fileName",
+							"value": "/tiktok.mp4"
+						}
+					]
+				}
+			},
+			"response": []
 		}
 	],
 	"event": [
