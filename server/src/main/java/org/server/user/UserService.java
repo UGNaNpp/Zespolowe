@@ -13,7 +13,7 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    void registerUser(String username, String email, String password) {
+    String registerUser(String username, String email, String password) {
         if (userRepository.findByEmail(email).isPresent()) {
             throw new IllegalArgumentException("Email already registered");
         } else if (userRepository.findByUsername(username).isPresent()) {
@@ -27,6 +27,8 @@ public class UserService {
                 .passwordHash(passwordHash)
                 .build();
         this.userRepository.save(newUser);
+        System.out.println("UserId: " + newUser.getUserId());
+        return "UserId: " + newUser.getUserId();
     }
 
     public String validateUser(String identifier, String password) {

@@ -46,6 +46,20 @@ public class LoginApiController {
         }
     }
 
+    @PostMapping("/register")
+    public ResponseEntity<String> registerUser(@RequestBody Map<String, Object> body) {
+        String username = body.get("username").toString();
+        String password = body.get("password").toString();
+        String email = body.get("email").toString();
+        try {
+            String message = this.userService.registerUser(username, email, password);
+            String jwt = jwtUtil.generateToken(message);
+            return ResponseEntity.ok(jwt);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(400).body(e.getMessage());
+        }
+    }
+
     @PostMapping("/logout")
     public ResponseEntity<String> logout(HttpServletResponse response) {
         Cookie cookie = new Cookie("JWT", null);
