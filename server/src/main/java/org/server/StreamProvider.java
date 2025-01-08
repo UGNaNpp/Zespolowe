@@ -1,5 +1,6 @@
 package org.server;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.server.devices.DeviceMapper;
@@ -8,6 +9,9 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Component;
 
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
@@ -30,8 +34,38 @@ public class StreamProvider {
         );
 
         CompletableFuture<Byte[]> future = currentPair.getRight();
-        if(!future.isDone())
+        if(!future.isDone()) {
             future.complete(frame);
+
+            String FILEPATH = "test.jpeg";
+            File file = new File(FILEPATH);
+
+            try {
+
+                // Initialize a pointer in file
+                // using OutputStream
+                OutputStream os = new FileOutputStream(file);
+
+                // Starting writing the bytes in it
+                os.write(ArrayUtils.toPrimitive(frame));
+
+                // Display message onconsole for successful
+                // execution
+                System.out.println("Successfully"
+                        + " byte inserted");
+
+                // Close the file connections
+                os.close();
+            }
+
+            // Catch block to handle the exceptions
+            catch (Exception e) {
+
+                // Display exception on console
+                System.out.println("Exception: " + e);
+            }
+
+        }
         else {
             future = new CompletableFuture<>();
             future.completeOnTimeout(frame,10,TimeUnit.MILLISECONDS);

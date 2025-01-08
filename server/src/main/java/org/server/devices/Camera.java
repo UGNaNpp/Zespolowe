@@ -33,12 +33,10 @@ import static org.server.UDPConfig.UDP_PREHEADER_INFO_SIZE;
 //  12-13 bytes - size of this packet payload
 //  rest of the bytes - payload
 
-
 public class Camera extends Device {
     @Autowired
     private StreamProvider streamProvider;
     protected PacketAccumulator packetAccumulator = new PacketAccumulator();
-    protected long id = -1;
     protected int heightResolution = -1;
     protected int widthResolution = -1;
     public boolean recordingMode = false;
@@ -112,7 +110,10 @@ public class Camera extends Device {
 
     public Camera()
     {
+        if(streamProvider == null)
+        {
 
+        }
     }
     public Camera(int heightResolution, int widthResolution, long id)
     {

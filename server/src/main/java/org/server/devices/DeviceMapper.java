@@ -22,6 +22,7 @@ public class DeviceMapper {
         try{
             Long highestKey = deviceIDMap.lastKey();
             deviceIDMap.put(highestKey+1, device);
+            device.id = highestKey+1;
         }
         catch(NoSuchElementException e)
         {

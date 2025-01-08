@@ -1,5 +1,7 @@
 package org.server.devices;
 import org.apache.commons.lang3.ArrayUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -8,6 +10,9 @@ import java.util.concurrent.CompletableFuture;
 import static java.util.HashMap.newHashMap;
 
 public abstract class Device {
+
+
+    public long id = -1;
     public String AssociatedIP;
     public String AssociatedMAC;
 

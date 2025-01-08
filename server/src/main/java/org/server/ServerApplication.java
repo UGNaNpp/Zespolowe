@@ -1,5 +1,9 @@
 package org.server;
 
+import org.server.devices.Camera;
+import org.server.devices.DeviceMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.CommandLineRunner;
@@ -13,8 +17,19 @@ public class ServerApplication {
         SpringApplication.run(ServerApplication.class, args);
     }
 
+    @Autowired
+    private DeviceMapper deviceMapper;
+
+    @Autowired
+    protected AutowireCapableBeanFactory autowireCapableBeanFactory;
     @Bean
     public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
+
+        Camera camera = new Camera();
+        deviceMapper.addDeviceByIP("192.168.1.16",camera);
+
+        autowireCapableBeanFactory.autowireBean(camera);
+
         return args -> {
             System.out.println("Let's inspect the beans provided by Spring Boot:");
 
