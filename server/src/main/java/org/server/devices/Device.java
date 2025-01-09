@@ -3,6 +3,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.Transient;
 import org.apache.commons.lang3.ArrayUtils;
 public abstract class Device {
+    public String name;
     public String AssociatedIP;
     public String AssociatedMAC;
 
