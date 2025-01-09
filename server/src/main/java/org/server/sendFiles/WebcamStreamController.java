@@ -16,9 +16,7 @@ public class WebcamStreamController {
 
     public WebcamStreamController() {
         this.webcam = Webcam.getDefault();
-        if (this.webcam != null) {
-            this.webcam.open();
-        } else {
+        if (this.webcam == null) {
             throw new IllegalStateException("No webcam detected!");
         }
     }
@@ -26,6 +24,8 @@ public class WebcamStreamController {
     @GetMapping(value = "/public/webcam", produces = MediaType.MULTIPART_FORM_DATA_VALUE)
     public void stream(HttpServletResponse response) {
         response.setContentType("multipart/x-mixed-replace; boundary=frame");
+
+        if (!this.webcam.isOpen()) this.webcam.open();
 
         try (OutputStream out = response.getOutputStream()) {
             while (true) {
@@ -44,6 +44,7 @@ public class WebcamStreamController {
                 Thread.sleep(100);
             }
         } catch (Exception e) {
+            this.webcam.close();
             if (!e.getMessage().contains("Nawiązane połączenie zostało przerwane przez oprogramowanie zainstalowane w komputerze-hoście")) {
                 e.printStackTrace();
             }
