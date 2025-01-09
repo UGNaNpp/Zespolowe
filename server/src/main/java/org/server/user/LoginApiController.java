@@ -60,6 +60,7 @@ public class LoginApiController {
         }
     }
 
+    @Deprecated
     @PostMapping("/logout")
     public ResponseEntity<String> logout(HttpServletResponse response) {
         Cookie cookie = new Cookie("JWT", null);
