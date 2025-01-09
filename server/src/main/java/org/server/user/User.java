@@ -1,6 +1,8 @@
 package org.server.user;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.*;
 import lombok.*;
@@ -23,6 +25,7 @@ public class User implements Serializable {
     private long userId;
     private String username;
     @Column(nullable = false)
+    @JsonIgnore
     private String passwordHash;
     @Column(nullable = false)
     private String email;
@@ -46,5 +49,14 @@ public class User implements Serializable {
         String hashedInput = hashPassword(password);
 
         return this.passwordHash.equals(hashedInput);
+    }
+
+    public String toJson() {
+        try {
+            return mapper.writeValueAsString(this);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }
