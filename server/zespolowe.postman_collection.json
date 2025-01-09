@@ -143,11 +143,11 @@
 		{
 			"name": "EditDevice",
 			"request": {
-				"method": "POST",
+				"method": "PUT",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"AssociatedIP\": \"192.168.1.11\",\r\n    \"AssociatedMAC\": \"00:1A:2B:3C:4D:5F\",\r\n    \"heightResolution\": 720,\r\n    \"widthResolution\": 1280,\r\n    \"recordingMode\": false,\r\n    \"recordingVideo\": true\r\n}",
+					"raw": "{\r\n        \"AssociatedIP\": \"192.168.1.10\",\r\n        \"AssociatedMAC\": \"00:1A:2B:3C:4D:5E\",\r\n        \"heightResolution\": 1081,\r\n        \"widthResolution\": 1920,\r\n        \"recordingMode\": true,\r\n        \"recordingVideo\": false,\r\n        \"associatedIP\": \"192.168.1.10\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -155,14 +155,14 @@
 					}
 				},
 				"url": {
-					"raw": "{{base_url}}devices/edit/id/1",
+					"raw": "{{base_url}}devices/edit/id/0",
 					"host": [
 						"{{base_url}}devices"
 					],
 					"path": [
 						"edit",
 						"id",
-						"1"
+						"0"
 					]
 				}
 			},
