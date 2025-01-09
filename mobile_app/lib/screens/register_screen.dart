@@ -4,7 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-import 'api_constants.dart';
+import '../api_constants.dart';
 import 'main_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
