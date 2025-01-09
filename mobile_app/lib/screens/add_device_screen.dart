@@ -7,14 +7,14 @@ import '../api_constants.dart';
 import 'main_screen.dart';
 import 'register_screen.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class AddDeviceScreen extends StatefulWidget {
+  const AddDeviceScreen({super.key});
 
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  _AddDeviceScreenState createState() => _AddDeviceScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _AddDeviceScreenState extends State<AddDeviceScreen> {
   final TextEditingController _userController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _isLoading = false;
@@ -84,6 +84,9 @@ class _LoginScreenState extends State<LoginScreen> {
     double screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
+      appBar: AppBar(
+        title: Text('Add Device'),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Center(
