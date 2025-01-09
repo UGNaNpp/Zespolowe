@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
+import 'api_constants.dart';
 import 'main_screen.dart';
 import 'register_screen.dart';
 
@@ -11,31 +15,68 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _userController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  bool _isLoading = false;
 
   void _saveToken(String token) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString('token', token);
+    await prefs.setString('tokenKey', token);
   }
 
-  void _handleLogin() {
-    String email = _emailController.text;
-    String password = _passwordController.text;
+  Future<void> _handleLogin() async {
+  String username = _userController.text;
+  String password = _passwordController.text;
 
-    if (email.isNotEmpty && password.isNotEmpty) {
-      _saveToken('your-token-here');
+  if (username.isEmpty || password.isEmpty) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("Please enter both username and password")),
+    );
+    return;
+  }
+
+  setState(() {
+    _isLoading = true;
+  });
+
+  try {
+    final uri = Uri.http(
+      '192.168.0.251:8080',
+      '/api/auth/login',
+      {
+        'identifier': username,
+        'password': password,
+      },
+    );
+
+    final response = await http.post(uri);
+
+    if (response.statusCode == 200) {
+      print('Response body: ${response.body}');
+
+      _saveToken(response.body);
 
       Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => MainScreen()),
-      );
+          context,
+          MaterialPageRoute(builder: (context) => MainScreen()),
+        );
     } else {
+      final error = jsonDecode(response.body);
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Please enter both email and password")),
+        SnackBar(content: Text(response.body)),
       );
     }
+  } catch (e) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("An error occurred: $e")),
+    );
+  } finally {
+    setState(() {
+      _isLoading = false;
+    });
   }
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -77,14 +118,14 @@ class _LoginScreenState extends State<LoginScreen> {
                 SizedBox(height: 10),
 
                 TextField(
-                  controller: _emailController,
+                  controller: _userController,
                   decoration: InputDecoration(
-                    labelText: 'Email',
-                    hintText: 'Enter your email',
+                    labelText: 'User',
+                    hintText: 'Enter your username',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(14),
                     ),
-                    prefixIcon: Icon(Icons.email),
+                    prefixIcon: Icon(Icons.person),
                     focusedBorder: OutlineInputBorder(
                       borderSide: BorderSide(color: Color(0xFF364AB8), width: 2),
                       borderRadius: BorderRadius.circular(14),
@@ -115,8 +156,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     ElevatedButton(
-                      onPressed: _handleLogin,
-                      child: Text('Log In'),
+                      onPressed: _isLoading ? null : _handleLogin,
+                      child: _isLoading
+                          ? CircularProgressIndicator(color: Colors.white)
+                          : Text('Log In'),
                       style: ElevatedButton.styleFrom(
                         padding: EdgeInsets.symmetric(vertical: 12, horizontal: 40),
                         shape: RoundedRectangleBorder(
