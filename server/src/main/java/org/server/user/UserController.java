@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 
 @RestController
+@Deprecated
 @RequestMapping("/public/api/user")
 public class UserController {
     private final UserService userService;
@@ -18,19 +19,6 @@ public class UserController {
         this.userService = userService;
     }
 
-
-    @PostMapping("/register")
-    public ResponseEntity<String> registerUser(@RequestBody Map<String, Object> body) {
-        String username = body.get("username").toString();
-        String password = body.get("password").toString();
-        String email = body.get("email").toString();
-        try {
-        this.userService.registerUser(username, email, password);
-        return ResponseEntity.ok("User registered successfully");
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(400).body(e.getMessage());
-        }
-    }
 
     @PostMapping("/validate")
     public ResponseEntity<String> validateUser(@RequestBody Map<String, Object> body) {

@@ -13,7 +13,7 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    void registerUser(String username, String email, String password) {
+    String registerUser(String username, String email, String password) {
         if (userRepository.findByEmail(email).isPresent()) {
             throw new IllegalArgumentException("Email already registered");
         } else if (userRepository.findByUsername(username).isPresent()) {
@@ -27,6 +27,7 @@ public class UserService {
                 .passwordHash(passwordHash)
                 .build();
         this.userRepository.save(newUser);
+        return newUser.toJson();
     }
 
     public String validateUser(String identifier, String password) {
@@ -35,7 +36,7 @@ public class UserService {
         return (isEmail ? userRepository.findByEmail(identifier) : userRepository.findByUsername(identifier))
                 .map(user -> {
                     if (user.verifyPassword(password)) {
-                        return "UserId: " + user.getUserId();
+                        return user.toJson();
                     } else {
                         throw new IllegalArgumentException("Invalid password");
                     }
@@ -52,12 +53,4 @@ public class UserService {
         }
     }
 
-    public User getUserById(long userId) {
-        Optional<User> userOptional = this.userRepository.findByUserId(userId);
-        if (userOptional.isPresent()) {
-            return userOptional.get();
-        } else {
-            throw new NoSuchElementException("User not found");
-        }
-    }
 }

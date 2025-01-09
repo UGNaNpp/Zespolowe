@@ -5,11 +5,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.server.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 @RestController
@@ -27,19 +25,18 @@ public class LoginApiController {
 
     @PostMapping("/login")
     public ResponseEntity<String> loginUser(
-            @RequestParam("identifier") String identifier,
-            @RequestParam("password") String password,
+            @RequestBody Map<String, String> loginRequest,
             HttpServletResponse response) {
         try {
+            String identifier = loginRequest.get("identifier");
+            String password = loginRequest.get("password");
+
+            if (identifier == null || password == null) {
+                return ResponseEntity.badRequest().body("Missing identifier or password");
+            }
+
             String message = userService.validateUser(identifier, password);
             String jwt = jwtUtil.generateToken(message);
-
-//            Cookie cookie = new Cookie("JWT", jwt);
-//            cookie.setHttpOnly(true);
-//            cookie.setSecure(false);
-//            cookie.setPath("/");
-//            cookie.setMaxAge(60 * 60);
-//            response.addCookie(cookie);
 
             return ResponseEntity.ok(jwt);
         } catch (IllegalArgumentException e) {
@@ -49,6 +46,21 @@ public class LoginApiController {
         }
     }
 
+    @PostMapping("/register")
+    public ResponseEntity<String> registerUser(@RequestBody Map<String, Object> body) {
+        String username = body.get("username").toString();
+        String password = body.get("password").toString();
+        String email = body.get("email").toString();
+        try {
+            String message = this.userService.registerUser(username, email, password);
+            String jwt = jwtUtil.generateToken(message);
+            return ResponseEntity.ok(jwt);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(400).body(e.getMessage());
+        }
+    }
+
+    @Deprecated
     @PostMapping("/logout")
     public ResponseEntity<String> logout(HttpServletResponse response) {
         Cookie cookie = new Cookie("JWT", null);
