@@ -8,4 +8,6 @@ const String devicesEndpoint = '/devices/';
 
 const String deleteDeviceEndpoint = '/devices/id/';
 
-const String addDeviceEndpoint = 'devices/';
+const String addDeviceEndpoint = '/devices/';
+
+const String editDeviceEndpoint = '/devices/edit/id/';

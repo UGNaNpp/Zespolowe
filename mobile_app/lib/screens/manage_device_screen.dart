@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import '../models/device.dart';
 import 'streaming_screen.dart';
+import 'edit_device_screen.dart';
 
 import '../api_constants.dart';
 
@@ -100,7 +101,7 @@ class ManageDeviceScreen extends StatelessWidget {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => StreamingScreen()),
+                      MaterialPageRoute(builder: (context) => EditDeviceScreen(device: device)),
                     );
                   },
                   style: ElevatedButton.styleFrom(
@@ -130,14 +131,14 @@ class ManageDeviceScreen extends StatelessWidget {
                               onPressed: () {
                                 Navigator.pop(context);
                               },
-                              child: Text('Cancel'),
+                              child: Text('Cancel', style: TextStyle (color: Color(0xFF364AB8))),
                             ),
                             TextButton(
                               onPressed: () {
                                 Navigator.pop(context);
                                 _deleteDevice(context);
                               },
-                              child: Text('Delete'),
+                              child: Text('Delete', style: TextStyle (color: Color(0xFF364AB8))),
                             ),
                           ],
                         );
