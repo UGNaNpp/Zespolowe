@@ -1,0 +1,250 @@
+{
+	"info": {
+		"_postman_id": "b1fb2872-8e72-4051-8f7d-b83be05723d8",
+		"name": "Zespolowe",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "31033105"
+	},
+	"item": [
+		{
+			"name": "RegisterUser",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"admin\",\r\n    \"email\": \"i.am.admin@gmail.com\",\r\n    \"password\": \"admin\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}public/api/user/register",
+					"host": [
+						"{{base_url}}public"
+					],
+					"path": [
+						"api",
+						"user",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"identifier\": \"admin\",\r\n    \"password\": \"admin\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}api/auth/login",
+					"host": [
+						"{{base_url}}api"
+					],
+					"path": [
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Wszystkie urządzenia",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}devices/",
+					"host": [
+						"{{base_url}}devices"
+					],
+					"path": [
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Urządzenie by ipv4",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}devices/ip/192.168.1.12",
+					"host": [
+						"{{base_url}}devices"
+					],
+					"path": [
+						"ip",
+						"192.168.1.12"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Urządzenie by id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}devices/id/1",
+					"host": [
+						"{{base_url}}devices"
+					],
+					"path": [
+						"id",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add Device",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"AssociatedIP\": \"192.168.1.11\",\r\n    \"AssociatedMAC\": \"00:1A:2B:3C:4D:5F\",\r\n    \"heightResolution\": 1080,\r\n    \"widthResolution\": 1280,\r\n    \"recordingMode\": false,\r\n    \"recordingVideo\": true\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}devices/",
+					"host": [
+						"{{base_url}}devices"
+					],
+					"path": [
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "EditDevice",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n        \"AssociatedIP\": \"192.168.1.10\",\r\n        \"AssociatedMAC\": \"00:1A:2B:3C:4D:5E\",\r\n        \"heightResolution\": 1081,\r\n        \"widthResolution\": 1920,\r\n        \"recordingMode\": true,\r\n        \"recordingVideo\": false,\r\n        \"associatedIP\": \"192.168.1.10\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}devices/edit/id/0",
+					"host": [
+						"{{base_url}}devices"
+					],
+					"path": [
+						"edit",
+						"id",
+						"0"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Usuwanie urządzenia",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}devices/id/1",
+					"host": [
+						"{{base_url}}devices"
+					],
+					"path": [
+						"id",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetVideo",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}public/video?fileName=/tiktok.mp4",
+					"host": [
+						"{{base_url}}public"
+					],
+					"path": [
+						"video"
+					],
+					"query": [
+						{
+							"key": "fileName",
+							"value": "/tiktok.mp4"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "New Request",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8080/api",
+			"type": "string"
+		}
+	]
+}
