@@ -1,12 +1,13 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:mobile_app/screens/manage_device_screen.dart';
 import 'package:mobile_app/screens/add_device_screen.dart';
 import 'package:mobile_app/screens/login_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
 
 import '../models/device.dart';
+import '../api_constants.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -18,10 +19,38 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   bool _isLoading = false;
   List<dynamic> _devices = [];
+  String? _username;
 
   void _deleteToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.remove('tokenKey');
+  }
+
+  String? _extractUsernameFromToken(String token) {
+    try {
+      final parts = token.split('.');
+      if (parts.length != 3) {
+        return null;
+      }
+
+      final payload = utf8.decode(base64Url.decode(base64Url.normalize(parts[1])));
+      final Map<String, dynamic> payloadData = jsonDecode(payload);
+
+      final sub = jsonDecode(payloadData['sub']);
+      return sub['username'];
+    } catch (e) {
+      return null;
+    }
+  }
+
+  Future<void> _loadUsername() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('tokenKey');
+    if (token != null) {
+      setState(() {
+        _username = _extractUsernameFromToken(token);
+      });
+    }
   }
 
   Future<void> _fetchDevices() async {
@@ -30,13 +59,13 @@ class _HomeScreenState extends State<HomeScreen> {
     });
 
     try {
-      final uri = Uri.parse("http://192.168.0.251:8080/devices/");
+      final uri = Uri.http(baseUrl, devicesEndpoint);
       final response = await http.get(uri);
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = jsonDecode(response.body);
         setState(() {
-          _devices = data.values.toList();
+          _devices = data.entries.toList();
         });
       } else {
         _deleteToken();
@@ -59,6 +88,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    _loadUsername();
     _fetchDevices();
   }
 
@@ -83,7 +113,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Text(
-                      'Hello {Name}',
+                      'Hello ${_username ?? ""}',
                       style: TextStyle(
                         fontSize: screenWidth * 0.09,
                         fontWeight: FontWeight.bold,
@@ -97,7 +127,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Text(
-                      'Notifications: {NotifNum}',
+                      'Notifications: 0',
                       style: TextStyle(
                         fontSize: screenWidth * 0.05,
                       ),
@@ -135,11 +165,15 @@ class _HomeScreenState extends State<HomeScreen> {
                                 child: ListView.builder(
                                   itemCount: _devices.length,
                                   itemBuilder: (context, index) {
-                                    final device = _devices[index];
+                                    final entry = _devices[index];
+                                    final id = entry.key;
+                                    final device = entry.value;
+                                    
                                     return GestureDetector(
                                       onTap: () {
-                                        final device = _devices[index];
                                         final deviceObj = Device(
+                                          id: id,
+                                          name: device['name'],
                                           associatedIP: device['AssociatedIP'],
                                           associatedMAC: device['AssociatedMAC'],
                                           heightResolution: device['heightResolution'],
@@ -153,11 +187,13 @@ class _HomeScreenState extends State<HomeScreen> {
                                           MaterialPageRoute(
                                             builder: (context) => ManageDeviceScreen(device: deviceObj),
                                           ),
-                                        );
+                                        ).then((_) {
+                                          _fetchDevices();
+                                        });
                                       },
                                       child: ListTile(
                                         title: Text(
-                                          device['AssociatedIP'] ?? "Unknown IP",
+                                          device['name'] ?? "Unknown name",
                                           style: TextStyle(fontSize: 16),
                                         ),
                                         trailing: Padding(

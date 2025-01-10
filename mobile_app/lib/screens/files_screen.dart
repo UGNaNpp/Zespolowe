@@ -9,14 +9,7 @@ class FilesScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text('Files'),
       ),
-      body: Center(
-        child: ElevatedButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          child: Text('Go Back'),
-        ),
-      ),
+      body: Container(),
     );
   }
 }
