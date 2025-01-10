@@ -1,18 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import '../models/device.dart';
 
 import '../api_constants.dart';
 import 'main_screen.dart';
 
-class AddDeviceScreen extends StatefulWidget {
-  const AddDeviceScreen({super.key});
+class EditDeviceScreen extends StatefulWidget {
+  final Device device;
+
+
+  const EditDeviceScreen({super.key, required this.device});
 
   @override
-  _AddDeviceScreenState createState() => _AddDeviceScreenState();
+  _EditDeviceScreenState createState() => _EditDeviceScreenState();
 }
 
-class _AddDeviceScreenState extends State<AddDeviceScreen> {
+class _EditDeviceScreenState extends State<EditDeviceScreen> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _IPController = TextEditingController();
   final TextEditingController _MACController = TextEditingController();
@@ -21,6 +25,19 @@ class _AddDeviceScreenState extends State<AddDeviceScreen> {
   bool _recordingMode = false;
   bool _recordingVideo = false;
   bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _nameController.text = widget.device.name;
+    _IPController.text = widget.device.associatedIP;
+    _MACController.text = widget.device.associatedMAC;
+    _HeightController.text = widget.device.heightResolution.toString();
+    _WidthController.text = widget.device.widthResolution.toString();
+    _recordingMode = widget.device.recordingMode;
+    _recordingVideo = widget.device.recordingVideo;
+  }
 
   String validateBody(String name, String ip, String mac, String height, String width) {
     if (name.isEmpty) return "Device name cannot be empty";
@@ -53,9 +70,9 @@ class _AddDeviceScreenState extends State<AddDeviceScreen> {
     });
 
     try {
-      final uri = Uri.http(baseUrl, addDeviceEndpoint);
+      final uri = Uri.http(baseUrl, "$editDeviceEndpoint${widget.device.id}");
 
-      final response = await http.post(
+      final response = await http.put(
         uri,
         headers: {
           'Content-Type': 'application/json',
@@ -71,10 +88,9 @@ class _AddDeviceScreenState extends State<AddDeviceScreen> {
         }),
       );
 
-      // zmienic kod
-      if (response.statusCode == 201) {
+      if (response.statusCode == 200) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Device has been add")),
+          SnackBar(content: Text("Device has been edited")),
         );
 
         Navigator.pushReplacement(
@@ -104,7 +120,7 @@ class _AddDeviceScreenState extends State<AddDeviceScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add Device'),
+        title: Text('Edit Device'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -121,7 +137,7 @@ class _AddDeviceScreenState extends State<AddDeviceScreen> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Text(
-                        'Add device',
+                        'Edit device',
                         style: TextStyle(
                           fontSize: screenWidth * 0.07,
                           fontWeight: FontWeight.bold,
@@ -271,7 +287,7 @@ class _AddDeviceScreenState extends State<AddDeviceScreen> {
                         ),
                         child: _isLoading
                             ? CircularProgressIndicator(color: Colors.white)
-                            : Text('Add device'),
+                            : Text('Edit device'),
                       ),
                     ],
                   ),
