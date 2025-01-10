@@ -40,16 +40,18 @@ class _LoginScreenState extends State<LoginScreen> {
   });
 
   try {
-    final uri = Uri.http(
-      '192.168.0.251:8080',
-      '/api/auth/login',
-      {
+    final uri = Uri.http(baseUrl, loginEndpoint);
+
+    final response = await http.post(
+      uri,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({
         'identifier': username,
         'password': password,
-      },
+      }),
     );
-
-    final response = await http.post(uri);
 
     if (response.statusCode == 200) {
       print('Response body: ${response.body}');
@@ -61,7 +63,6 @@ class _LoginScreenState extends State<LoginScreen> {
           MaterialPageRoute(builder: (context) => MainScreen()),
         );
     } else {
-      final error = jsonDecode(response.body);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(response.body)),
       );

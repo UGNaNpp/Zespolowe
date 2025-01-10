@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
 
-import '../api_constants.dart';
+// import '../api_constants.dart';
 import 'main_screen.dart';
 import 'register_screen.dart';
 
@@ -61,7 +60,6 @@ class _AddDeviceScreenState extends State<AddDeviceScreen> {
           MaterialPageRoute(builder: (context) => MainScreen()),
         );
     } else {
-      final error = jsonDecode(response.body);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(response.body)),
       );
@@ -160,9 +158,6 @@ class _AddDeviceScreenState extends State<AddDeviceScreen> {
                   children: [
                     ElevatedButton(
                       onPressed: _isLoading ? null : _handleLogin,
-                      child: _isLoading
-                          ? CircularProgressIndicator(color: Colors.white)
-                          : Text('Log In'),
                       style: ElevatedButton.styleFrom(
                         padding: EdgeInsets.symmetric(vertical: 12, horizontal: 40),
                         shape: RoundedRectangleBorder(
@@ -172,6 +167,9 @@ class _AddDeviceScreenState extends State<AddDeviceScreen> {
                         backgroundColor: Color(0x80364AB8),
                         foregroundColor: Colors.black,
                       ),
+                      child: _isLoading
+                          ? CircularProgressIndicator(color: Colors.white)
+                          : Text('Log In'),
                     ),
                   ],
                 ),

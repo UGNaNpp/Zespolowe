@@ -1,4 +1,6 @@
 class Device {
+  final String id;
+  final String name;
   final String associatedIP;
   final String associatedMAC;
   final int heightResolution;
@@ -7,6 +9,8 @@ class Device {
   final bool recordingVideo;
 
   Device({
+    required this.id,
+    required this.name,
     required this.associatedIP,
     required this.associatedMAC,
     required this.heightResolution,
@@ -17,6 +21,8 @@ class Device {
 
   Map<String, dynamic> toJson() {
     return {
+      "ID": id,
+      'Name': name,
       'AssociatedIP': associatedIP,
       'AssociatedMAC': associatedMAC,
       'heightResolution': heightResolution,
