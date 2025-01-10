@@ -54,7 +54,6 @@ class _LoginScreenState extends State<LoginScreen> {
     );
 
     if (response.statusCode == 200) {
-      print('Response body: ${response.body}');
 
       _saveToken(response.body);
 

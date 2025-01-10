@@ -81,19 +81,21 @@ class _RegisterScreenState extends State<RegisterScreen> {
   });
 
   try {
-    final uri = Uri.http(
-      '192.168.0.251:8080',
-      '/api/auth/login',
-      {
-        'identifier': username,
-        'password': password,
+    final uri = Uri.http(baseUrl, registerEndpoint);
+
+    final response = await http.post(
+      uri,
+      headers: {
+        'Content-Type': 'application/json',
       },
+      body: jsonEncode({
+        'username': username,
+        'email': email,
+        'password': password,
+      }),
     );
 
-    final response = await http.post(uri);
-
     if (response.statusCode == 200) {
-      print('Response body: ${response.body}');
 
       _saveToken(response.body);
 
@@ -102,7 +104,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
           MaterialPageRoute(builder: (context) => MainScreen()),
         );
     } else {
-      final error = jsonDecode(response.body);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(response.body)),
       );
