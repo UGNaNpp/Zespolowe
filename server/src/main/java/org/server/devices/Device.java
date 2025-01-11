@@ -13,6 +13,7 @@ public abstract class Device {
 
 
     public long id = -1;
+    public String name;
     public String AssociatedIP;
     public String AssociatedMAC;
 
