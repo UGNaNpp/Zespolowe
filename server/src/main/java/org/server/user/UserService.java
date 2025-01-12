@@ -1,22 +1,62 @@
 package org.server.user;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
 
+import jakarta.annotation.PostConstruct;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
-    private final UserRepository userRepository;
+    private static final String USERS_FILE = "users.json";  // Ścieżka do pliku JSON
+    private final ObjectMapper objectMapper;
+    private List<User> users;
 
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public UserService(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
     }
 
-    String registerUser(String username, String email, String password) {
-        if (userRepository.findByEmail(email).isPresent()) {
+    @PostConstruct
+    public void init() {
+        File usersFile = new File(USERS_FILE);
+        if (!usersFile.exists()) {
+            try {
+                usersFile.createNewFile();  // Tworzymy pusty plik, jeśli nie istnieje
+            } catch (IOException e) {
+                throw new RuntimeException("Error creating users file", e);
+            }
+            users = new ArrayList<>();  // Używamy mutowalnej listy
+        } else {
+            users = readUsersFromFile();  // Wczytujemy użytkowników z pliku, jeśli plik już istnieje
+        }
+    }
+
+    private List<User> readUsersFromFile() {
+        try {
+            return objectMapper.readValue(new File(USERS_FILE), objectMapper.getTypeFactory().constructCollectionType(List.class, User.class));
+        } catch (IOException e) {
+            return new ArrayList<>();  // Jeśli wystąpi błąd, zwróć pustą listę
+        }
+    }
+
+    private void writeUsersToFile(List<User> users) {
+        try {
+            objectMapper.writeValue(new File(USERS_FILE), users);
+        } catch (IOException e) {
+            throw new RuntimeException("Error writing to file", e);
+        }
+    }
+
+    public String registerUser(String username, String email, String password) {
+        if (users.stream().anyMatch(user -> user.getEmail().equals(email))) {
             throw new IllegalArgumentException("Email already registered");
-        } else if (userRepository.findByUsername(username).isPresent()) {
+        } else if (users.stream().anyMatch(user -> user.getUsername().equals(username))) {
             throw new IllegalArgumentException("Username already registered");
         }
 
@@ -26,14 +66,19 @@ public class UserService {
                 .email(email)
                 .passwordHash(passwordHash)
                 .build();
-        this.userRepository.save(newUser);
+
+        users.add(newUser);  // Teraz lista jest mutowalna
+        writeUsersToFile(users);
+
         return newUser.toJson();
     }
 
     public String validateUser(String identifier, String password) {
         boolean isEmail = identifier.contains("@");
 
-        return (isEmail ? userRepository.findByEmail(identifier) : userRepository.findByUsername(identifier))
+        return users.stream()
+                .filter(user -> isEmail ? user.getEmail().equals(identifier) : user.getUsername().equals(identifier))
+                .findFirst()
                 .map(user -> {
                     if (user.verifyPassword(password)) {
                         return user.toJson();
@@ -45,12 +90,15 @@ public class UserService {
     }
 
     public void deleteUser(Long userId) {
-        Optional<User> userOptional = this.userRepository.findByUserId(userId);
+        Optional<User> userOptional = users.stream().filter(user -> user.getUserId() == userId).findFirst();
+
         if (userOptional.isPresent()) {
-            this.userRepository.deleteById(userOptional.get().getUserId());
+            users = users.stream()
+                    .filter(user -> user.getUserId() != userId)
+                    .collect(Collectors.toList());
+            writeUsersToFile(users);
         } else {
             throw new NoSuchElementException("User not found");
         }
     }
-
 }

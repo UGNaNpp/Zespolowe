@@ -4,7 +4,8 @@ import 'package:flutter_joystick/flutter_joystick.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class StreamingScreen extends StatefulWidget {
-  const StreamingScreen({super.key});
+  final String ip;
+  const StreamingScreen({super.key, required this.ip});
 
   @override
   State<StreamingScreen> createState() => _StreamingScreenState();
@@ -30,7 +31,8 @@ class _StreamingScreenState extends State<StreamingScreen> {
           },
         ),
       )
-      ..loadRequest(Uri.parse('http://192.168.0.251:8080/public/webcam'));
+      ..loadRequest(Uri.parse('http://${widget.ip}:8080/0/stream'));
+      print('${widget.ip}:8080/0/stream');
 
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.landscapeLeft,

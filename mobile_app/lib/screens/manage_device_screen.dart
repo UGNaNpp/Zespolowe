@@ -80,7 +80,7 @@ class ManageDeviceScreen extends StatelessWidget {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => StreamingScreen()),
+                      MaterialPageRoute(builder: (context) => StreamingScreen(ip: device.associatedIP)),
                     );
                   },
                   style: ElevatedButton.styleFrom(
