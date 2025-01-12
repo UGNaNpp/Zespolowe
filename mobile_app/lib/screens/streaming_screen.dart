@@ -4,9 +4,8 @@ import 'package:flutter_joystick/flutter_joystick.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class StreamingScreen extends StatefulWidget {
-  final String deviceId;
-  final String apiUrl;
-  const StreamingScreen({super.key, required this.deviceId, required this.apiUrl});
+  final String ip;
+  const StreamingScreen({super.key, required this.ip});
 
   @override
   State<StreamingScreen> createState() => _StreamingScreenState();
@@ -17,8 +16,6 @@ class _StreamingScreenState extends State<StreamingScreen> {
 
   @override
   void initState() {
-    final streamUrl = 'http://${widget.apiUrl}/${widget.deviceId}/stream';
-
     super.initState();
     _webViewController = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
@@ -34,8 +31,8 @@ class _StreamingScreenState extends State<StreamingScreen> {
           },
         ),
       )
-
-      ..loadRequest(Uri.parse(streamUrl));
+      ..loadRequest(Uri.parse('http://${widget.ip}:8080/0/stream'));
+      print('${widget.ip}:8080/0/stream');
 
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.landscapeLeft,
@@ -84,7 +81,7 @@ class _StreamingScreenState extends State<StreamingScreen> {
             child: Joystick(
               mode: JoystickMode.all,
               listener: (details) {
-                // print('Degrees: ${details.x}, Distance: ${details.y}');
+                print('Degrees: ${details.x}, Distance: ${details.y}');
               },
               base: CircleAvatar(
                 radius: screenWidth * 0.08,

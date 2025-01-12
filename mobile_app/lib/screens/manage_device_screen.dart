@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import '../models/device.dart';
 import 'streaming_screen.dart';
 import 'edit_device_screen.dart';
-import 'main_screen.dart';
 
 import '../api_constants.dart';
-
 
 class ManageDeviceScreen extends StatelessWidget {
   final Device device;
@@ -15,20 +12,9 @@ class ManageDeviceScreen extends StatelessWidget {
   const ManageDeviceScreen({super.key, required this.device});
 
   Future<void> _deleteDevice(BuildContext context) async {
+    final url = Uri.http(baseUrl, "${deleteDeviceEndpoint}${device.id}");
 
     try {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      String? baseUrl = prefs.getString('api-ip');
-
-      if (baseUrl == null || baseUrl.isEmpty) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => MainScreen()),
-        );
-        return;
-      }
-
-      final url = Uri.http(baseUrl, "${deleteDeviceEndpoint}${device.id}");
       final response = await http.delete(url);
 
       // zmienic
@@ -38,6 +24,7 @@ class ManageDeviceScreen extends StatelessWidget {
         );
         Navigator.pop(context);
       } else {
+        print(url);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Failed to delete the device.')),
         );
@@ -45,25 +32,6 @@ class ManageDeviceScreen extends StatelessWidget {
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('An error occurred: $e')),
-      );
-    }
-  }
-
-  Future<void> _navigateToStreamingScreen(BuildContext context) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? baseUrl = prefs.getString('api-ip');
-
-    if (baseUrl != null && baseUrl.isNotEmpty) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => StreamingScreen(deviceId: device.id, apiUrl: baseUrl),
-        ),
-      );
-    } else {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => MainScreen()),
       );
     }
   }
@@ -109,7 +77,12 @@ class ManageDeviceScreen extends StatelessWidget {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: () => _navigateToStreamingScreen(context),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => StreamingScreen(ip: device.associatedIP)),
+                    );
+                  },
                   style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
