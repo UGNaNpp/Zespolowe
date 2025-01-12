@@ -4,33 +4,25 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.persistence.*;
 import lombok.*;
 
 import java.io.Serializable;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
-import java.util.Date;
 
 @Data
 @Builder
+@EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
-@Table(name = "user")
 public class User implements Serializable {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long userId;
     private String username;
-    @Column(nullable = false)
     @JsonIgnore
     private String passwordHash;
-    @Column(nullable = false)
     private String email;
 
-    @Transient
     private static final ObjectMapper mapper = new ObjectMapper();
 
     public static String hashPassword(String password) {
