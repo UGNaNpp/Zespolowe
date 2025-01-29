@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../models/device.dart';
@@ -70,6 +71,17 @@ class _EditDeviceScreenState extends State<EditDeviceScreen> {
     });
 
     try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? baseUrl = prefs.getString('api-ip');
+
+      if (baseUrl == null || baseUrl.isEmpty) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => MainScreen()),
+        );
+        return;
+      }
+
       final uri = Uri.http(baseUrl, "$editDeviceEndpoint${widget.device.id}");
 
       final response = await http.put(
