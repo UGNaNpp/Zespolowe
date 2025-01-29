@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -53,6 +54,17 @@ class _AddDeviceScreenState extends State<AddDeviceScreen> {
     });
 
     try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? baseUrl = prefs.getString('api-ip');
+
+      if (baseUrl == null || baseUrl.isEmpty) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => MainScreen()),
+        );
+        return;
+      }
+
       final uri = Uri.http(baseUrl, addDeviceEndpoint);
 
       final response = await http.post(

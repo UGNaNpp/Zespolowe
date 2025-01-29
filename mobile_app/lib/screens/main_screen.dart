@@ -5,6 +5,7 @@ import 'home_screen.dart';
 import 'notifications_screen.dart';
 import 'files_screen.dart';
 import 'account_screen.dart';
+import 'configure_api_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -16,6 +17,7 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   int _currentIndex = 0;
   bool _isLoggedIn = false;
+  String? _apiIp;
 
   final List<Widget> _screens = [
     HomeScreen(),
@@ -24,8 +26,23 @@ class _MainScreenState extends State<MainScreen> {
     AccountScreen(),
   ];
 
-  void _checkLoginStatus() async {
+  void _checkLoginStatusAndAPIConfig() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    String? savedIp = prefs.getString('api-ip');
+
+    if (savedIp == null || savedIp.isEmpty) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ApiScreen(),
+        ),
+      );
+      return;
+    } else {
+      _apiIp = savedIp;
+    }
+
     String? token = prefs.getString('tokenKey');
     if (token == null || token.isEmpty) {
       Navigator.pushReplacement(
@@ -48,7 +65,7 @@ class _MainScreenState extends State<MainScreen> {
   @override
   void initState() {
     super.initState();
-    _checkLoginStatus();
+    _checkLoginStatusAndAPIConfig();
   }
 
   @override
