@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:mobile_app/screens/manage_device_screen.dart';
-import 'package:mobile_app/screens/add_device_screen.dart';
+import 'add_device_screen.dart';
 import 'package:mobile_app/screens/login_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
