@@ -49,6 +49,25 @@ class ManageDeviceScreen extends StatelessWidget {
     }
   }
 
+  Future<void> _navigateToStreamingScreen(BuildContext context) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? baseUrl = prefs.getString('api-ip');
+
+    if (baseUrl != null && baseUrl.isNotEmpty) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => StreamingScreen(deviceId: device.id, apiUrl: baseUrl),
+        ),
+      );
+    } else {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => MainScreen()),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -90,12 +109,7 @@ class ManageDeviceScreen extends StatelessWidget {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => StreamingScreen()),
-                    );
-                  },
+                  onPressed: () => _navigateToStreamingScreen(context),
                   style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
