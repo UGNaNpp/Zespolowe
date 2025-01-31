@@ -4,13 +4,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 
-
-
-
-
 @Service
 public class UDPPacketForwarder {
-
 
     public void DecodeAndForwardAsVideo(Byte[] byteBuffer)
     {

@@ -1,5 +1,6 @@
 package org.server;
 
+import org.server.devices.DeviceMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,9 @@ import java.util.Random;
 @RestController
 public class Controller {
     @Autowired
+    private DeviceMapper deviceMapper;
+
+    @Autowired
     private StreamProvider streamProvider;
 
     @GetMapping(
@@ -23,11 +27,16 @@ public class Controller {
     public ResponseEntity<StreamingResponseBody> cameraStream(
             @PathVariable("id") Long id
     ) {
+        if(deviceMapper.getDeviceByID(id).whatAmI() == 0)
+        {
+            ResponseEntity.badRequest().body("Device is not camera");
+        }
+        
         StreamingResponseBody responseBody = outputStream -> {
             try {
                 while (!Thread.currentThread().isInterrupted()) {
                     try {
-                        // Get the latest frame asynchronously with a timeout of 300ms
+                        // Get the latest frame asynchronously
                         Byte[] frame = streamProvider.getLastFrame(id).get();
 
                         // Convert Byte[] to byte[] and write to the output stream
