@@ -11,7 +11,6 @@ import static java.util.HashMap.newHashMap;
 
 public abstract class Device {
 
-
     public long id = -1;
     public String name;
     public String AssociatedIP;
@@ -27,6 +26,7 @@ public abstract class Device {
         this.AssociatedMAC = AssociatedMAC;
     }
     abstract public void newPacket(byte[] packet);
+    abstract public byte whatAmI();
 }
 
 class PacketAccumulator{

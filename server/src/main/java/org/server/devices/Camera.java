@@ -108,6 +108,11 @@ public class Camera extends Device {
 
     }
 
+    @Override
+    public final byte whatAmI() {
+        return 0;
+    }
+
     public Camera()
     {
         if(streamProvider == null)
