@@ -2,7 +2,6 @@ package org.server;
 
 import org.server.devices.DeviceMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -10,8 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 import java.io.IOException;
-import java.util.Random;
-
 
 @RestController
 public class Controller {
@@ -44,7 +41,12 @@ public class Controller {
                         for (int i = 0; i < frame.length; i++) {
                             frameData[i] = frame[i];
                         }
+
+                        outputStream.write(("--frame\r\n").getBytes());
+                        outputStream.write(("Content-Type: image/jpeg Content-Length: " + frame.length + "\r\n").getBytes());
                         outputStream.write(frameData);
+                        outputStream.write("\r\n".getBytes());
+
                         outputStream.flush();
                     } catch (IOException ioException) {
                         System.err.println("Connection closed: " + ioException.getMessage());
