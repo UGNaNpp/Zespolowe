@@ -9,14 +9,7 @@ class NotificationsScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text('Notifications'),
       ),
-      body: Center(
-        child: ElevatedButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          child: Text('Go Back'),
-        ),
-      ),
+      body: Container(),
     );
   }
 }

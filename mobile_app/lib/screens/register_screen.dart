@@ -4,8 +4,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-import 'api_constants.dart';
+import '../api_constants.dart';
 import 'main_screen.dart';
+import 'change_api_config_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -81,19 +82,32 @@ class _RegisterScreenState extends State<RegisterScreen> {
   });
 
   try {
-    final uri = Uri.http(
-      '192.168.0.251:8080',
-      '/api/auth/login',
-      {
-        'identifier': username,
-        'password': password,
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? baseUrl = prefs.getString('api-ip');
+
+    if (baseUrl == null || baseUrl.isEmpty) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => MainScreen()),
+      );
+      return;
+    }
+
+    final uri = Uri.http(baseUrl, registerEndpoint);
+
+    final response = await http.post(
+      uri,
+      headers: {
+        'Content-Type': 'application/json',
       },
+      body: jsonEncode({
+        'username': username,
+        'email': email,
+        'password': password,
+      }),
     );
 
-    final response = await http.post(uri);
-
     if (response.statusCode == 200) {
-      print('Response body: ${response.body}');
 
       _saveToken(response.body);
 
@@ -102,7 +116,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
           MaterialPageRoute(builder: (context) => MainScreen()),
         );
     } else {
-      final error = jsonDecode(response.body);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(response.body)),
       );
@@ -125,150 +138,165 @@ class _RegisterScreenState extends State<RegisterScreen> {
     double screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Center(
-          child: Container(
-            width: screenWidth * 0.8,
-            height: screenHeight * 0.6,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Text(
-                  'Smart Security',
-                  style: TextStyle(
-                    fontSize: screenWidth * 0.08,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF364AB8),
-                  ),
-                ),
-                SizedBox(height: 20),
-
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Register',
-                      style: TextStyle(
-                        fontSize: screenWidth * 0.07,
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 10),
-
-                TextField(
-                  controller: _userController,
-                  decoration: InputDecoration(
-                    labelText: 'User',
-                    hintText: 'Enter your username',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(14),
-                    ),
-                    prefixIcon: Icon(Icons.person),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Color(0xFF364AB8), width: 2),
-                      borderRadius: BorderRadius.circular(14),
-                    ),
-                  ),
-                ),
-                SizedBox(height: 20),
-
-                TextField(
-                  controller: _emailController,
-                  decoration: InputDecoration(
-                    labelText: 'Email',
-                    hintText: 'Enter your email',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(14),
-                    ),
-                    prefixIcon: Icon(Icons.email),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Color(0xFF364AB8), width: 2),
-                      borderRadius: BorderRadius.circular(14),
-                    ),
-                  ),
-                ),
-                SizedBox(height: 20),
-
-                TextField(
-                  controller: _passwordController,
-                  obscureText: true,
-                  decoration: InputDecoration(
-                    labelText: 'Password',
-                    hintText: 'Enter your password',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(14),
-                    ),
-                    prefixIcon: Icon(Icons.lock),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Color(0xFF364AB8), width: 2),
-                      borderRadius: BorderRadius.circular(14),
-                    ),
-                  ),
-                ),
-                SizedBox(height: 20),
-
-                TextField(
-                  controller: _repeatPasswordController,
-                  obscureText: true,
-                  decoration: InputDecoration(
-                    labelText: 'Repeat password',
-                    hintText: 'Repeat your password',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(14),
-                    ),
-                    prefixIcon: Icon(Icons.lock),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Color(0xFF364AB8), width: 2),
-                      borderRadius: BorderRadius.circular(14),
-                    ),
-                  ),
-                ),
-                SizedBox(height: 30),
-
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    ElevatedButton(
-                      onPressed: _isLoading ? null : _handleRegister,
-                      child: _isLoading
-                          ? CircularProgressIndicator(color: Colors.white)
-                          : Text('Register'),
-                      style: ElevatedButton.styleFrom(
-                        padding: EdgeInsets.symmetric(vertical: 12, horizontal: 40),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          side: BorderSide(color: Colors.black, width: 1),
-                        ),
-                        backgroundColor: Color(0x80364AB8),
-                        foregroundColor: Colors.black,
-                      ),
-                    ),
-                  ],
-                ),
-
-                Spacer(),
-                TextButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => LoginScreen()),
-                    );
-                  },
-                  child: Text(
-                    "I already have an account.",
+      body: Stack(
+        children: [
+          Center(
+            child: Container(
+              width: screenWidth * 0.8,
+              height: screenHeight * 0.7,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Text(
+                    'Smart Security',
                     style: TextStyle(
+                      fontSize: screenWidth * 0.08,
+                      fontWeight: FontWeight.bold,
                       color: Color(0xFF364AB8),
-                      fontSize: 16,
                     ),
                   ),
-                )
-              ],
+                  SizedBox(height: 20),
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Register',
+                        style: TextStyle(
+                          fontSize: screenWidth * 0.07,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 10),
+
+                  TextField(
+                    controller: _userController,
+                    decoration: InputDecoration(
+                      labelText: 'User',
+                      hintText: 'Enter your username',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                      prefixIcon: Icon(Icons.person),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Color(0xFF364AB8), width: 2),
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 20),
+
+                  TextField(
+                    controller: _emailController,
+                    decoration: InputDecoration(
+                      labelText: 'Email',
+                      hintText: 'Enter your email',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                      prefixIcon: Icon(Icons.email),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Color(0xFF364AB8), width: 2),
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 20),
+
+                  TextField(
+                    controller: _passwordController,
+                    obscureText: true,
+                    decoration: InputDecoration(
+                      labelText: 'Password',
+                      hintText: 'Enter your password',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                      prefixIcon: Icon(Icons.lock),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Color(0xFF364AB8), width: 2),
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 20),
+
+                  TextField(
+                    controller: _repeatPasswordController,
+                    obscureText: true,
+                    decoration: InputDecoration(
+                      labelText: 'Repeat password',
+                      hintText: 'Repeat your password',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                      prefixIcon: Icon(Icons.lock),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Color(0xFF364AB8), width: 2),
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 30),
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      ElevatedButton(
+                        onPressed: _isLoading ? null : _handleRegister,
+                        child: _isLoading
+                            ? CircularProgressIndicator(color: Colors.white)
+                            : Text('Register'),
+                        style: ElevatedButton.styleFrom(
+                          padding: EdgeInsets.symmetric(vertical: 12, horizontal: 40),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            side: BorderSide(color: Colors.black, width: 1),
+                          ),
+                          backgroundColor: Color(0x80364AB8),
+                          foregroundColor: Colors.black,
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  Spacer(),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => LoginScreen()),
+                      );
+                    },
+                    child: Text(
+                      "I already have an account.",
+                      style: TextStyle(
+                        color: Color(0xFF364AB8),
+                        fontSize: 16,
+                      ),
+                    ),
+                  )
+                ],
+              ),
             ),
           ),
-        ),
+
+          Positioned(
+            top: 40,
+            right: 20,
+            child: IconButton(
+              icon: Icon(Icons.settings, color: Color(0xFF364AB8), size: 32),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ChangeApiScreen()),
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
