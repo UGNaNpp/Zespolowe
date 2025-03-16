@@ -1,0 +1,107 @@
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #333;
+    color: white;
+    position: relative;
+  }
+
+  .navBarLeft {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+
+    a {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  }
+
+  .logoAndHeader {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+
+    a {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  }
+
+  .closeMenu {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .openedMenuTop {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .hamburger {
+    cursor: pointer;
+  }
+
+  .closeMenu {
+    cursor: pointer;
+  }
+  
+  .bar {
+    width: 100%;
+    height: 4px;
+    background-color: white;
+    transition: all 0.3s ease;
+  }
+
+  .menuList {
+    width: 100%;
+  }
+
+  .menu {
+    display: flex; 
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 10px 20px;
+    position: fixed;
+    top: 0;
+    left: -250px;
+    width: 250px;
+    height: 100%;
+    background-color: #333;
+    transition: left 0.3s ease;
+  }
+  
+  .menuOpen {
+    left: 0;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  
+  .menu ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .menu li {
+    margin: 20px 0;
+  }
+  
+  .menu a {
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+  }
+  
+  .menu a:hover {
+    text-decoration: underline;
+  }
+  
