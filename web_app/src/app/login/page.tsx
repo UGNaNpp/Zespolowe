@@ -4,9 +4,8 @@ export default async function Login() {
 
   return (
     <div>
-      <NavBar/>
+      <NavBar title='Login' titleUrl='/login' subtitle='' subtitleUrl=''/>
       <h1>Logowanie</h1>
     </div>
   );
 }
-
