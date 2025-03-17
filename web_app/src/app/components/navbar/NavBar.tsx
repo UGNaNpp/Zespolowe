@@ -5,12 +5,21 @@ import Image from "next/image";
 import Link from "next/link";
 import styles from './NavBarStyle.module.scss';
 
-const NavBar: React.FC = () => {
+interface NavBarTitle {
+  title: string;
+  subtitle: string;
+  titleUrl: string;
+  subtitleUrl: string;
+}
+
+const NavBar: React.FC<NavBarTitle> = ({ title, titleUrl, subtitle, subtitleUrl }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const openMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
+
+  const appVersion = process.env.NEXT_PUBLIC_APP_VERSION;
 
   return (
     <header className={styles.navbar}>
@@ -28,6 +37,23 @@ const NavBar: React.FC = () => {
             priority
           />
         </Link>
+        {title && (
+          <Link href={titleUrl}>
+            <span>
+              {title}
+            </span>
+          </Link>
+        )}
+        {title && subtitle && (
+          <span> / </span>
+        )}
+        {subtitle && (
+          <Link href={subtitleUrl}>
+            <span>
+              {subtitle}
+            </span>
+        </Link>
+        )}
       </div>
       <div className={`${styles.menu} ${isMenuOpen ? styles.menuOpen : ''}`}>
         <div className={styles.openMenuMain}>
@@ -42,28 +68,57 @@ const NavBar: React.FC = () => {
                   height={38}
                   priority
                 />
+
+                <h3>Smart Security</h3>
               </Link>
-
-              <h3>Smart Security</h3>
-
             </div>
             <div className={styles.closeMenu} onClick={openMenu}>
               <i className="fa-solid fa-xmark fa-xl"></i>
             </div>
           </div>
           <ul className={styles.menuList}>
-            <li><a href="#">Home</a></li>
-            <li><a href="#">Devices</a></li>
-            <li><a href="#">Media</a></li>
-            <li><a href="#">Notifications</a></li>
-            <li><a href="#">Account</a></li>
+            <li>
+              <Link href="/home">
+                <i className="fa-regular fa-bookmark"></i>
+                <span>Home</span>
+              </Link>
+            </li>
+            <li>
+              <Link href="/devices">
+                <i className="fa-regular fa-compass"></i>
+                <span>Devices</span>
+              </Link>
+            </li>
+            <li>
+              <Link href="/media">
+                <i className="fa-regular fa-folder-open"></i>
+                <span>Media</span>
+              </Link>
+            </li>
+            <li>
+              <Link href="/notifications">
+                <i className="fa-regular fa-bell"></i>
+                <span>Notifications</span>
+              </Link>
+            </li>
+            <li>
+              <Link href="/account">
+                <i className="fa-regular fa-circle-user"></i>
+                <span>Account</span>
+              </Link>
+            </li>
           </ul>
         </div>
         <div className={styles.openMenuFooter}>
           <ul>
-            <li><a href="#">Logout</a></li>
+            <li>
+              <Link href="/logout">
+                <i className="fa-regular fa-rectangle-xmark"></i>
+                <span>Logout</span>
+              </Link>
+            </li>
           </ul>
-          <span>App version: 0.0.1</span>
+          <span>App version: {appVersion}</span>
         </div>
       </div>
     </header>
