@@ -1,5 +1,6 @@
 package org.server;
 
+import io.github.cdimascio.dotenv.Dotenv;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
@@ -17,30 +18,17 @@ import java.util.Map;
 public class ServerApplication {
 
     public static void main(String[] args) {
-        try {
-            Map<String, String> env = EnvParser.parse("./.env");
-            String jwtSecret = env.get("JWT_SECRET");
+        Dotenv dotenv = Dotenv.configure().load();
 
-            System.setProperty("JWT_SECRET", jwtSecret);
+        String githubClientId = dotenv.get("GITHUB_CLIENT_ID");
+        String githbubSecret = dotenv.get("GITHUB_CLIENT_SECRET");
+        String jwtSecret = dotenv.get("JWT_SECRET");
 
-        } catch (IOException e) {
-            System.err.println("Błąd podczas ładowania pliku .env: " + e.getMessage());
-        }
+        System.setProperty("GITHUB_CLIENT_ID", githubClientId);
+        System.setProperty("GITHUB_CLIENT_SECRET", githbubSecret);
+        System.setProperty("JWT_SECRET", jwtSecret);
 
         SpringApplication.run(ServerApplication.class, args);
     }
 
-}
-
-class EnvParser {
-    public static Map<String, String> parse(String filePath) throws IOException {
-        Map<String, String> env = new HashMap<>();
-        Files.lines(Paths.get(filePath)).forEach(line -> {
-            if (!line.trim().startsWith("#") && line.contains("=")) {
-                String[] parts = line.split("=", 2);
-                env.put(parts[0].trim(), parts[1].trim());
-            }
-        });
-        return env;
-    }
 }
