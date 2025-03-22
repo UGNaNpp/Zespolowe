@@ -101,4 +101,19 @@ public class UserService {
             throw new NoSuchElementException("User not found");
         }
     }
+
+//    public User handleOauth2Login (String name) {
+//        User user = userRepository.findByUsername(name).orElse(null);
+//        if (user == null) {
+//            String email = RandomStringGenerator.generateRandomString(10).concat("@tmp.org");
+//            String password = RandomStringGenerator.generateRandomString(16);
+//            return registerUser(name, email, password);
+//        } else {
+//            return user;
+//        }
+//    }
+
+//    public User handleOauth2Login () {
+        //TOdo czy my chcemy mieć obiekty usera?
+//    }
 }
