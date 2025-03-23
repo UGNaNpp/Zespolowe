@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import Image from "next/image";
 import Link from "next/link";
 import styles from './NavBarStyle.module.scss';
@@ -37,22 +37,26 @@ const NavBar: React.FC<NavBarTitle> = ({ title, titleUrl, subtitle, subtitleUrl 
             priority
           />
         </Link>
-        {title && (
-          <Link href={titleUrl}>
-            <span>
-              {title}
-            </span>
-          </Link>
-        )}
-        {title && subtitle && (
-          <span> / </span>
-        )}
-        {subtitle && (
-          <Link href={subtitleUrl}>
-            <span>
-              {subtitle}
-            </span>
-        </Link>
+        {!isMenuOpen && (
+          <>
+            {title && (
+              <Link href={titleUrl}>
+                <span>
+                  {title}
+                </span>
+              </Link>
+            )}
+            {title && subtitle && (
+              <span> / </span>
+            )}
+            {subtitle && (
+              <Link href={subtitleUrl}>
+                <span>
+                  {subtitle}
+                </span>
+              </Link>
+            )}
+          </>
         )}
       </div>
       <div className={`${styles.menu} ${isMenuOpen ? styles.menuOpen : ''}`}>
