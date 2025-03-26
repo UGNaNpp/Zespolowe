@@ -72,4 +72,11 @@ public class LoginApiController {
 
         return ResponseEntity.ok("Logged out successfully");
     }
+
+    @Deprecated // ednpoint przekierowania po zalogowaniu
+    @GetMapping("/main-page-mock")
+    public ResponseEntity<String> mainPageMock(HttpServletResponse response) {
+        return ResponseEntity.ok("Main Page Mock");
+    }
+
 }
