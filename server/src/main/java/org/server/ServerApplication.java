@@ -47,6 +47,10 @@ public class ServerApplication {
     public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
 
         Camera camera = new Camera();
+
+        camera.id = 0;
+        camera.AssociatedIP = "192.168.1.16";
+
         deviceMapper.addDeviceByIP("192.168.1.16",camera);
 
         autowireCapableBeanFactory.autowireBean(camera);

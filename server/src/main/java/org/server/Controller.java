@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 import java.io.IOException;
+import java.util.concurrent.CompletableFuture;
 
 @RestController
 public class Controller {
@@ -34,7 +35,10 @@ public class Controller {
                 while (!Thread.currentThread().isInterrupted()) {
                     try {
                         // Get the latest frame asynchronously
-                        Byte[] frame = streamProvider.getLastFrame(id).get();
+
+                        CompletableFuture<Byte[]> frameFuture = streamProvider.getLastFrame(id);
+
+                        Byte[] frame = frameFuture.get();
 
                         // Convert Byte[] to byte[] and write to the output stream
                         byte[] frameData = new byte[frame.length];

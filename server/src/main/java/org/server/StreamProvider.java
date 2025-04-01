@@ -27,13 +27,17 @@ public class StreamProvider {
             <Long,Pair<Long, CompletableFuture<Byte[]>>>();
 
     public synchronized void newFrame(Long deviceID, Byte[] frame) {
-        long newFrameId = System.currentTimeMillis(); // Assuming frame ID is a timestamp or unique value.
+        long newFrameTime = System.currentTimeMillis(); // Assuming frame ID is a timestamp or unique value.
 
         Pair<Long, CompletableFuture<Byte[]>> currentPair = lastFrames.getOrDefault(deviceID,
                 new ImmutablePair<>(deviceID, new CompletableFuture<>())
         );
 
+
         CompletableFuture<Byte[]> future = currentPair.getRight();
+
+
+
         if(!future.isDone()) {
             future.complete(frame);
 
