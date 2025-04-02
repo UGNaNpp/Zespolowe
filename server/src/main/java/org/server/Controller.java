@@ -1,10 +1,12 @@
 package org.server;
 
+import jakarta.servlet.http.HttpServletResponse;
 import org.server.devices.DeviceMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
@@ -21,10 +23,13 @@ public class Controller {
 
     @GetMapping(
             value = "/{id}/stream",
-            produces = "multipart/x-mixed-replace;boundary=frame")
+            produces = "multipart/x-mixed-replace;boundary=frame1234")
     public ResponseEntity<StreamingResponseBody> cameraStream(
-            @PathVariable("id") Long id
+            @PathVariable("id") Long id,
+            HttpServletResponse response
     ) {
+        response.setContentType("multipart/x-mixed-replace;boundary=frame1234");
+
         if(deviceMapper.getDeviceByID(id).whatAmI() == 0)
         {
             ResponseEntity.badRequest().body("Device is not camera");
@@ -32,6 +37,9 @@ public class Controller {
         
         StreamingResponseBody responseBody = outputStream -> {
             try {
+
+                Byte[] prevFrame = null;
+
                 while (!Thread.currentThread().isInterrupted()) {
                     try {
                         // Get the latest frame asynchronously
@@ -40,16 +48,27 @@ public class Controller {
 
                         Byte[] frame = frameFuture.get();
 
+                        if(prevFrame == frame)  // czy to samo, NIE CZY MAJA TO SAMO
+                        {
+                            continue;
+                        }
+
+
+
+                        prevFrame = frame;
+
                         // Convert Byte[] to byte[] and write to the output stream
                         byte[] frameData = new byte[frame.length];
                         for (int i = 0; i < frame.length; i++) {
                             frameData[i] = frame[i];
                         }
 
-                        outputStream.write(("--frame\r\n").getBytes());
-                        outputStream.write(("Content-Type: image/jpeg Content-Length: " + frame.length + "\r\n").getBytes());
+                        outputStream.write(("Content-Type: image/jpeg\r\nContent-Length: " + frame.length + "\r\n\r\n").getBytes());
                         outputStream.write(frameData);
-                        outputStream.write("\r\n".getBytes());
+                        outputStream.write(("\r\n--frame1234\r\n").getBytes());
+
+
+                        //outputStream.write("\r\n".getBytes());
 
                         outputStream.flush();
                     } catch (IOException ioException) {
