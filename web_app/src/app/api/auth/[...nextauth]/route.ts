@@ -8,12 +8,31 @@ const handler = NextAuth({
       clientSecret: process.env.GITHUB_CLIENT_SECRET!,
     }),
   ],
+  session: {
+    strategy: "jwt",
+  },
   callbacks: {
+    async jwt({ token, account }) {
+      if (account) {
+        token.accessToken = account.access_token;
+        token.id = account.id;
+      }
+      return token;
+    },
     async session({ session, token }) {
-      session.user.id = token.sub;
+
+      console.log('Token:', token);
+
+      console.log('User ID:', token.sub);
+
+      console.log('User Info:', session.user);
+
+      session.user.id = token.id;
       return session;
     },
   },
+  secret: process.env.NEXTAUTH_SECRET,
+
 });
 
 export { handler as GET, handler as POST }
