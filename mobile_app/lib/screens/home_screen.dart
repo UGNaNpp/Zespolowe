@@ -1,10 +1,11 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:mobile_app/screens/manage_device_screen.dart';
-import 'package:mobile_app/screens/add_device_screen.dart';
+import 'add_device_screen.dart';
 import 'package:mobile_app/screens/login_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+import 'main_screen.dart';
 
 import '../models/device.dart';
 import '../api_constants.dart';
@@ -59,6 +60,17 @@ class _HomeScreenState extends State<HomeScreen> {
     });
 
     try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? baseUrl = prefs.getString('api-ip');
+
+      if (baseUrl == null || baseUrl.isEmpty) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => MainScreen()),
+        );
+        return;
+      }
+
       final uri = Uri.http(baseUrl, devicesEndpoint);
       final response = await http.get(uri);
 

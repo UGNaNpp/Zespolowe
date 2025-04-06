@@ -1,7 +1,7 @@
 package org.server;
 
+import org.server.devices.DeviceMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -10,31 +10,43 @@ import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBo
 
 import java.io.IOException;
 
-
 @RestController
 public class Controller {
+    @Autowired
+    private DeviceMapper deviceMapper;
+
     @Autowired
     private StreamProvider streamProvider;
 
     @GetMapping(
             value = "/{id}/stream",
-            produces = MediaType.IMAGE_JPEG_VALUE)
+            produces = "multipart/x-mixed-replace;boundary=frame")
     public ResponseEntity<StreamingResponseBody> cameraStream(
             @PathVariable("id") Long id
     ) {
+        if(deviceMapper.getDeviceByID(id).whatAmI() == 0)
+        {
+            ResponseEntity.badRequest().body("Device is not camera");
+        }
+        
         StreamingResponseBody responseBody = outputStream -> {
             try {
                 while (!Thread.currentThread().isInterrupted()) {
                     try {
-                        // Get the latest frame asynchronously with a timeout of 300ms
-                        Byte[] frame = streamProvider.getLastFrame(id, 300).join();
+                        // Get the latest frame asynchronously
+                        Byte[] frame = streamProvider.getLastFrame(id).get();
 
                         // Convert Byte[] to byte[] and write to the output stream
                         byte[] frameData = new byte[frame.length];
                         for (int i = 0; i < frame.length; i++) {
                             frameData[i] = frame[i];
                         }
+
+                        outputStream.write(("--frame\r\n").getBytes());
+                        outputStream.write(("Content-Type: image/jpeg Content-Length: " + frame.length + "\r\n").getBytes());
                         outputStream.write(frameData);
+                        outputStream.write("\r\n".getBytes());
+
                         outputStream.flush();
                     } catch (IOException ioException) {
                         System.err.println("Connection closed: " + ioException.getMessage());

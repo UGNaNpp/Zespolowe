@@ -2,22 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import '../models/device.dart';
 
 import '../api_constants.dart';
 import 'main_screen.dart';
 
-class EditDeviceScreen extends StatefulWidget {
-  final Device device;
-
-
-  const EditDeviceScreen({super.key, required this.device});
+class AddCameraScreen extends StatefulWidget {
+  const AddCameraScreen({super.key});
 
   @override
-  _EditDeviceScreenState createState() => _EditDeviceScreenState();
+  _AddCameraScreenState createState() => _AddCameraScreenState();
 }
 
-class _EditDeviceScreenState extends State<EditDeviceScreen> {
+class _AddCameraScreenState extends State<AddCameraScreen> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _IPController = TextEditingController();
   final TextEditingController _MACController = TextEditingController();
@@ -26,19 +22,6 @@ class _EditDeviceScreenState extends State<EditDeviceScreen> {
   bool _recordingMode = false;
   bool _recordingVideo = false;
   bool _isLoading = false;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _nameController.text = widget.device.name;
-    _IPController.text = widget.device.associatedIP;
-    _MACController.text = widget.device.associatedMAC;
-    _HeightController.text = widget.device.heightResolution.toString();
-    _WidthController.text = widget.device.widthResolution.toString();
-    _recordingMode = widget.device.recordingMode;
-    _recordingVideo = widget.device.recordingVideo;
-  }
 
   String validateBody(String name, String ip, String mac, String height, String width) {
     if (name.isEmpty) return "Device name cannot be empty";
@@ -82,9 +65,9 @@ class _EditDeviceScreenState extends State<EditDeviceScreen> {
         return;
       }
 
-      final uri = Uri.http(baseUrl, "$editDeviceEndpoint${widget.device.id}");
+      final uri = Uri.http(baseUrl, addDeviceEndpoint);
 
-      final response = await http.put(
+      final response = await http.post(
         uri,
         headers: {
           'Content-Type': 'application/json',
@@ -100,9 +83,10 @@ class _EditDeviceScreenState extends State<EditDeviceScreen> {
         }),
       );
 
-      if (response.statusCode == 200) {
+      // zmienic kod
+      if (response.statusCode == 201) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Device has been edited")),
+          SnackBar(content: Text("Device has been add")),
         );
 
         Navigator.pushReplacement(
@@ -132,7 +116,7 @@ class _EditDeviceScreenState extends State<EditDeviceScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Edit Device'),
+        title: Text('Add camera'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -149,7 +133,7 @@ class _EditDeviceScreenState extends State<EditDeviceScreen> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Text(
-                        'Edit device',
+                        'Add camera',
                         style: TextStyle(
                           fontSize: screenWidth * 0.07,
                           fontWeight: FontWeight.bold,
@@ -164,7 +148,7 @@ class _EditDeviceScreenState extends State<EditDeviceScreen> {
                     controller: _nameController,
                     decoration: InputDecoration(
                       labelText: 'Name',
-                      hintText: 'Enter device name',
+                      hintText: 'Enter camera name',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(14),
                       ),
@@ -299,7 +283,7 @@ class _EditDeviceScreenState extends State<EditDeviceScreen> {
                         ),
                         child: _isLoading
                             ? CircularProgressIndicator(color: Colors.white)
-                            : Text('Edit device'),
+                            : Text('Add camera'),
                       ),
                     ],
                   ),

@@ -16,10 +16,10 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class DeviceMapper {
-    private final HashMap<String, Device> deviceIPMap;
-    private final TreeMap<Long, Device> deviceIDMap;
+    private HashMap<String, Device> deviceIPMap;
+    private TreeMap<Long, Device> deviceIDMap;
 
-    @Autowired
+
     public DeviceMapper() {
         deviceIPMap = new HashMap<>();
         deviceIDMap = new TreeMap<>();
@@ -49,7 +49,8 @@ public class DeviceMapper {
         try{
             Long highestKey = deviceIDMap.lastKey();
             deviceIDMap.put(highestKey+1, device);
-            saveDevicesToJSON();
+            device.id = highestKey+1;
+            //saveDevicesToJSON();
         }
         catch(NoSuchElementException e)
         {

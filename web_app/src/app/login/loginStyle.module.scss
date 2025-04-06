@@ -1,0 +1,57 @@
+.background {
+  width: 100vw;
+  height: 100vh;
+  background-image: url('/background.jpg');
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .mainForm {
+    width: 40rem;
+    padding: 2rem;
+    border-radius: 1rem;
+    background-color: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(10px);
+    word-break: break-word;
+
+    h2 {
+      font-size: 2rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .buttonDiv {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 1rem;
+
+      button {
+        font-size: 1rem;
+        font-weight: 600;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        display: flex;
+        gap: 0.5rem;
+        border: 1px solid #0d1117;
+        background-color: #161b22;
+
+        &:hover {
+          cursor: pointer;
+          background-color: #0d1117;
+        }
+      }
+    }
+  }
+
+  @media (max-width: 640px) {
+    .mainForm {
+      width: 90%;
+      max-width: 25rem;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+  }
+}
