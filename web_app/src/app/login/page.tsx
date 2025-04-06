@@ -1,6 +1,7 @@
 "use client";
 
-import { signIn, signOut, useSession } from "next-auth/react";
+// import { signIn, signOut, useSession } from "next-auth/react";
+import { signIn } from "next-auth/react";
 
 import styles from './loginStyle.module.scss';
 
