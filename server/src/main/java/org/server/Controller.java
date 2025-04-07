@@ -69,10 +69,6 @@ public class Controller {
     @GetMapping("/public/test-button")
     public void testButton(HttpServletRequest request) {
         System.out.println("Otrzymaono żądanie");
-        if (request.getCookies() != null) {
-            for (var cookie : request.getCookies()) {
-                System.out.println("Cookie: " + cookie.getName() + "=" + cookie.getValue());
-            }
-        }
+        System.out.println(request.getAuthType());
     }
 }
