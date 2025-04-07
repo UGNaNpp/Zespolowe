@@ -27,13 +27,7 @@ import java.util.Map;
 public class ServerApplication {
     public static void main(String[] args) {
         Dotenv dotenv = Dotenv.configure().load();
-
-        String githubClientId = dotenv.get("GITHUB_CLIENT_ID");
-        String githbubSecret = dotenv.get("GITHUB_CLIENT_SECRET");
         String jwtSecret = dotenv.get("JWT_SECRET");
-
-        System.setProperty("GITHUB_CLIENT_ID", githubClientId);
-        System.setProperty("GITHUB_CLIENT_SECRET", githbubSecret);
         System.setProperty("JWT_SECRET", jwtSecret);
 
         SpringApplication.run(ServerApplication.class, args);

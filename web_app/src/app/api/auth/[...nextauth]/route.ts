@@ -15,6 +15,8 @@ const handler = NextAuth({
     async jwt({ token, account }) {
       if (account) {
         token.accessToken = account.access_token;
+        console.log(token)
+
         token.id = account.id;
       }
       return token;
@@ -32,7 +34,18 @@ const handler = NextAuth({
     },
   },
   secret: process.env.NEXTAUTH_SECRET,
-
+  cookies: {
+    sessionToken: {
+      name: `next-auth.session-token-backend`,
+      options: {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        path: "/",
+        domain: "http://localhost:8080"
+      },
+    },
+  },
 });
 
 export { handler as GET, handler as POST }
