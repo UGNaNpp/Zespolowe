@@ -30,22 +30,11 @@ const handler = NextAuth({
       console.log('User Info:', session.user);
 
       session.user.id = token.id;
+      session.accessToken = token.accessToken;
       return session;
     },
   },
   secret: process.env.NEXTAUTH_SECRET,
-  cookies: {
-    sessionToken: {
-      name: `next-auth.session-token-backend`,
-      options: {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "lax",
-        path: "/",
-        domain: "http://localhost:8080"
-      },
-    },
-  },
 });
 
 export { handler as GET, handler as POST }

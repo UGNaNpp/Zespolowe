@@ -1,10 +1,11 @@
 import React from 'react';
-import axios from 'axios';
+import axiosConfig from "../../axiosConfig";
+
 
 const SendRequestButton = () => {
     const handleButtonClick = async () => {
         try {
-            const response = await axios.get("http://localhost:8080/public/test-button", {
+            const response = await axiosConfig.get("http://localhost:8080/public/test-button", {
                 withCredentials: true,
                 headers: {
                     'Content-Type': 'application/json',
