@@ -30,19 +30,14 @@ public class SecurityConfig {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login", "/api/auth/*","/public/**").permitAll()
+                        .requestMatchers("/login", "/api/auth/*","/public/**", "/api/security/verify").permitAll()
+//                        .requestMatchers("/login", "/api/auth/*").permitAll()
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling()
                 .accessDeniedHandler(accessDeniedHandler())
                 .authenticationEntryPoint(authenticationEntryPoint())
                 .and()
-                .oauth2Login(oauth2 -> oauth2
-                        .loginPage("/login")
-                        .defaultSuccessUrl("/", true)
-                        .failureUrl("/login?error=true")
-                        .successHandler(oAuth2LoginSuccessHandler)
-                )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }

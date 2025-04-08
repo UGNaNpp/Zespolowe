@@ -31,28 +31,29 @@ public class JwtUtil {
                 .compact();
     }
 
-    public String validateToken(String token) {
+    public boolean validateToken(String token) {
+        System.out.println("Ej, to działa XD");
         try {
-            Claims claims = Jwts.parser()
+            Jwts.parserBuilder()
                     .setSigningKey(secret)
-                    .parseClaimsJws(token)
-                    .getBody();
-            return claims.getSubject();
+                    .build()
+                    .parseClaimsJws(token);
+            return true;
         } catch (JwtException e) {
             throw new IllegalArgumentException("Invalid JWT token");
         }
     }
 
-    public Long getUserIdFromRequest(HttpServletRequest request) {
-        String jwt = Arrays.stream((request).getCookies() != null ? ((HttpServletRequest) request).getCookies() : new Cookie[0])
-                .filter(cookie -> "JWT".equals(cookie.getName()))
-                .map(Cookie::getValue)
-                .findFirst()
-                .orElse(null);
-        if (jwt != null) {
-            String tokenPayload = validateToken(jwt);
-            return Long.valueOf(tokenPayload.replace("UserId: ", ""));
-        } else return null;
-    }
+//    public Long getUserIdFromRequest(HttpServletRequest request) {
+//        String jwt = Arrays.stream((request).getCookies() != null ? ((HttpServletRequest) request).getCookies() : new Cookie[0])
+//                .filter(cookie -> "JWT".equals(cookie.getName()))
+//                .map(Cookie::getValue)
+//                .findFirst()
+//                .orElse(null);
+//        if (jwt != null) {
+//            String tokenPayload = validateToken(jwt);
+//            return Long.valueOf(tokenPayload.replace("UserId: ", ""));
+//        } else return null;
+//    }
 }
 

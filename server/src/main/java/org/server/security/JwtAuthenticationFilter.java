@@ -9,7 +9,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.server.util.JwtUtil;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -32,17 +31,20 @@ public class JwtAuthenticationFilter implements Filter {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
 
+        // Szukamy tokenu w ciasteczkach
         String jwt = Arrays.stream(httpRequest.getCookies() != null ? httpRequest.getCookies() : new Cookie[0])
                 .filter(cookie -> "JWT".equals(cookie.getName()))
                 .map(Cookie::getValue)
                 .findFirst()
                 .orElse(null);
+
         if (jwt != null) {
-            String tokenPayload = jwtUtil.validateToken(jwt);
-            if (tokenPayload != null) {
+            // Weryfikacja poprawności tokenu
+            boolean isValid = jwtUtil.validateToken(jwt);
+            if (isValid) {
+                System.out.println("Działa");
                 UsernamePasswordAuthenticationToken authToken =
-                        new UsernamePasswordAuthenticationToken(tokenPayload, null, null);
-                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpRequest));
+                        new UsernamePasswordAuthenticationToken(null, null, null);
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }
         }

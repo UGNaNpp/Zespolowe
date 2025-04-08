@@ -65,10 +65,4 @@ public class Controller {
         return ResponseEntity.ok().body(responseBody);
     }
 
-    @Deprecated
-    @GetMapping("/public/test-button")
-    public void testButton(HttpServletRequest request) {
-        System.out.println("Otrzymaono żądanie");
-        System.out.println(request.getAuthType());
-    }
 }

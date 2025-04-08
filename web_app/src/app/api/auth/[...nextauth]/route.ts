@@ -18,19 +18,23 @@ const handler = NextAuth({
         console.log(token)
 
         token.id = account.id;
+
+        try {
+          await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + `/api/security/verify?token=${token.accessToken}`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${token.accessToken}`,
+            },
+          });
+        } catch (err) {
+          console.error("Błąd przy wysyłaniu tokena:", err);
+        }
       }
       return token;
     },
     async session({ session, token }) {
-
-      console.log('Token:', token);
-
-      console.log('User ID:', token.sub);
-
-      console.log('User Info:', session.user);
-
       session.user.id = token.id;
-      session.accessToken = token.accessToken;
       return session;
     },
   },

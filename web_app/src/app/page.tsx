@@ -7,7 +7,8 @@ export default function Home() {
   return (
     <div>
       <NavBar title='Home' titleUrl='/' subtitle='' subtitleUrl=''/>
-      <h1>Home</h1><SendMessageButton />
+      <h1>Home</h1>
+        <SendMessageButton />
     </div>
   );
 }
