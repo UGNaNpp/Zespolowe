@@ -1,10 +1,13 @@
 package org.server.security;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.server.util.JwtUtil;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.integration.http.dsl.Http;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -21,8 +24,14 @@ import java.util.Arrays;
 @RequestMapping("/api/security")
 public class SecurityController {
 
+    private final JwtUtil jwtUtil;
+
+    public SecurityController(JwtUtil jwtUtil){
+        this.jwtUtil = jwtUtil;
+    };
+
     @PostMapping("/verify")
-    public ResponseEntity<String> verifyGithubToken(HttpServletRequest request) throws URISyntaxException, IOException, InterruptedException {
+    public ResponseEntity<String> verifyGithubToken(HttpServletRequest request, HttpServletResponse response) throws URISyntaxException, IOException, InterruptedException {
         String token = request.getHeader("authorization");
         System.out.println(token);
 
@@ -34,15 +43,19 @@ public class SecurityController {
                     .header("Authorization", token)
                     .build();
 
-            HttpResponse<String> response = client.send(verifyGhTokenReq, HttpResponse.BodyHandlers.ofString());
+            HttpResponse<String> ghResponse = client.send(verifyGhTokenReq, HttpResponse.BodyHandlers.ofString());
 
-            System.out.println("Response status: " + response.statusCode());
-            System.out.println("Response body: " + response.body());
+            if (ghResponse.statusCode() == 200) {
+                response.addCookie(jwtUtil.generateJwtHttpCookie(token));
+                System.out.println("Udało się autoryzować");
+                return new ResponseEntity<>("Authorized", HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>("Incorrect GitHub Token", HttpStatus.UNAUTHORIZED);
+            }
+
         } else  {
             return new ResponseEntity<>("No authorization header", HttpStatus.UNAUTHORIZED);
         }
 
-
-        return new ResponseEntity<String>(HttpStatusCode.valueOf(200));
     }
 }
