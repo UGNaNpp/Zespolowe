@@ -15,26 +15,13 @@ const handler = NextAuth({
     async jwt({ token, account }) {
       if (account) {
         token.accessToken = account.access_token;
-        console.log(token)
-
         token.id = account.id;
-
-        try {
-          await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + `/api/security/verify?token=${token.accessToken}`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              "Authorization": `Bearer ${token.accessToken}`,
-            },
-          });
-        } catch (err) {
-          console.error("Błąd przy wysyłaniu tokena:", err);
-        }
       }
       return token;
     },
     async session({ session, token }) {
       session.user.id = token.id;
+      session.accessToken = token.accessToken;
       return session;
     },
   },
