@@ -31,18 +31,15 @@ public class JwtAuthenticationFilter implements Filter {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
 
-        // Szukamy tokenu w ciasteczkach
         String jwt = Arrays.stream(httpRequest.getCookies() != null ? httpRequest.getCookies() : new Cookie[0])
-                .filter(cookie -> "JWT".equals(cookie.getName()))
+                .filter(cookie -> "jwt".equals(cookie.getName()))
                 .map(Cookie::getValue)
                 .findFirst()
                 .orElse(null);
 
         if (jwt != null) {
-            // Weryfikacja poprawności tokenu
             boolean isValid = jwtUtil.validateToken(jwt);
             if (isValid) {
-                System.out.println("Działa");
                 UsernamePasswordAuthenticationToken authToken =
                         new UsernamePasswordAuthenticationToken(null, null, null);
                 SecurityContextHolder.getContext().setAuthentication(authToken);

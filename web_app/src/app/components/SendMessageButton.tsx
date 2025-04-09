@@ -4,7 +4,7 @@ import axios from 'axios';
 const SendRequestButton = () => {
     const handleButtonClick = async () => {
         try {
-            const response = await axios.get("http://localhost:8080/public/test-button", {
+            const response = await axios.get("http://localhost:8080/api/security/test-endpoint", {
                 withCredentials: true,
                 headers: {
                     'Content-Type': 'application/json',
@@ -12,6 +12,7 @@ const SendRequestButton = () => {
             });
 
             console.log('Response data:', response.data);
+            alert("Security works")
         } catch (error) {
             // @ts-ignore
             if (error.response) {

@@ -7,10 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.integration.http.dsl.Http;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.net.URI;
@@ -35,7 +32,6 @@ public class SecurityController {
     @PostMapping("/verify")
     public ResponseEntity<String> verifyGithubToken(HttpServletRequest request, HttpServletResponse response) throws URISyntaxException, IOException, InterruptedException {
         String token = request.getHeader("authorization");
-        System.out.println(token);
 
         if (token != null) {
             HttpClient client = HttpClient.newHttpClient();
@@ -49,7 +45,6 @@ public class SecurityController {
 
             if (ghResponse.statusCode() == 200) {
                 response.addCookie(jwtUtil.generateJwtHttpCookie(token));
-//                return new ResponseEntity<>("Authorized", HttpStatus.OK);
                 return ResponseEntity.status(HttpStatus.FOUND)
                         .header(HttpHeaders.LOCATION, frontMainPage)
                         .build();
@@ -60,5 +55,10 @@ public class SecurityController {
         } else  {
             return new ResponseEntity<>("No authorization header", HttpStatus.UNAUTHORIZED);
         }
+    }
+
+    @GetMapping("/test-endpoint")
+    public String testEndpoint(){
+        return "It works!";
     }
 }
