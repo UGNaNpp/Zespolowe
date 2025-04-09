@@ -20,19 +20,27 @@ public class JwtUtil {
     private String secret;
 
     @Value("${jwt.expiration}")
-    private long expiration;
+    private int expiration;
 
-    public String generateToken(String username) {
+    private String generateToken(String payload) {
         return Jwts.builder()
-                .setSubject(username)
+                .claim("GithubToken", payload)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(SignatureAlgorithm.HS256, secret)
                 .compact();
     }
 
+    public Cookie generateJwtHttpCookie(String token) {
+        Cookie cookie = new Cookie("jwt", this.generateToken(token));
+        cookie.setHttpOnly(true);
+        cookie.setSecure(false); // Przy użyciu https ustawić true
+        cookie.setPath("/");
+        cookie.setMaxAge(expiration);
+        return cookie;
+    }
+
     public boolean validateToken(String token) {
-        System.out.println("Ej, to działa XD");
         try {
             Jwts.parserBuilder()
                     .setSigningKey(secret)
