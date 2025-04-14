@@ -23,43 +23,6 @@ public class LoginApiController {
         this.jwtUtil = jwtUtil;
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<String> loginUser(
-            @RequestBody Map<String, String> loginRequest,
-            HttpServletResponse response) {
-        try {
-            String identifier = loginRequest.get("identifier");
-            String password = loginRequest.get("password");
-
-            if (identifier == null || password == null) {
-                return ResponseEntity.badRequest().body("Missing identifier or password");
-            }
-
-            String message = userService.validateUser(identifier, password);
-            String jwt = jwtUtil.generateToken(message);
-
-            return ResponseEntity.ok(jwt);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body("Invalid password");
-        } catch (NoSuchElementException e) {
-            return ResponseEntity.status(404).body("User not found");
-        }
-    }
-
-    @PostMapping("/register")
-    public ResponseEntity<String> registerUser(@RequestBody Map<String, Object> body) {
-        String username = body.get("username").toString();
-        String password = body.get("password").toString();
-        String email = body.get("email").toString();
-        try {
-            String message = this.userService.registerUser(username, email, password);
-            String jwt = jwtUtil.generateToken(message);
-            return ResponseEntity.ok(jwt);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(400).body(e.getMessage());
-        }
-    }
-
     @Deprecated
     @PostMapping("/logout")
     public ResponseEntity<String> logout(HttpServletResponse response) {
@@ -72,4 +35,6 @@ public class LoginApiController {
 
         return ResponseEntity.ok("Logged out successfully");
     }
+
+
 }

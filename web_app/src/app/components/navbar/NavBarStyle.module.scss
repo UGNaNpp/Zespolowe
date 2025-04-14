@@ -1,0 +1,132 @@
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: #333;
+  color: white;
+  position: relative;
+
+  .navBarLeft {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+
+    a {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .hamburger {
+      cursor: pointer;
+    }
+
+    a {
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  .menu {
+    display: flex; 
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 10px 20px;
+    position: fixed;
+    top: 0;
+    left: -275px;
+    width: 275px;
+    height: 100%;
+    background-color: #333;
+    transition: left 0.3s ease;
+  
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+  
+    li {
+      margin-top: 2rem;
+      padding: 0.5rem;
+      border-radius: 0.5rem;
+
+      a {
+        display: flex;
+        gap: 15px;
+
+        i {
+          display: flex;
+          justify-content: center;
+          width: 1.5rem;
+        }
+      }
+
+      &:hover {
+        background-color: rgba(0, 0, 0, 0.5);
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+    }
+  
+    a {
+      color: white;
+      text-decoration: none;
+      font-size: 18px;
+    }
+  }
+
+  .openMenuMain{
+    .openedMenuTop {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+
+      .closeMenu {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 1.5rem;
+        width: 1.5rem;
+        border-radius: 0.3rem;
+        cursor: pointer;
+
+        &:hover {
+          width: 1.5rem;
+          height: 1.5rem;
+          background-color: rgba(0, 0, 0, 0.5);
+        }
+      }
+
+      .logoAndHeader {
+        a {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          gap: 5px;
+        }
+      }
+    }
+  }
+
+  .openMenuFooter {
+    margin-bottom: 1rem;
+
+    ul {
+      margin-bottom: 2rem;
+    }
+  }
+
+  .menuOpen {
+    left: 0;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+}

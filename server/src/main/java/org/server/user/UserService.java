@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class UserService {
-    private static final String USERS_FILE = "users.json";  // Ścieżka do pliku JSON
+    private static final String USERS_FILE = "users.json";
     private final ObjectMapper objectMapper;
     private List<User> users;
 
@@ -27,13 +27,13 @@ public class UserService {
         File usersFile = new File(USERS_FILE);
         if (!usersFile.exists()) {
             try {
-                usersFile.createNewFile();  // Tworzymy pusty plik, jeśli nie istnieje
+                usersFile.createNewFile();
             } catch (IOException e) {
                 throw new RuntimeException("Error creating users file", e);
             }
-            users = new ArrayList<>();  // Używamy mutowalnej listy
+            users = new ArrayList<>();
         } else {
-            users = readUsersFromFile();  // Wczytujemy użytkowników z pliku, jeśli plik już istnieje
+            users = readUsersFromFile();
         }
     }
 
@@ -41,7 +41,7 @@ public class UserService {
         try {
             return objectMapper.readValue(new File(USERS_FILE), objectMapper.getTypeFactory().constructCollectionType(List.class, User.class));
         } catch (IOException e) {
-            return new ArrayList<>();  // Jeśli wystąpi błąd, zwróć pustą listę
+            return new ArrayList<>();
         }
     }
 
@@ -67,7 +67,7 @@ public class UserService {
                 .passwordHash(passwordHash)
                 .build();
 
-        users.add(newUser);  // Teraz lista jest mutowalna
+        users.add(newUser); 
         writeUsersToFile(users);
 
         return newUser.toJson();
@@ -101,4 +101,19 @@ public class UserService {
             throw new NoSuchElementException("User not found");
         }
     }
+
+//    public User handleOauth2Login (String name) {
+//        User user = userRepository.findByUsername(name).orElse(null);
+//        if (user == null) {
+//            String email = RandomStringGenerator.generateRandomString(10).concat("@tmp.org");
+//            String password = RandomStringGenerator.generateRandomString(16);
+//            return registerUser(name, email, password);
+//        } else {
+//            return user;
+//        }
+//    }
+
+//    public User handleOauth2Login () {
+        //TOdo czy my chcemy mieć obiekty usera?
+//    }
 }
