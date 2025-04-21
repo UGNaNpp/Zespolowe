@@ -49,7 +49,8 @@ public class DeviceMapper {
         try{
             Long highestKey = deviceIDMap.lastKey();
             deviceIDMap.put(highestKey+1, device);
-            saveDevicesToJSON();
+            device.id = highestKey+1;
+            //saveDevicesToJSON();
         }
         catch(NoSuchElementException e)
         {
