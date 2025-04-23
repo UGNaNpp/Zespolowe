@@ -34,7 +34,6 @@ jobs:
         uses: actions/checkout@v4.2.2
 
       - name: Set up Docker Buildx
-        working-directory: ./web_app
         uses: docker/setup-buildx-action@v3.4.0
 
       - name: Build custom test image
