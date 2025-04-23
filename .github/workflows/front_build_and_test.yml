@@ -78,7 +78,6 @@ jobs:
           echo "COMMIT=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
 
       - name: Build and Push Docker Image
-        working-directory: ./web_app
         uses: docker/build-push-action@v6.15.0
         with:
           context: ./web_app
