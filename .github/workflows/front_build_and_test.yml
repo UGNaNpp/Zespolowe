@@ -37,7 +37,6 @@ jobs:
         uses: docker/setup-buildx-action@v3.4.0
 
       - name: Build custom test image
-        working-directory: ./web_app
         uses: docker/build-push-action@v6.15.0
         with:
           context: ./web_app
