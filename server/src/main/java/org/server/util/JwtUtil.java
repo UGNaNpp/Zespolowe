@@ -20,39 +20,48 @@ public class JwtUtil {
     private String secret;
 
     @Value("${jwt.expiration}")
-    private long expiration;
+    private int expiration;
 
-    public String generateToken(String username) {
+    private String generateToken(String payload) {
         return Jwts.builder()
-                .setSubject(username)
+                .claim("GithubToken", payload)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(SignatureAlgorithm.HS256, secret)
                 .compact();
     }
 
-    public String validateToken(String token) {
+    public Cookie generateJwtHttpCookie(String token) {
+        Cookie cookie = new Cookie("jwt", this.generateToken(token));
+        cookie.setHttpOnly(true);
+        cookie.setSecure(false); // Przy użyciu https ustawić true
+        cookie.setPath("/");
+        cookie.setMaxAge(expiration);
+        return cookie;
+    }
+
+    public boolean validateToken(String token) {
         try {
-            Claims claims = Jwts.parser()
+            Jwts.parserBuilder()
                     .setSigningKey(secret)
-                    .parseClaimsJws(token)
-                    .getBody();
-            return claims.getSubject();
+                    .build()
+                    .parseClaimsJws(token);
+            return true;
         } catch (JwtException e) {
             throw new IllegalArgumentException("Invalid JWT token");
         }
     }
 
-    public Long getUserIdFromRequest(HttpServletRequest request) {
-        String jwt = Arrays.stream((request).getCookies() != null ? ((HttpServletRequest) request).getCookies() : new Cookie[0])
-                .filter(cookie -> "JWT".equals(cookie.getName()))
-                .map(Cookie::getValue)
-                .findFirst()
-                .orElse(null);
-        if (jwt != null) {
-            String tokenPayload = validateToken(jwt);
-            return Long.valueOf(tokenPayload.replace("UserId: ", ""));
-        } else return null;
-    }
+//    public Long getUserIdFromRequest(HttpServletRequest request) {
+//        String jwt = Arrays.stream((request).getCookies() != null ? ((HttpServletRequest) request).getCookies() : new Cookie[0])
+//                .filter(cookie -> "JWT".equals(cookie.getName()))
+//                .map(Cookie::getValue)
+//                .findFirst()
+//                .orElse(null);
+//        if (jwt != null) {
+//            String tokenPayload = validateToken(jwt);
+//            return Long.valueOf(tokenPayload.replace("UserId: ", ""));
+//        } else return null;
+//    }
 }
 
