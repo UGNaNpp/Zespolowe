@@ -1,7 +1,7 @@
 "use client";
 
 import NavBar from './components/navbar/NavBar';
-import SendMessageButton from "@/app/components/SendMessageButton";
+import SendMessageButton from "./components/SendMessageButton";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
