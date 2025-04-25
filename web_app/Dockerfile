@@ -20,7 +20,7 @@ FROM node:23-alpine3.20 AS prod
 
 WORKDIR /app
 
-ENV NODE_ENV production
+ENV NODE_ENV=production
 
 WORKDIR /app
 COPY --from=build /app/package*.json ./
