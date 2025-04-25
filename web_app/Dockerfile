@@ -1,4 +1,3 @@
-# Stage 1 - install dependencies
 FROM node:23-alpine3.20 AS deps
 
 WORKDIR /app
@@ -7,7 +6,6 @@ COPY package*.json ./
 
 RUN npm ci --only=production
 
-# Stage 2 - build app
 FROM node:23-alpine3.20 AS build
 
 WORKDIR /app
@@ -18,7 +16,6 @@ COPY . .
 
 RUN npm run build
 
-# Stage 3 - production
 FROM node:23-alpine3.20 AS prod
 
 WORKDIR /app
@@ -30,7 +27,5 @@ COPY --from=build /app/package*.json ./
 COPY --from=build /app/node_modules ./node_modules
 COPY --from=build /app/public ./public
 COPY --from=build /app/.next ./.next
-
-EXPOSE 3000
 
 CMD [ "npm", "start" ]
