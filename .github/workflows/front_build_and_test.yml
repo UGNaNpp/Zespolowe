@@ -40,7 +40,7 @@ jobs:
         uses: docker/build-push-action@v6.15.0
         with:
           context: ./web_app
-          file: ./web_app/Dockerfile
+          file: ./web_app/Dockerfile.test
           load: true
           tags: front-test-image:latest
           build-args: |
@@ -48,7 +48,7 @@ jobs:
             AGENT_GID=1000
 
       - name: Run Tests in Container
-        run: docker run --rm -v ${{ github.workspace }}/web_app:/workspace -w /workspace front-test-image:latest npm run test
+        run: docker run --rm front-test-image:latest
 
   docker-build:
     name: Build & Push Docker Image
