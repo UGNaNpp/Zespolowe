@@ -16,10 +16,10 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class DeviceMapper {
-    private HashMap<String, Device> deviceIPMap;
-    private TreeMap<Long, Device> deviceIDMap;
+    private final HashMap<String, Device> deviceIPMap;
+    private final TreeMap<Long, Device> deviceIDMap;
 
-
+    @Autowired
     public DeviceMapper() {
         deviceIPMap = new HashMap<>();
         deviceIDMap = new TreeMap<>();
