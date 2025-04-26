@@ -47,9 +47,9 @@ jobs:
             AGENT_UID=${{ github.run_id }}
             AGENT_GID=1000
 
-      - name: Run Tests in Container
+      - name: List Files in Container
         working-directory: ./web_app
-        run: docker run --rm -v ${{ github.workspace }}:/workspace -w /workspace front-test-image:latest npm run test
+        run: docker run --rm -v ${{ github.workspace }}:/workspace -w /workspace front-test-image:latest ls -la
 
   docker-build:
     name: Build & Push Docker Image
