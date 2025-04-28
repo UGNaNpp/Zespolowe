@@ -82,6 +82,13 @@
             <scope>provided</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.jcodec</groupId>
+            <artifactId>jcodec</artifactId>
+            <version>0.2.5</version>
+        </dependency>
+
+
         <!-- JSON Web Token (JWT) library -->
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
