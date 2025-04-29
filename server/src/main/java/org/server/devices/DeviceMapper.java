@@ -1,6 +1,7 @@
 package org.server.devices;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -12,12 +13,16 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
 public class DeviceMapper {
     private final HashMap<String, Device> deviceIPMap;
     private final TreeMap<Long, Device> deviceIDMap;
+
+    @Value("${filepath.devices}")
+    private String devicesConfigFilepath;
 
     @Autowired
     public DeviceMapper() {
@@ -32,7 +37,8 @@ public class DeviceMapper {
 
     private void loadDevicesFromJson() {
         ObjectMapper objectMapper = new ObjectMapper();
-        try (InputStream inputStream = getClass().getResourceAsStream("/devices.json")) {
+        System.out.println(devicesConfigFilepath);
+        try (InputStream inputStream = new FileInputStream(devicesConfigFilepath)) {
             List<Camera> devices = objectMapper.readValue(inputStream, new TypeReference<List<Camera>>() {});
             for (Camera device : devices) {
                 addDeviceByIP(device.AssociatedIP, device);
