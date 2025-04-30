@@ -1,18 +1,13 @@
-FROM maven:3.9.9-eclipse-temurin-24-alpine AS build
+FROM eclipse-temurin:23-alpine AS builder
+WORKDIR /opt/app
+COPY .mvn .mvn
+COPY mvnw pom.xml ./
+COPY src src/
+RUN ./mvnw clean install -DskipTests
 
-WORKDIR /app
-
-COPY pom.xml ./
-COPY src ./src
-
-RUN mvn clean package -DskipTests
-
-FROM openjdk:23-jdk-slim
-
-WORKDIR /app
-
-RUN apt-get update && apt-get install -y curl && apt-get clean
-
-COPY --from=build /app/build/libs/*.jar /app/app.jar
-
-CMD ["java", "-jar", "app.jar"]
+FROM eclipse-temurin:23-alpine AS final
+LABEL authors="Michał Kopczewski"
+WORKDIR /opt/app
+EXPOSE 8080
+COPY --from=builder /opt/app/target/*.jar /opt/app/app.jar
+ENTRYPOINT ["java", "-jar", "/opt/app/app.jar"]

@@ -1,0 +1,7 @@
+services:
+  spring:
+    build: '../server'
+    ports:
+      - "8080:8080"
+    env_file:
+      - ../server/.env

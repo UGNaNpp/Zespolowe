@@ -27,13 +27,16 @@ public class StreamProvider {
             <Long,Pair<Long, CompletableFuture<Byte[]>>>();
 
     public synchronized void newFrame(Long deviceID, Byte[] frame) {
-        long newFrameId = System.currentTimeMillis(); // Assuming frame ID is a timestamp or unique value.
+        long newFrameTime = System.currentTimeMillis(); // Assuming frame ID is a timestamp or unique value.
 
-        Pair<Long, CompletableFuture<Byte[]>> currentPair = lastFrames.getOrDefault(deviceID,
-                new ImmutablePair<>(deviceID, new CompletableFuture<>())
-        );
+        Pair<Long, CompletableFuture<Byte[]>> currentPair = lastFrames.get(deviceID);
+
+        if(currentPair == null) {       // nikt nie czeka na to
+            return;
+        }
 
         CompletableFuture<Byte[]> future = currentPair.getRight();
+
         if(!future.isDone()) {
             future.complete(frame);
 
@@ -67,8 +70,9 @@ public class StreamProvider {
 
         }
         else {
-            future = new CompletableFuture<>();
-            future.completeOnTimeout(frame,10,TimeUnit.MILLISECONDS);
+            //future.cancel(true);
+            //future = new CompletableFuture<>();
+            //future.completeOnTimeout(frame,10,TimeUnit.MILLISECONDS);
         }
         //lastFrames.put(deviceID, new ImmutablePair<>(newFrameId, new CompletableFuture<>()));
     }
@@ -85,12 +89,23 @@ public class StreamProvider {
 
     public CompletableFuture<Byte[]> getLastFrame(Long deviceID) {
         // Get or initialize the frame pair with a CompletableFuture.
-        Pair<Long, CompletableFuture<Byte[]>> currentPair = lastFrames.computeIfAbsent(deviceID,
-                id -> new ImmutablePair<>(0L, new CompletableFuture<>())
-        );
+        Pair<Long, CompletableFuture<Byte[]>> currentPair;
+        if(lastFrames.containsKey(deviceID))
+        {
+            currentPair = lastFrames.replace(deviceID,
+                    new ImmutablePair<>(0L, new CompletableFuture<>())
+            );
+        }
+        else{
+            currentPair = lastFrames.put(deviceID,
+                    new ImmutablePair<>(0L, new CompletableFuture<>())
+            );
+        }
+
+
 
         // Return the CompletableFuture with a timeout applied.
-        return currentPair.getRight();
+        return lastFrames.get(deviceID).getRight();
     }
 
     public void cancelWaiting(Long deviceID) {
