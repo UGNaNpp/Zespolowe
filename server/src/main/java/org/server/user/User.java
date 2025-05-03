@@ -1,46 +1,30 @@
 package org.server.user;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.*;
 
 import java.io.Serializable;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.Base64;
+import java.util.Date;
 
 @Data
 @Builder
+@Getter
 @EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
 public class User implements Serializable {
-    private long userId;
-    private String username;
-    @JsonIgnore
-    private String passwordHash;
+    private int githubId;
     private String email;
+    private String githubLogin;
+    private Date addedDate; // data przydzielenia uprawnień do systemu
 
     private static final ObjectMapper mapper = new ObjectMapper();
 
-    public static String hashPassword(String password) {
-        try {
-            MessageDigest digest = MessageDigest.getInstance("SHA-256");
-
-            byte[] hashBytes = digest.digest(password.getBytes());
-
-            return Base64.getEncoder().encodeToString(hashBytes);
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException("SHA-256 algorithm not available", e);
-        }
-    }
-
-    public boolean verifyPassword(String password) {
-        String hashedInput = hashPassword(password);
-
-        return this.passwordHash.equals(hashedInput);
+    public User (int githubId, String email, String githubLogin) {
+        this.githubId = githubId;
+        this.email = email;
+        this.githubLogin = githubLogin;
+        this.addedDate = new Date();
     }
 
     public String toJson() {
