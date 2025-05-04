@@ -29,7 +29,7 @@ export default function Home() {
                         setSentToken(true);
                         router.push("/");
                     } else {
-                        console.error("Błąd przy przesyłaniu tokena do backendu");
+                        console.error("Błąd przy przesyłaniu tokena do backendu", res);
                     }
                 } catch (error) {
                     console.error("Błąd sieci:", error);

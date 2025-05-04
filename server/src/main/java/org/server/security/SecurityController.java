@@ -1,5 +1,8 @@
 package org.server.security;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.server.util.JwtUtil;
@@ -44,6 +47,13 @@ public class SecurityController {
             HttpResponse<String> ghResponse = client.send(verifyGhTokenReq, HttpResponse.BodyHandlers.ofString());
 
             if (ghResponse.statusCode() == 200) {
+
+                ObjectMapper mapper = new ObjectMapper();
+                JsonNode node = mapper.readTree(ghResponse.body());
+
+                int id = node.get("id").asInt();
+                System.out.println(id);
+
                 response.addCookie(jwtUtil.generateJwtHttpCookie(token));
                 return ResponseEntity.status(HttpStatus.FOUND)
                         .header(HttpHeaders.LOCATION, frontMainPage)

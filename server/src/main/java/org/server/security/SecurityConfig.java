@@ -36,8 +36,7 @@ public class SecurityConfig {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeHttpRequests(auth -> auth
-                                .requestMatchers("/login", "/api/auth/*", "/public/**", "/api/security/verify", "/actuator/health").permitAll()
-//                        .requestMatchers("/login", "/api/auth/*").permitAll()
+                                .requestMatchers("/public/**", "/api/security/verify", "/actuator/health").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .exceptionHandling()
@@ -48,11 +47,6 @@ public class SecurityConfig {
                 .build();
     }
 
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
 
     @Bean
     public AccessDeniedHandler accessDeniedHandler() {
@@ -78,7 +72,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.addAllowedOrigin(mainPageUrl);
+        configuration.addAllowedOrigin(System.getenv("FRONT_URL"));
         configuration.setAllowCredentials(true);
         configuration.addAllowedMethod("*");
         configuration.addAllowedHeader("*");
