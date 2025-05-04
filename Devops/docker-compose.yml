@@ -1,7 +1,7 @@
 services:
   spring:
-    build: '../server'
-#    image: mkopczewski/zespolowe:basic
+#    build: '../server'
+    image: mkopczewski/zespolowe:basic
     ports:
       - "8080:8080"
     env_file:

@@ -29,7 +29,6 @@ public class ServerApplication {
         System.setProperty("TIME_ZONE", timeZone);
         System.setProperty("JWT_EXPIRATION", jwtExpiration);
         System.setProperty("FRONT_URL", frontUrl);
-
         SpringApplication.run(ServerApplication.class, args);
     }
 
