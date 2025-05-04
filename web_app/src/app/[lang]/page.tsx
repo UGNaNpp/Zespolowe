@@ -15,7 +15,7 @@ export default function Home() {
         const sendTokenToBackend = async () => {
             if (status === "authenticated" && session?.accessToken && !sentToken) {
                 try {
-                    const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/security/verify`, {
+                    const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}api/security/verify`, {
                         method: "POST",
                         headers: {
                             "Authorization": `Bearer ${session.accessToken}`,
