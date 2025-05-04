@@ -12,7 +12,7 @@ jobs:
   build:
     name: Build App
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request'
+    if: github.event_name == 'pull_request' # Jesli ktos chce przetestowac budowanie to zakomentowac cala linie
     container:
       image: node:23-alpine3.20
 
