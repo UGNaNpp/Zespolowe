@@ -55,8 +55,7 @@ public class SecurityController {
                 System.out.println(id);
 
                 response.addCookie(jwtUtil.generateJwtHttpCookie(token));
-                return ResponseEntity.status(HttpStatus.FOUND)
-                        .header(HttpHeaders.LOCATION, frontMainPage)
+                return ResponseEntity.status(HttpStatus.OK)
                         .build();
             } else {
                 return new ResponseEntity<>("Incorrect GitHub Token", HttpStatus.UNAUTHORIZED);

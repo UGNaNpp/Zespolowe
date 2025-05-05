@@ -25,11 +25,10 @@ export default function Home() {
                     });
 
                     if (res.ok) {
-                        console.log("Token przesłany i ciasteczko ustawione");
+                        // console.log("Token przesłany i ciasteczko ustawione");
                         setSentToken(true);
-                        router.push("/");
                     } else {
-                        console.error("Błąd przy przesyłaniu tokena do backendu", res);
+                        // console.error("Błąd przy przesyłaniu tokenu z github do backendu", res);
                     }
                 } catch (error) {
                     console.error("Błąd sieci:", error);
