@@ -31,6 +31,11 @@ public class ServerApplication {
             if (usersFilepath == null) System.setProperty("USERS_FILEPATH", dotenv.get("USERS_FILEPATH"));
         }
 
+        System.setProperty("JWT_SECRET", jwtSecret);
+        System.setProperty("TIME_ZONE", timeZone);
+        System.setProperty("JWT_EXPIRATION", jwtExpiration);
+        System.setProperty("FRONT_URL", frontUrl);
+
         SpringApplication.run(ServerApplication.class, args);
     }
 

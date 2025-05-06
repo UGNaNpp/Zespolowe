@@ -34,6 +34,10 @@ public class UserService {
             users = new ArrayList<>();
         } else {
             users = readUsersFromFile();
+            System.out.print("Loaded users: ");
+            for (User user : users) {
+                System.out.print(user.toJson());
+            }
         }
     }
 
@@ -53,64 +57,40 @@ public class UserService {
         }
     }
 
-    public String registerUser(String username, String email, String password) {
-        if (users.stream().anyMatch(user -> user.getEmail().equals(email))) {
+    public String registerUser(User newUser) {
+        if (users.stream().anyMatch(user -> user.getEmail().equals(newUser.getEmail()))) {
             throw new IllegalArgumentException("Email already registered");
-        } else if (users.stream().anyMatch(user -> user.getUsername().equals(username))) {
+        } else if (users.stream().anyMatch(user -> user.getGithubId() == newUser.getGithubId())) {
             throw new IllegalArgumentException("Username already registered");
         }
 
-        String passwordHash = User.hashPassword(password);
-        User newUser = User.builder()
-                .username(username)
-                .email(email)
-                .passwordHash(passwordHash)
-                .build();
-
-        users.add(newUser); 
+        users.add(newUser);
         writeUsersToFile(users);
 
         return newUser.toJson();
     }
 
-    public String validateUser(String identifier, String password) {
-        boolean isEmail = identifier.contains("@");
-
+    public boolean validateUser(int githubId) {
         return users.stream()
-                .filter(user -> isEmail ? user.getEmail().equals(identifier) : user.getUsername().equals(identifier))
+                .filter(user -> user.getGithubId() == githubId)
                 .findFirst()
-                .map(user -> {
-                    if (user.verifyPassword(password)) {
-                        return user.toJson();
-                    } else {
-                        throw new IllegalArgumentException("Invalid password");
-                    }
-                })
-                .orElseThrow(() -> new NoSuchElementException("User not found"));
+                .isPresent();
     }
 
-    public void deleteUser(Long userId) {
-        Optional<User> userOptional = users.stream().filter(user -> user.getUserId() == userId).findFirst();
-
-        if (userOptional.isPresent()) {
-            users = users.stream()
-                    .filter(user -> user.getUserId() != userId)
-                    .collect(Collectors.toList());
-            writeUsersToFile(users);
-        } else {
-            throw new NoSuchElementException("User not found");
-        }
-    }
-
-//    public User handleOauth2Login (String name) {
-//        User user = userRepository.findByUsername(name).orElse(null);
-//        if (user == null) {
-//            String email = RandomStringGenerator.generateRandomString(10).concat("@tmp.org");
-//            String password = RandomStringGenerator.generateRandomString(16);
-//            return registerUser(name, email, password);
+//    public void deleteUser(Long userId) {
+//        Optional<User> userOptional = users.stream().filter(user -> user.getUserId() == userId).findFirst();
+//
+//        if (userOptional.isPresent()) {
+//            users = users.stream()
+//                    .filter(user -> user.getUserId() != userId)
+//                    .collect(Collectors.toList());
+//            writeUsersToFile(users);
 //        } else {
-//            return user;
+//            throw new NoSuchElementException("User not found");
 //        }
+//    }
+
+//    public User handleOauth2Login (int githubId) {
 //    }
 
 //    public User handleOauth2Login () {
