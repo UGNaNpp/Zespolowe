@@ -10,5 +10,8 @@
     "notifications": "Notifications",
     "logout": "Logout",
     "version": "App version"
+  },
+  "devices": {
+    "title": "Devices"
   }
 }

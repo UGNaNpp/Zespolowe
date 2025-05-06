@@ -10,5 +10,8 @@
     "notifications": "Powiadomienia",
     "logout": "Wyloguj się",
     "version": "Wersja"
+  },
+  "devices": {
+    "title": "Urządzenia"
   }
 }
