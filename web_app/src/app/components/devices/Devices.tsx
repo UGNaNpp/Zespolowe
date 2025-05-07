@@ -30,9 +30,12 @@ export default function Login({ dict }: Props) {
         });
 
         setDevices(Object.values(res.data) as Device[]);
-      } catch (err: any) {
-        setError(err.message || "Nieznany błąd");
-        console.error("Błąd podczas pobierania devices:", err);
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          setError(err.message || "Nieznany błąd");
+        } else {
+          setError("Nieznany błąd");
+        }
       } finally {
         setLoading(false);
       }

@@ -16,6 +16,11 @@ body {
   overflow-x: hidden;
 }
 
+/* ZOBACZYC CZY NIE BEDZIE POZNIEJ ROBILO BLEDOW NA INNYCH STROACNH */
+body {
+  height: 100vw;
+}
+
 body {
   color: var(--foreground);
   background: var(--background);

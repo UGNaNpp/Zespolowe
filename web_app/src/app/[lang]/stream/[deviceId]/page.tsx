@@ -1,13 +1,11 @@
 import Stream from "../../../components/stream/Stream";
 
 type Props = {
-  params: {
-    deviceId: string;
-  };
+  params: Promise<{ deviceId: string }>;
 };
 
-export default function StreamPage({ params }: Props) {
-  const { deviceId } = params;
+export default async function StreamPage({ params }: Props) {
+  const { deviceId } = await params;
 
   return <Stream deviceId={deviceId} />;
 }
