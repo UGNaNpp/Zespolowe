@@ -1,0 +1,11 @@
+services:
+  cams-frontend:
+    build:
+      context: ../../web_app/
+      dockerfile: Dockerfile
+    container_name: cams_frontend
+    environment:
+      - ...
+      - ...
+    ports:
+      - 

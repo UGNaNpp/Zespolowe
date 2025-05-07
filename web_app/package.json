@@ -11,10 +11,12 @@
     "test:watch": "jest --watch"
   },
   "dependencies": {
+    "@formatjs/intl-localematcher": "^0.6.1",
     "@fortawesome/fontawesome-free": "^6.7.2",
     "@fortawesome/free-solid-svg-icons": "^6.7.2",
     "@fortawesome/react-fontawesome": "^0.2.2",
     "axios": "^1.8.4",
+    "negotiator": "^1.0.0",
     "next": "^15.2.4",
     "next-auth": "^4.24.11",
     "react": "^19.0.0",
@@ -27,6 +29,7 @@
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.2.0",
     "@types/jest": "^29.5.14",
+    "@types/negotiator": "^0.6.3",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",

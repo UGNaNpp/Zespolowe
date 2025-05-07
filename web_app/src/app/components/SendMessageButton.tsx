@@ -14,16 +14,16 @@ const SendRequestButton = () => {
             console.log('Response data:', response.data);
             alert("Security works")
         } catch (error) {
-            // @ts-ignore
+            // @ts-expect-error this-is-to-only-test
             if (error.response) {
-                // @ts-ignore
+                // @ts-expect-error this-is-to-only-test
                 console.error('Error:', error.response.data);
-            } else { // @ts-ignore
+            } else { // @ts-expect-error this-is-to-only-test
                 if (error.request) {
-                                // @ts-ignore
+                                // @ts-expect-error this-is-to-only-test
                                 console.error('No response received:', error.request);
                             } else {
-                                // @ts-ignore
+                                // @ts-expect-error this-is-to-only-test
                     console.error('Request error:', error.message);
                             }
             }

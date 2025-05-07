@@ -1,0 +1,17 @@
+{
+  "login": {
+    "title": "Security cameras",
+    "button": "Login with Github"
+  },
+  "home": {
+    "home": "Home",
+    "devices": "Devices",
+    "media": "Media",
+    "notifications": "Notifications",
+    "logout": "Logout",
+    "version": "App version"
+  },
+  "devices": {
+    "title": "Devices"
+  }
+}

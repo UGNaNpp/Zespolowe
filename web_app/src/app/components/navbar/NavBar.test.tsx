@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import NavBar from './NavBar';
 import '@testing-library/jest-dom';
 

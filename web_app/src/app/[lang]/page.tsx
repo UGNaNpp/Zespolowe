@@ -1,7 +1,7 @@
 "use client";
 
-import NavBar from './components/navbar/NavBar';
-import SendMessageButton from "@/app/components/SendMessageButton";
+import NavBar from '../components/navbar/NavBar';
+import SendMessageButton from "../components/SendMessageButton";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -15,7 +15,7 @@ export default function Home() {
         const sendTokenToBackend = async () => {
             if (status === "authenticated" && session?.accessToken && !sentToken) {
                 try {
-                    const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/security/verify`, {
+                    const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}api/security/verify`, {
                         method: "POST",
                         headers: {
                             "Authorization": `Bearer ${session.accessToken}`,
