@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import axios from "axios";
+import axios from "@/app/api/axios/axios";
 import { Device } from "../../../types/device";
 import styles from "./devicesStyle.module.scss";
+import Link from "next/link";
 
 type Props = {
   dict: {
@@ -22,8 +23,7 @@ export default function Login({ dict }: Props) {
   useEffect(() => {
     const fetchDevices = async () => {
       try {
-        const res = await axios.get("http://localhost:8080/devices/", {
-          withCredentials: true,
+        const res = await axios.get("/devices/", {
           headers: {
             "Content-Type": "application/json",
           },
@@ -93,28 +93,35 @@ export default function Login({ dict }: Props) {
                   <div>{device.name}</div>
                   <div>{expandedId === device.id ? "▲" : "▼"}</div>
                 </button>
-                {expandedId === device.id && (
-                  <div className={styles.deviceDetails}>
-                    <p>
-                      <strong>IP:</strong> {device.AssociatedIP}
-                    </p>
-                    <p>
-                      <strong>MAC:</strong> {device.AssociatedMAC}
-                    </p>
-                    <p>
-                      <strong>Resolution:</strong>{" "}
-                      {device.widthResolution}x{device.heightResolution}
-                    </p>
-                    <p>
-                      <strong>Recording Mode:</strong>{" "}
-                      {device.recordingMode ? "On" : "Off"}
-                    </p>
-                    <p>
-                      <strong>Recording Video:</strong>{" "}
-                      {device.recordingVideo ? "Yes" : "No"}
-                    </p>
-                  </div>
-                )}
+                <div
+                  className={`${styles.deviceDetails} ${
+                    expandedId === device.id ? styles.expanded : ""
+                  }`}
+                >
+                  <p>
+                    <strong>IP:</strong> {device.AssociatedIP}
+                  </p>
+                  <p>
+                    <strong>MAC:</strong> {device.AssociatedMAC}
+                  </p>
+                  <p>
+                    <strong>Resolution:</strong>{" "}
+                    {device.widthResolution}x{device.heightResolution}
+                  </p>
+                  <p>
+                    <strong>Recording Mode:</strong>{" "}
+                    {device.recordingMode ? "On" : "Off"}
+                  </p>
+                  <p>
+                    <strong>Recording Video:</strong>{" "}
+                    {device.recordingVideo ? "Yes" : "No"}
+                  </p>
+                  <p className={styles.buttonParagrapgh}>
+                    <Link href={`/stream/${device.id}`}>
+                      <button className={styles.streamButton}>Zobacz podgląd</button>
+                    </Link>
+                  </p>
+                </div>
               </li>
             ))}
           </ul>

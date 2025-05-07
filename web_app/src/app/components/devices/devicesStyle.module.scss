@@ -55,10 +55,28 @@
       }
       
       .deviceDetails {
-        padding: 0.5rem;
+        max-height: 0;
+        overflow: hidden;
+        padding: 0 0.5rem;
         display: flex;
         flex-direction: column;
         gap: 0.5rem;
+        transition: max-height 0.4s ease, padding 0.4s ease;
+      
+        &.expanded {
+          max-height: 500px;
+          padding: 0.5rem;
+        }
+      
+        .buttonParagrapgh {
+          display: flex;
+          justify-content: end;
+      
+          button {
+            font-weight: 700;
+            background-color: #333;
+          }
+        }
       }
     }
   }
