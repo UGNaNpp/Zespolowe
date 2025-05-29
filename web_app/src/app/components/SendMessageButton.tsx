@@ -1,10 +1,10 @@
 import React from 'react';
-import axios from 'axios';
+import api from 'axios';
 
 const SendRequestButton = () => {
     const handleButtonClick = async () => {
         try {
-            const response = await axios.get("http://localhost:8080/api/security/test-endpoint", {
+            const response = await api.get("http://localhost:8080/api/security/test-endpoint", {
                 withCredentials: true,
                 headers: {
                     'Content-Type': 'application/json',

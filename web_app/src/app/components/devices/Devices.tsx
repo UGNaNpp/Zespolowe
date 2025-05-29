@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import axios from "@/app/api/axios/axios";
+import api from "@/app/api/axios/axios";
 import { Device } from "../../../types/device";
 import styles from "./devicesStyle.module.scss";
 import Link from "next/link";
@@ -23,7 +23,7 @@ export default function Login({ dict }: Props) {
   useEffect(() => {
     const fetchDevices = async () => {
       try {
-        const res = await axios.get("/devices/", {
+        const res = await api.get("/devices/", {
           headers: {
             "Content-Type": "application/json",
           },
@@ -70,9 +70,6 @@ export default function Login({ dict }: Props) {
 
   return (
     <main className={styles.main}>
-      {loading && <p>Ładowanie urządzeń...</p>}
-      {error && <p style={{ color: "red" }}>Błąd: {error}</p>}
-
       {!loading && !error && (
         <div className={styles.menu}>
           <h2>{dict.title}</h2>
@@ -85,7 +82,15 @@ export default function Login({ dict }: Props) {
               onChange={handleSearchChange}
             />
             <button onClick={toggleSortOrder}>
-              Sortuj {sortOrder === "asc" ? "▲" : "▼"}
+              <span>
+                Sortuj
+              </span>
+              <i className={
+                  sortOrder === "asc"
+                    ? "fa-solid fa-arrow-up-long"
+                    : "fa-solid fa-arrow-down-long"
+                }
+              />
             </button>
           </div>
 
@@ -93,8 +98,15 @@ export default function Login({ dict }: Props) {
             {getFilteredAndSortedDevices().map((device) => (
               <li key={device.id}>
                 <button onClick={() => toggleExpand(device.id)}>
-                  <div>{device.name}</div>
-                  <div>{expandedId === device.id ? "▲" : "▼"}</div>
+                  <div className={styles.deviceName}>
+                    <strong>{device.name}</strong>
+                  </div>
+                  <i className={
+                      expandedId === device.id
+                        ? "fa-solid fa-chevron-up"
+                        : "fa-solid fa-chevron-down"
+                    }
+                  />
                 </button>
                 <div
                   className={`${styles.deviceDetails} ${

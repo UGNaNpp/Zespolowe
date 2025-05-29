@@ -5,6 +5,7 @@ import SendMessageButton from "../components/SendMessageButton";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import api from "@/app/api/axios/axios";
 
 export default function Home() {
     const { data: session, status } = useSession();
@@ -15,24 +16,20 @@ export default function Home() {
         const sendTokenToBackend = async () => {
             if (status === "authenticated" && session?.accessToken && !sentToken) {
                 try {
-                    const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}api/security/verify`, {
-                        method: "POST",
-                        headers: {
-                            "Authorization": `Bearer ${session.accessToken}`,
-                            "Content-Type": "application/json",
-                        },
-                        credentials: "include",
-                    });
+                    await api.post(
+                        'api/security/verify', 
+                        {},
+                        {
+                            headers: {
+                                Authorization: `Bearer ${session.accessToken}`,
+                            }
+                        }
+                    );
 
-                    if (res.ok) {
-                        console.log("Token przesłany i ciasteczko ustawione");
-                        setSentToken(true);
-                        router.push("/");
-                    } else {
-                        console.error("Błąd przy przesyłaniu tokena do backendu");
-                    }
+                    setSentToken(true);
+                    router.push("/");
                 } catch (error) {
-                    console.error("Błąd sieci:", error);
+                    console.error("Błąd przy przesyłaniu tokena do backendu:", error);
                 }
             }
         };
