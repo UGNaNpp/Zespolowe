@@ -3,6 +3,7 @@ package org.server.security;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.server.util.JwtUtil;
@@ -45,8 +46,6 @@ public class SecurityController {
                     .build();
 
             HttpResponse<String> ghResponse = client.send(verifyGhTokenReq, HttpResponse.BodyHandlers.ofString());
-            System.out.println(ghResponse);
-            System.out.println(token);
 
             if (ghResponse.statusCode() == 200) {
 
@@ -67,6 +66,16 @@ public class SecurityController {
         } else  {
             return new ResponseEntity<>("No authorization header", HttpStatus.UNAUTHORIZED);
         }
+    }
+
+    @GetMapping("/delete-token")
+    public ResponseEntity<String> deleteJWTToken(HttpServletRequest request, HttpServletResponse response) throws URISyntaxException, IOException, InterruptedException {
+        Cookie cookie = new Cookie("jwt", "");
+        cookie.setMaxAge(0);
+        cookie.setSecure(false);
+        cookie.setPath("/");
+        response.addCookie(cookie);
+        return new ResponseEntity<>("JWT token deleted", HttpStatus.OK);
     }
 
     @GetMapping("/test-endpoint")

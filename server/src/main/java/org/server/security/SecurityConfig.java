@@ -34,7 +34,7 @@ public class SecurityConfig {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeHttpRequests(auth -> auth
-                                .requestMatchers("/public/**", "/api/security/verify", "/actuator/health").permitAll()
+                                .requestMatchers("/public/**", "/api/security/verify", "/api/security/delete-token", "/actuator/health").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .exceptionHandling()

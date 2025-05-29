@@ -24,7 +24,7 @@ public class DeviceMapper {
     @Value("${filepath.devices}")
     private String devicesConfigFilepath;
 
-    @Autowired
+//    @Autowired
     public DeviceMapper() {
         deviceIPMap = new HashMap<>();
         deviceIDMap = new TreeMap<>();

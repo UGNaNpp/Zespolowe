@@ -4,7 +4,7 @@ import axios from 'axios';
 const SendRequestButton = () => {
     const handleButtonClick = async () => {
         try {
-            const response = await axios.get("http://localhost:8080/api/security/test-endpoint", {
+            const response = await axios.get("http://localhost:8080/api/security/delete-token", {
                 withCredentials: true,
                 headers: {
                     'Content-Type': 'application/json',
