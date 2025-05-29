@@ -1,8 +1,14 @@
 services:
   spring:
-#    build: '../server'
-    image: mkopczewski/zespolowe:basic
+    build: '../server'
+#    image: mkopczewski/zespolowe:basic
     ports:
       - "8080:8080"
+    volumes:
+      - "C:/Users/kopcz/IdeaProjects/Zespolowe/server/src/main/resources:/app/data"
+
     env_file:
       - ../server/.env
+    environment:
+      DEVICES_JSON_FILEPATH: /app/data/devices.json
+      USERS_FILEPATH: /app/data/users.txt

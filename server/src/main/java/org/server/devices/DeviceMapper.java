@@ -37,7 +37,6 @@ public class DeviceMapper {
 
     private void loadDevicesFromJson() {
         ObjectMapper objectMapper = new ObjectMapper();
-        System.out.println(devicesConfigFilepath);
         try (InputStream inputStream = new FileInputStream(devicesConfigFilepath)) {
             List<Camera> devices = objectMapper.readValue(inputStream, new TypeReference<List<Camera>>() {});
             for (Camera device : devices) {

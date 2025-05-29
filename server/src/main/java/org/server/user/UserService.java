@@ -59,6 +59,10 @@ public class UserService {
 
     public String registerUser(User newUser) {
         if (users.stream().anyMatch(user -> user.getEmail().equals(newUser.getEmail()))) {
+
+
+
+
             throw new IllegalArgumentException("Email already registered");
         } else if (users.stream().anyMatch(user -> user.getGithubId() == newUser.getGithubId())) {
             throw new IllegalArgumentException("Username already registered");

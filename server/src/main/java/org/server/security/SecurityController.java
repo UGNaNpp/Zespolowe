@@ -45,6 +45,8 @@ public class SecurityController {
                     .build();
 
             HttpResponse<String> ghResponse = client.send(verifyGhTokenReq, HttpResponse.BodyHandlers.ofString());
+            System.out.println(ghResponse);
+            System.out.println(token);
 
             if (ghResponse.statusCode() == 200) {
 

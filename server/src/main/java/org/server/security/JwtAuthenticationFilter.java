@@ -38,8 +38,7 @@ public class JwtAuthenticationFilter implements Filter {
                 .orElse(null);
 
         if (jwt != null) {
-            boolean isValid = jwtUtil.validateToken(jwt);
-            if (isValid) {
+            if (jwtUtil.validateToken(jwt)) {
                 UsernamePasswordAuthenticationToken authToken =
                         new UsernamePasswordAuthenticationToken(null, null, null);
                 SecurityContextHolder.getContext().setAuthentication(authToken);

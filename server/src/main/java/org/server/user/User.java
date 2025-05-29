@@ -27,6 +27,15 @@ public class User implements Serializable {
         this.addedDate = new Date();
     }
 
+    public int getGithubId() {
+        return githubId;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+
     public String toJson() {
         try {
             return mapper.writeValueAsString(this);
