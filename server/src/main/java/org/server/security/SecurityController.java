@@ -52,11 +52,11 @@ public class SecurityController {
                 ObjectMapper mapper = new ObjectMapper();
                 JsonNode node = mapper.readTree(ghResponse.body());
 
-                int id = node.get("id").asInt();
-                System.out.println(id);
+//                int id = node.get("id").asInt();
+//                System.out.println(id);
 
                 response.addCookie(jwtUtil.generateJwtHttpCookie(token));
-                return ResponseEntity.status(HttpStatus.FOUND)
+                return ResponseEntity.status(HttpStatus.OK)
                         .header(HttpHeaders.LOCATION, frontMainPage)
                         .build();
             } else {
