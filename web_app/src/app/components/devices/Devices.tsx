@@ -5,6 +5,7 @@ import api from "@/app/api/axios/axios";
 import { Device } from "../../../types/device";
 import styles from "./devicesStyle.module.scss";
 import Link from "next/link";
+import NavBar from '../../components/navbar/NavBar';
 
 type Props = {
   dict: {
@@ -69,6 +70,7 @@ export default function Login({ dict }: Props) {
   };
 
   return (
+    <>
     <main className={styles.main}>
       {!loading && !error && (
         <div className={styles.menu}>
@@ -143,5 +145,6 @@ export default function Login({ dict }: Props) {
         </div>
       )}
     </main>
+    </>
   );
 }

@@ -13,7 +13,13 @@ api.interceptors.response.use(
     const status = error.response?.status;
 
     if (status === 403 || status === 500) {
-      // await signOut({ callbackUrl: '/' });
+      try {
+        // await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}api/security/delete-token`);
+
+        // await signOut({ callbackUrl: '/' });
+      } catch (logoutError) {
+        console.error('Logout request failed:', logoutError);
+      }
     }
 
     return Promise.reject(error);
