@@ -1,3 +1,5 @@
+@import '@/app/_variables.scss';
+
 .main {
   flex: 1;
   display: flex;
@@ -8,9 +10,8 @@
     width: 50%;
     min-width: 60rem;
     min-height: 24rem;
-    background-color: #333;
+    background-color: $color-base-1;
     padding: 1rem;
-    border: 1px solid black;
     border-radius: 0.5rem;
 
     h2 {
@@ -25,11 +26,13 @@
 
       input {
         border-radius: 0.3rem;
-        border: 1px solid #5e5e5e;
+        border: 1px solid $color-dark-gray;
         padding: 0 0.5rem;
+        background-color: $color-mid-dark-gray;
       }
 
       button {
+        background-color: $color-gray;
         padding: 0.4rem 0.5rem;
         border-radius: 0.3rem;
         border: 0;
@@ -38,7 +41,7 @@
         }
 
         &:hover {
-          background-color: #333;
+          background-color: $color-mid-dark-gray;
         }
       }
     }
@@ -53,12 +56,12 @@
 
     li {
       width: 100%;
-      background-color: #5e5e5e;
+      background-color: $color-mid-dark-gray;
       border-radius: 0.5rem;
 
       button {
         border: 0px solid;
-        background-color: #5e5e5e;
+        background-color: $color-dark-gray;
         border-radius: 0.3rem;
         padding: 0.5rem;
         width: 100%;
@@ -89,7 +92,7 @@
           justify-content: flex-end;
       
           button {
-            background-color: #333;
+            background-color: $color-dark-gray;
             padding: 0.4rem 0.5rem;
           }
         }

@@ -82,9 +82,9 @@ const NavBar: React.FC<NavBarTitle> = ({ title, titleUrl, subtitle, subtitleUrl 
           </div>
           <ul className={styles.menuList}>
             <li>
-              <Link href="/home">
+              <Link href="/dashboard">
                 <i className="fa-regular fa-bookmark"></i>
-                <span>Home</span>
+                <span>Dashboard</span>
               </Link>
             </li>
             <li>
@@ -107,8 +107,8 @@ const NavBar: React.FC<NavBarTitle> = ({ title, titleUrl, subtitle, subtitleUrl 
             </li>
             <li>
               <Link href="/account">
-                <i className="fa-regular fa-circle-user"></i>
-                <span>Account</span>
+                <i className="fa-solid fa-gear"></i>
+                <span>Settings</span>
               </Link>
             </li>
           </ul>
@@ -117,7 +117,7 @@ const NavBar: React.FC<NavBarTitle> = ({ title, titleUrl, subtitle, subtitleUrl 
           <ul>
             <li>
               <Link href="/logout">
-                <i className="fa-regular fa-rectangle-xmark"></i>
+                <i className="fa-solid fa-arrow-right-from-bracket"></i>
                 <span>Logout</span>
               </Link>
             </li>

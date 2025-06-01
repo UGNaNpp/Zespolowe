@@ -9,7 +9,7 @@ export default async function LoginPage({ params }: { params: Promise<{ lang: 'e
 
   return(
     <main className={styles.main}>
-      <NavBar title='devices' titleUrl='/devices' subtitle='' subtitleUrl='' />
+      <NavBar title='Devices' titleUrl='/devices' subtitle='' subtitleUrl='' />
       <Devices dict={dict.devices} />
     </main>
   );
