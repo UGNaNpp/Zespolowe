@@ -69,6 +69,11 @@ public class DeviceMapper {
         return this.deviceIDMap;
     }
 
+    public Long[] getAllCamerasIDs() {return deviceIDMap.entrySet().stream()
+            .filter(entry -> entry.getValue().whatAmI() == 0)
+            .map(Map.Entry::getKey)
+            .toArray(Long[]::new);}
+
 
     public Device getDeviceByIP(String ipv4) {
         return deviceIPMap.get(ipv4);

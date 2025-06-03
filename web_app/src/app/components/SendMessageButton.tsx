@@ -11,8 +11,8 @@ const SendRequestButton = () => {
                 },
             });
 
-            console.log('Response data:', response.data, response.status);
-            alert("Response" + response.data)
+            console.log('Response data:', JSON.stringify(response.data), response.status);
+            alert("Response" + JSON.stringify(response.data))
         } catch (error) {
             // @ts-ignore
             if (error.response) {

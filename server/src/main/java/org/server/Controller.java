@@ -2,21 +2,22 @@ package org.server;
 
 import org.server.devices.DeviceMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
-import jakarta.servlet.http.HttpServletRequest;
 
 
 import java.io.IOException;
+import java.util.Map;
+import java.util.concurrent.*;
 
 @RestController
 public class Controller {
     @Autowired
     private DeviceMapper deviceMapper;
-
     @Autowired
     private StreamProvider streamProvider;
 
@@ -65,4 +66,46 @@ public class Controller {
         return ResponseEntity.ok().body(responseBody);
     }
 
+
+    @GetMapping("/active-cameras")
+    ResponseEntity<Map<Long, Boolean>> getActiveCameras() {
+        Long[] available = this.deviceMapper.getAllCamerasIDs();
+        long timeoutMillis = 1000;
+
+        if (available.length == 0) { return new ResponseEntity<>(HttpStatus.I_AM_A_TEAPOT); }
+
+        ExecutorService executor = Executors.newFixedThreadPool(available.length);
+        Map<Long, Boolean> resultMap = new ConcurrentHashMap<>();
+        CountDownLatch latch = new CountDownLatch(available.length);
+
+        for (Long id : available) {
+            executor.submit(() -> {
+                try {
+                    Future<Byte[]> futureFrame = streamProvider.getLastFrame(id);
+                    Byte[] frame = futureFrame.get(timeoutMillis, TimeUnit.MILLISECONDS);
+
+                    boolean isValid = frame != null && frame.length > 0;
+                    resultMap.put(id, isValid);
+                } catch (TimeoutException e) {
+//                    System.out.println("Timeout for device " + id);
+                    resultMap.put(id, false);
+                } catch (Exception e) {
+//                    System.out.println("Error for device " + id + ": " + e.getMessage());
+                    resultMap.put(id, false);
+                } finally {
+                    latch.countDown();
+                }
+            });
+        }
+
+        try {
+            latch.await(timeoutMillis, TimeUnit.MILLISECONDS); // +buffer
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        } finally {
+            executor.shutdownNow();
+        }
+
+        return ResponseEntity.ok(resultMap);
+    }
 }
