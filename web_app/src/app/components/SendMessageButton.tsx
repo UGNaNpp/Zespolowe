@@ -4,20 +4,24 @@ import axios from 'axios';
 const SendRequestButton = () => {
     const handleButtonClick = async () => {
         try {
-            const response = await axios.get("http://localhost:8080/api/security/delete-token", {
+            const response = await axios.get("http://localhost:8080/active-cameras", {
                 withCredentials: true,
                 headers: {
                     'Content-Type': 'application/json',
                 },
             });
 
-            console.log('Response data:', response.data);
-            alert("Security works")
+            console.log('Response data:', response.data, response.status);
+            alert("Response" + response.data)
         } catch (error) {
             // @ts-ignore
             if (error.response) {
-                // @ts-ignore
+                if (error.response.status === 418) {
+                    alert("Server is a teapot")
+                } else {
                 console.error('Error:', error.response.data);
+                }
+                // @ts-ignore
             } else { // @ts-ignore
                 if (error.request) {
                                 // @ts-ignore
