@@ -1,19 +1,29 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import api from "@/app/api/axios/axios";
+import { apiRequest } from "@/app/api/axios/apiRequest";
 import { Device } from "../../../types/device";
 import styles from "./devicesStyle.module.scss";
 import Link from "next/link";
-import NavBar from '../../components/navbar/NavBar';
+import { ErrorToast } from "@/app/components/errorToast/ErrorToast";
 
 type Props = {
   dict: {
     title: string;
   };
+  ApiErrorsDict: {
+    "unknown": string;
+    "400": string;
+    "401": string;
+    "403": string;
+    "404": string;
+    "500": string;
+  }
 };
 
-export default function Login({ dict }: Props) {
+export default function Devices({ dict, ApiErrorsDict }: Props) {
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState<string>("");
   const [devices, setDevices] = useState<Device[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -22,27 +32,21 @@ export default function Login({ dict }: Props) {
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
 
   useEffect(() => {
-    const fetchDevices = async () => {
-      try {
-        const res = await api.get("/devices/", {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-
-        setDevices(Object.values(res.data) as Device[]);
-      } catch (err: unknown) {
-        if (err instanceof Error) {
-          setError(err.message || "Nieznany błąd");
-        } else {
-          setError("Nieznany błąd");
-        }
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchDevices();
+    apiRequest<Device[]>({
+      endpoint: "/devices/",
+      method: "GET",
+      onSuccess: (data) => {
+        setDevices(Object.values(data));
+      },
+      onError: (errMsg) => {
+        setError(errMsg);
+        setToastMessage(errMsg);
+        setShowToast(true);
+      },
+      dict: ApiErrorsDict,
+    }).finally(() => {
+      setLoading(false);
+    });
   }, []);
 
   const toggleExpand = (id: number) => {
@@ -75,25 +79,34 @@ export default function Login({ dict }: Props) {
       {!loading && !error && (
         <div className={styles.menu}>
           <h2>{dict.title}</h2>
-
           <div className={styles.controls}>
-            <input
-              type="text"
-              placeholder="Szukaj urządzenia..."
-              value={searchTerm}
-              onChange={handleSearchChange}
-            />
-            <button onClick={toggleSortOrder}>
-              <span>
-                Sortuj
-              </span>
-              <i className={
-                  sortOrder === "asc"
-                    ? "fa-solid fa-arrow-up-long"
-                    : "fa-solid fa-arrow-down-long"
-                }
+            <div className={styles.controls_left}>
+              <input
+                type="text"
+                placeholder="Szukaj urządzenia..."
+                value={searchTerm}
+                onChange={handleSearchChange}
               />
-            </button>
+              <button onClick={toggleSortOrder}>
+                <span>
+                  Sortuj
+                </span>
+                <i className={
+                    sortOrder === "asc"
+                      ? "fa-solid fa-arrow-up-long"
+                      : "fa-solid fa-arrow-down-long"
+                  }
+                />
+              </button>
+            </div>
+            <div className={styles.controls_right}>
+              <button onClick={() => {
+                  setToastMessage("Funkcja dodawania jeszcze niegotowa");
+                  setShowToast(true);
+                }}>
+                Dodaj nowe urządzenie
+              </button>
+            </div>
           </div>
 
           <ul>
@@ -145,6 +158,11 @@ export default function Login({ dict }: Props) {
         </div>
       )}
     </main>
+    <ErrorToast
+      message={toastMessage}
+      show={showToast}
+      onHide={() => setShowToast(false)}
+    />
     </>
   );
 }

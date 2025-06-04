@@ -13,5 +13,13 @@
   },
   "devices": {
     "title": "Urządzenia"
+  },
+  "apiErrors": {
+    "unknown": "Wystąpił błąd żadania",
+    "400": "Nieprawidłowe żądanie",
+    "401": "Brak autoryzacji",
+    "403": "Brak dostępu",
+    "404": "Nie znaleziono zasobu",
+    "500": "Błąd serwera"
   }
 }

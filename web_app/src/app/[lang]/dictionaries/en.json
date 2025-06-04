@@ -13,5 +13,13 @@
   },
   "devices": {
     "title": "Devices"
+  },
+  "apiErrors": {
+    "unknown": "Request error occurred",
+    "400": "Bad request",
+    "401": "Unauthorized",
+    "403": "Forbidden",
+    "404": "Resource not found",
+    "500": "Server error"
   }
 }

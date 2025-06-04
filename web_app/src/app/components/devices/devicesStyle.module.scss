@@ -19,17 +19,7 @@
     }
 
     .controls {
-      width: 100%;
-      margin-bottom: 1rem;
       display: flex;
-      gap: 1rem;
-
-      input {
-        border-radius: 0.3rem;
-        border: 1px solid $color-dark-gray;
-        padding: 0 0.5rem;
-        background-color: $color-mid-dark-gray;
-      }
 
       button {
         background-color: $color-gray;
@@ -42,6 +32,31 @@
 
         &:hover {
           background-color: $color-mid-dark-gray;
+        }
+      }
+
+      .controls_left {
+        width: 100%;
+        margin-bottom: 1rem;
+        display: flex;
+        gap: 1rem;
+
+        input {
+          border-radius: 0.3rem;
+          border: 1px solid $color-dark-gray;
+          padding: 0 0.5rem;
+          background-color: $color-mid-dark-gray;
+
+          &:focus {
+            // border: 1px solid red;
+            outline: 1px solid $color-base-2;
+          }
+        }
+      }
+
+      .controls_right {
+        button {
+          white-space: nowrap;
         }
       }
     }
