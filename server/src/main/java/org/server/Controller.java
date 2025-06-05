@@ -11,6 +11,7 @@ import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBo
 
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.*;
 
@@ -72,7 +73,7 @@ public class Controller {
         Long[] available = this.deviceMapper.getAllCamerasIDs();
         long timeoutMillis = 1000;
 
-        if (available.length == 0) { return new ResponseEntity<>(HttpStatus.I_AM_A_TEAPOT); }
+        if (available.length == 0) { return new ResponseEntity<>(new HashMap<>(), HttpStatus.OK); }
 
         ExecutorService executor = Executors.newFixedThreadPool(available.length);
         Map<Long, Boolean> resultMap = new ConcurrentHashMap<>();

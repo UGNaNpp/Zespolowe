@@ -4,15 +4,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -70,7 +66,7 @@ public class DeviceMapper {
     }
 
     public Long[] getAllCamerasIDs() {return deviceIDMap.entrySet().stream()
-            .filter(entry -> entry.getValue().whatAmI() == 0)
+            .filter(entry -> entry.getValue().whatAmI() == 1)
             .map(Map.Entry::getKey)
             .toArray(Long[]::new);}
 

@@ -2,15 +2,12 @@ package org.server.security;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.server.util.JwtUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
-import org.springframework.integration.http.dsl.Http;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -52,8 +49,8 @@ public class SecurityController {
                 ObjectMapper mapper = new ObjectMapper();
                 JsonNode node = mapper.readTree(ghResponse.body());
 
-//                int id = node.get("id").asInt();
-//                System.out.println(id);
+                int id = node.get("id").asInt();
+                System.out.println("User GitHub id: " + id);
 
                 response.addCookie(jwtUtil.generateJwtHttpCookie(token));
                 return ResponseEntity.status(HttpStatus.OK)
