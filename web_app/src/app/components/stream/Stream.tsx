@@ -12,7 +12,7 @@ type Props = {
 };
 
 export default function Stream({ deviceId, dict }: Props) {
-  const streamUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}${deviceId}/stream`;
+  const streamUrl = `/api/stream/${deviceId}`;
   const [isOffline, setIsOffline] = useState(false);
 
   const handleError = () => {
@@ -27,7 +27,6 @@ export default function Stream({ deviceId, dict }: Props) {
         <img
           className={styles.stream}
           src={streamUrl}
-          // src="/background.jpg"
           alt="Stream"
           onError={handleError}
         />
