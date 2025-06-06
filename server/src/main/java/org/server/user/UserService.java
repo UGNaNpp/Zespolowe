@@ -1,6 +1,7 @@
 package org.server.user;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import jakarta.annotation.PostConstruct;
@@ -8,13 +9,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class UserService {
-    private static final String USERS_FILE = "users.json";
+    @Value("${filepath.users}")
+    private String USERS_FILE;
+
     private final ObjectMapper objectMapper;
     private List<User> users;
 
@@ -28,12 +28,17 @@ public class UserService {
         if (!usersFile.exists()) {
             try {
                 usersFile.createNewFile();
+                System.out.println("Users file not found, creating new one");
             } catch (IOException e) {
                 throw new RuntimeException("Error creating users file", e);
             }
             users = new ArrayList<>();
         } else {
             users = readUsersFromFile();
+            System.out.print("Loaded users:\n");
+            for (User user : users) {
+                System.out.print(user.toJson());
+            }
         }
     }
 
@@ -41,6 +46,7 @@ public class UserService {
         try {
             return objectMapper.readValue(new File(USERS_FILE), objectMapper.getTypeFactory().constructCollectionType(List.class, User.class));
         } catch (IOException e) {
+            System.out.println("Error reading users file");
             return new ArrayList<>();
         }
     }
@@ -53,52 +59,19 @@ public class UserService {
         }
     }
 
-    public String registerUser(String username, String email, String password) {
-        if (users.stream().anyMatch(user -> user.getEmail().equals(email))) {
-            throw new IllegalArgumentException("Email already registered");
-        } else if (users.stream().anyMatch(user -> user.getUsername().equals(username))) {
+    public void registerUser(User newUser) {
+        if (users.stream().anyMatch(user -> user.getLogin().equals(newUser.getLogin()))) {
+            throw new IllegalArgumentException("Login already registered");
+        } else if (users.stream().anyMatch(user -> user.getGithubId() == newUser.getGithubId())) {
             throw new IllegalArgumentException("Username already registered");
         }
-
-        String passwordHash = User.hashPassword(password);
-        User newUser = User.builder()
-                .username(username)
-                .email(email)
-                .passwordHash(passwordHash)
-                .build();
-
-        users.add(newUser); 
+        users.add(newUser);
         writeUsersToFile(users);
-
-        return newUser.toJson();
     }
 
-    public String validateUser(String identifier, String password) {
-        boolean isEmail = identifier.contains("@");
-
+    public boolean validateUser(int githubId) {
         return users.stream()
-                .filter(user -> isEmail ? user.getEmail().equals(identifier) : user.getUsername().equals(identifier))
-                .findFirst()
-                .map(user -> {
-                    if (user.verifyPassword(password)) {
-                        return user.toJson();
-                    } else {
-                        throw new IllegalArgumentException("Invalid password");
-                    }
-                })
-                .orElseThrow(() -> new NoSuchElementException("User not found"));
+                .anyMatch(user -> user.getGithubId() == githubId);
     }
 
-    public void deleteUser(Long userId) {
-        Optional<User> userOptional = users.stream().filter(user -> user.getUserId() == userId).findFirst();
-
-        if (userOptional.isPresent()) {
-            users = users.stream()
-                    .filter(user -> user.getUserId() != userId)
-                    .collect(Collectors.toList());
-            writeUsersToFile(users);
-        } else {
-            throw new NoSuchElementException("User not found");
-        }
-    }
 }

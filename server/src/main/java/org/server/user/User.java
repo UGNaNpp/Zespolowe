@@ -1,46 +1,45 @@
 package org.server.user;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.*;
 
 import java.io.Serializable;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.Base64;
+import java.util.Date;
 
-@Data
-@Builder
-@EqualsAndHashCode
-@AllArgsConstructor
-@NoArgsConstructor
 public class User implements Serializable {
-    private long userId;
-    private String username;
-    @JsonIgnore
-    private String passwordHash;
-    private String email;
-
+    private final int githubId;
+    private final String avatarUrl;
+    private final String login; // Jest niezmienny dla githuba
+    private final String name; // Można zmieniać w githubie
+    private final Date addedDate; // data przydzielenia uprawnień do systemu
     private static final ObjectMapper mapper = new ObjectMapper();
 
-    public static String hashPassword(String password) {
-        try {
-            MessageDigest digest = MessageDigest.getInstance("SHA-256");
-
-            byte[] hashBytes = digest.digest(password.getBytes());
-
-            return Base64.getEncoder().encodeToString(hashBytes);
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException("SHA-256 algorithm not available", e);
-        }
+    public User (int githubId, String avatarUrl,String githubLogin, String name) {
+        this.githubId = githubId;
+        this.avatarUrl = avatarUrl;
+        this.login = githubLogin;
+        this.name = name;
+        this.addedDate = new Date();
     }
 
-    public boolean verifyPassword(String password) {
-        String hashedInput = hashPassword(password);
+    public int getGithubId() {
+        return githubId;
+    }
 
-        return this.passwordHash.equals(hashedInput);
+    public String getLogin() {
+        return login;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getAvatarUrl() {
+        return avatarUrl;
+    }
+
+    public Date getAddedDate() {
+        return addedDate;
     }
 
     public String toJson() {

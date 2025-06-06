@@ -1,0 +1,17 @@
+{
+  "login": {
+    "title": "Kamery bezpieczeństwa",
+    "button": "Zaloguj się przez Github"
+  },
+  "home": {
+    "home": "Główna",
+    "devices": "Urządzenia",
+    "media": "Pliki",
+    "notifications": "Powiadomienia",
+    "logout": "Wyloguj się",
+    "version": "Wersja"
+  },
+  "devices": {
+    "title": "Urządzenia"
+  }
+}

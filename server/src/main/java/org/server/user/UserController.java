@@ -11,7 +11,7 @@ import java.util.NoSuchElementException;
 
 @RestController
 @Deprecated
-@RequestMapping("/public/api/user")
+@RequestMapping("/users/")
 public class UserController {
     private final UserService userService;
 
@@ -20,18 +20,4 @@ public class UserController {
     }
 
 
-    @PostMapping("/validate")
-    public ResponseEntity<String> validateUser(@RequestBody Map<String, Object> body) {
-        try {
-            String identifier = body.get("identifier").toString();
-            String password = body.get("password").toString();
-
-            String message = userService.validateUser(identifier, password);
-            return ResponseEntity.ok(message);
-        } catch (NoSuchElementException e) {
-            return ResponseEntity.status(404).body(e.getMessage());
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(401).body(e.getMessage());
-        }
-    }
 }

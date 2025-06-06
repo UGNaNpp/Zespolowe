@@ -1,46 +1,63 @@
 package org.server;
 
+import io.github.cdimascio.dotenv.Dotenv;
+import org.server.devices.DeviceMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Bean;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
 
 @SpringBootApplication
 public class ServerApplication {
 
+    @Autowired
+    private DeviceMapper deviceMapper;
+
+
     public static void main(String[] args) {
-        try {
-            Map<String, String> env = EnvParser.parse("./.env");
-            String jwtSecret = env.get("JWT_SECRET");
+        Dotenv dotenv = null;
 
+        String jwtSecret = System.getenv("JWT_SECRET");
+        String timeZone = System.getenv("TIME_ZONE");
+        String jwtExpiration = System.getenv("JWT_EXPIRATION");
+        String frontUrl = System.getenv("FRONT_URL");
+        String devicesJsonFilepath = System.getenv("DEVICES_JSON_FILEPATH");
+        String usersJsonFilepath = System.getenv("USERS_FILEPATH");
+
+
+        if (jwtSecret == null || timeZone == null || jwtExpiration == null || frontUrl == null
+        || devicesJsonFilepath == null || usersJsonFilepath == null) {
+            System.out.println("system env doesn't exist, loading from file");
+            dotenv = Dotenv.configure().load();
+
+            if (jwtSecret == null) System.setProperty("JWT_SECRET", dotenv.get("JWT_SECRET"));
+            if (timeZone == null) System.setProperty("TIME_ZONE", dotenv.get("TIME_ZONE"));
+            if (jwtExpiration == null) System.setProperty("JWT_EXPIRATION", dotenv.get("JWT_EXPIRATION"));
+            if (frontUrl == null) System.setProperty("FRONT_URL", dotenv.get("FRONT_URL"));
+            if (devicesJsonFilepath == null) System.setProperty("DEVICES_JSON_FILEPATH", dotenv.get("DEVICES_JSON_FILEPATH"));
+            if (usersJsonFilepath == null) System.setProperty("USERS_FILEPATH", dotenv.get("USERS_FILEPATH"));
+        } else {
             System.setProperty("JWT_SECRET", jwtSecret);
-
-        } catch (IOException e) {
-            System.err.println("Błąd podczas ładowania pliku .env: " + e.getMessage());
+            System.setProperty("TIME_ZONE", timeZone);
+            System.setProperty("JWT_EXPIRATION", jwtExpiration);
+            System.setProperty("FRONT_URL", frontUrl);
+            System.setProperty("DEVICES_JSON_FILEPATH", devicesJsonFilepath);
+            System.setProperty("USERS_FILEPATH", usersJsonFilepath);
         }
 
         SpringApplication.run(ServerApplication.class, args);
     }
 
-}
+    @Bean
+    public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
+        deviceMapper.loadDevicesFromJson();
 
-class EnvParser {
-    public static Map<String, String> parse(String filePath) throws IOException {
-        Map<String, String> env = new HashMap<>();
-        Files.lines(Paths.get(filePath)).forEach(line -> {
-            if (!line.trim().startsWith("#") && line.contains("=")) {
-                String[] parts = line.split("=", 2);
-                env.put(parts[0].trim(), parts[1].trim());
-            }
-        });
-        return env;
+        return args->{
+
+        };
     }
+
 }
