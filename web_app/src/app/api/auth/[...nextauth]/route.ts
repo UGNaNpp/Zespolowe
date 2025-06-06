@@ -1,5 +1,8 @@
 import NextAuth from "next-auth"
 import GithubProvider from "next-auth/providers/github"
+// import { options } from './options'
+
+// TODO - PRZERZUCIC PONOWNIE DO OPTIONS
 
 const handler = NextAuth({
   providers: [
@@ -20,7 +23,7 @@ const handler = NextAuth({
       return token;
     },
     async session({ session, token }) {
-      session.user.id = token.id;
+      session.user.id = token.sub;
       session.accessToken = token.accessToken;
       return session;
     },

@@ -4,30 +4,26 @@ import axios from 'axios';
 const SendRequestButton = () => {
     const handleButtonClick = async () => {
         try {
-            const response = await axios.get("http://localhost:8080/active-cameras", {
+            const response = await axios.get("http://localhost:8080/api/security/test-endpoint", {
                 withCredentials: true,
                 headers: {
                     'Content-Type': 'application/json',
                 },
             });
 
-            console.log('Response data:', JSON.stringify(response.data), response.status);
-            alert("Response" + JSON.stringify(response.data))
+            console.log('Response data:', response.data);
+            alert("Security works")
         } catch (error) {
-            // @ts-ignore
+            // @ts-expect-error this-is-to-only-test
             if (error.response) {
-                if (error.response.status === 418) {
-                    alert("Server is a teapot")
-                } else {
+                // @ts-expect-error this-is-to-only-test
                 console.error('Error:', error.response.data);
-                }
-                // @ts-ignore
-            } else { // @ts-ignore
+            } else { // @ts-expect-error this-is-to-only-test
                 if (error.request) {
-                                // @ts-ignore
+                                // @ts-expect-error this-is-to-only-test
                                 console.error('No response received:', error.request);
                             } else {
-                                // @ts-ignore
+                                // @ts-expect-error this-is-to-only-test
                     console.error('Request error:', error.message);
                             }
             }
