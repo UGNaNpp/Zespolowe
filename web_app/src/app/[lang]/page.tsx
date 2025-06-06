@@ -1,50 +1,41 @@
 "use client";
 
-import NavBar from '../components/navbar/NavBar';
-import SendMessageButton from "../components/SendMessageButton";
 import { useSession } from "next-auth/react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
+import api from "@/app/api/axios/axios";
+
+// JAK BEDZIE DZIALAL ENDPOINT DO USUWANIA URZADZEN TO DODAC
 
 export default function Home() {
-    const { data: session, status } = useSession();
-    const router = useRouter();
-    const [sentToken, setSentToken] = useState(false); // żeby nie wysyłać wielokrotnie
+  const { data: session, status } = useSession();
+  const router = useRouter();
+  const sentTokenRef = useRef(false);
 
-    useEffect(() => {
-        const sendTokenToBackend = async () => {
-            if (status === "authenticated" && session?.accessToken && !sentToken) {
-                try {
-                    const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}api/security/verify`, {
-                        method: "POST",
-                        headers: {
-                            "Authorization": `Bearer ${session.accessToken}`,
-                            "Content-Type": "application/json",
-                        },
-                        credentials: "include",
-                    });
+  useEffect(() => {
+    if (status !== "authenticated" || sentTokenRef.current || !session?.accessToken) return;
 
-                    if (res.ok) {
-                        console.log("Token przesłany i ciasteczko ustawione");
-                        setSentToken(true);
-                        router.push("/");
-                    } else {
-                        console.error("Błąd przy przesyłaniu tokena do backendu", res);
-                    }
-                } catch (error) {
-                    console.error("Błąd sieci:", error);
-                }
-            }
-        };
+    const sendTokenToBackend = async () => {
+      try {
+        await api.post(
+          "api/security/verify",
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${session.accessToken}`,
+            },
+          }
+        );
 
-        sendTokenToBackend();
-    }, [status, session, sentToken, router]);
+        sentTokenRef.current = true;
+        router.push("/dashboard");
+      } catch (error) {
+        console.error("Błąd przy przesyłaniu tokena do backendu:", error);
+      }
+    };
 
-    return (
-        <div>
-            <NavBar title='Home' titleUrl='/' subtitle='' subtitleUrl='' />
-            <h1>Home</h1>
-            <SendMessageButton />
-        </div>
-    );
+    sendTokenToBackend();
+  }, [status, session?.accessToken, router]);
+
+  return null;
 }

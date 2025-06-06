@@ -1,17 +1,48 @@
 {
   "login": {
-    "title": "Kamery bezpieczeństwa",
+    "pageTitle": "Zaloguj się",
+    "title": "Smart Security",
     "button": "Zaloguj się przez Github"
   },
-  "home": {
-    "home": "Główna",
+  "navBar": {
+    "dashboard": "Panel główny",
     "devices": "Urządzenia",
-    "media": "Pliki",
+    "media": "Multimedia",
     "notifications": "Powiadomienia",
+    "settings": "Ustawienia",
     "logout": "Wyloguj się",
     "version": "Wersja"
   },
   "devices": {
-    "title": "Urządzenia"
+    "pageTitle": "Panel urządzeń",
+    "title": "Urządzenia",
+    "search": "Szukaj urządzenia...",
+    "sort": "Sortuj",
+    "addNew": "Dodaj nowe urządzenie",
+    "ip": "Adres IP",
+    "mac": "Adres MAC",
+    "resolution": "Rozdzielczość",
+    "recordingMode": "Tryb nagrywania",
+    "recordingVideo": "Nagrywanie wideo",
+    "details": "Szczegóły",
+    "off": "Wyłączony",
+    "on": "Włączony",
+    "no": "nie",
+    "yes": "tak"
+  },
+  "apiErrors": {
+    "unknown": "Wystąpił błąd żadania",
+    "400": "Nieprawidłowe żądanie",
+    "401": "Brak autoryzacji",
+    "403": "Brak dostępu",
+    "404": "Nie znaleziono zasobu",
+    "500": "Błąd serwera"
+  },
+  "stream": {
+    "pageTitle": "Podgląd kamery",
+    "offline": "Kamera jest offline"
+  },
+  "dashboard": {
+    "pageTitle": "Panel główny"
   }
 }

@@ -1,15 +1,36 @@
 "use client";
 
-export default function Stream({ deviceId }: { deviceId: string }) {
-  const streamUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}${deviceId}/stream`;
+import { useState } from "react";
+import styles from '@/app/components/stream/StreamStyle.module.scss';
+
+type Props = {
+  deviceId: string;
+  dict: {
+    pageTitle: string;
+    offline: string;
+  };
+};
+
+export default function Stream({ deviceId, dict }: Props) {
+  const streamUrl = `/api/stream/${deviceId}`;
+  const [isOffline, setIsOffline] = useState(false);
+
+  const handleError = () => {
+    setIsOffline(true);
+  };
 
   return (
-    <div style={{ width: "100%", height: "100vh", backgroundColor: "black" }}>
-      <img
-        src={streamUrl}
-        alt="Stream"
-        style={{ width: "100%", height: "100%", objectFit: "contain" }}
-      />
+    <div className={styles.streamBox}>
+      {isOffline ? (
+        <span>{dict.offline}</span>
+      ) : (
+        <img
+          className={styles.stream}
+          src={streamUrl}
+          alt="Stream"
+          onError={handleError}
+        />
+      )}
     </div>
   );
 }
