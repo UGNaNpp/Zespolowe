@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import NavBar from './NavBar';
+import NavBar from '@/app/components/navbar/NavBar';
 import '@testing-library/jest-dom';
 
 // TODO - POPRAWIC TEN TEST

@@ -60,7 +60,7 @@ export async function apiRequest<T>({
         } else if (serverMsg) {
           errorMessage = serverMsg;
         } else {
-          errorMessage = `Błąd ${status}`;
+          errorMessage = `Error ${status}`;
         }
       }
     }

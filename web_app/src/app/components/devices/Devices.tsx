@@ -2,14 +2,28 @@
 
 import { useEffect, useState } from "react";
 import { apiRequest } from "@/app/api/axios/apiRequest";
-import { Device } from "../../../types/device";
-import styles from "./devicesStyle.module.scss";
+import { Device } from "@/types/device";
+import styles from "@/app/components/devices/devicesStyle.module.scss";
 import Link from "next/link";
 import { ErrorToast } from "@/app/components/errorToast/ErrorToast";
 
 type Props = {
   dict: {
+    pageTitle: string;
     title: string;
+    search: string;
+    sort: string;
+    addNew: string;
+    ip: string;
+    mac: string;
+    resolution: string;
+    recordingMode: string;
+    recordingVideo: string;
+    details: string;
+    off: string;
+    on: string;
+    no: string;
+    yes: string;
   };
   ApiErrorsDict: {
     "unknown": string;
@@ -83,13 +97,13 @@ export default function Devices({ dict, ApiErrorsDict }: Props) {
             <div className={styles.controls_left}>
               <input
                 type="text"
-                placeholder="Szukaj urządzenia..."
+                placeholder={dict.search}
                 value={searchTerm}
                 onChange={handleSearchChange}
               />
               <button onClick={toggleSortOrder}>
                 <span>
-                  Sortuj
+                  {dict.sort}
                 </span>
                 <i className={
                     sortOrder === "asc"
@@ -104,7 +118,7 @@ export default function Devices({ dict, ApiErrorsDict }: Props) {
                   setToastMessage("Funkcja dodawania jeszcze niegotowa");
                   setShowToast(true);
                 }}>
-                Dodaj nowe urządzenie
+                {dict.addNew}
               </button>
             </div>
           </div>
@@ -129,26 +143,26 @@ export default function Devices({ dict, ApiErrorsDict }: Props) {
                   }`}
                 >
                   <p>
-                    <strong>IP:</strong> {device.AssociatedIP}
+                    <strong>{dict.ip}:</strong> {device.AssociatedIP}
                   </p>
                   <p>
-                    <strong>MAC:</strong> {device.AssociatedMAC}
+                    <strong>{dict.mac}:</strong> {device.AssociatedMAC}
                   </p>
                   <p>
-                    <strong>Resolution:</strong>{" "}
-                    {device.widthResolution}x{device.heightResolution}
+                    <strong>{dict.resolution}:</strong>{" "}
+                    {device.widthResolution}x{device.heightResolution} px
                   </p>
                   <p>
-                    <strong>Recording Mode:</strong>{" "}
-                    {device.recordingMode ? "On" : "Off"}
+                    <strong>{dict.recordingMode}:</strong>{" "}
+                    {device.recordingMode ? dict.on : dict.off}
                   </p>
                   <p>
-                    <strong>Recording Video:</strong>{" "}
-                    {device.recordingVideo ? "Yes" : "No"}
+                    <strong>{dict.recordingVideo}:</strong>{" "}
+                    {device.recordingVideo ? dict.yes : dict.no}
                   </p>
                   <p className={styles.buttonParagrapgh}>
                     <Link href={`/stream/${device.id}`}>
-                      <button className={styles.streamButton}>Zobacz podgląd</button>
+                      <button className={styles.streamButton}>{dict.details}</button>
                     </Link>
                   </p>
                 </div>

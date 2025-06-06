@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import styles from "./errorToastStyle.module.scss";
+import styles from "@/app/components/errorToast/errorToastStyle.module.scss";
 
 type ErrorToastProps = {
   message: string;
