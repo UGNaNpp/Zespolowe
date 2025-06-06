@@ -12,13 +12,13 @@ public class User implements Serializable {
     private final String login; // Jest niezmienny dla githuba
     private final String name; // Można zmieniać w githubie
     private final Date addedDate; // data przydzielenia uprawnień do systemu
-
     private static final ObjectMapper mapper = new ObjectMapper();
 
     public User (int githubId, String avatarUrl,String githubLogin, String name) {
         this.githubId = githubId;
         this.avatarUrl = avatarUrl;
         this.login = githubLogin;
+        this.name = name;
         this.addedDate = new Date();
     }
 
