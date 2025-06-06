@@ -1,6 +1,7 @@
 package org.server.user;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import jakarta.annotation.PostConstruct;
@@ -8,13 +9,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class UserService {
-    private static final String USERS_FILE = "users.json";
+    @Value("${filepath.users}")
+    private String USERS_FILE;
+
     private final ObjectMapper objectMapper;
     private List<User> users;
 
@@ -34,7 +34,7 @@ public class UserService {
             users = new ArrayList<>();
         } else {
             users = readUsersFromFile();
-            System.out.print("Loaded users: ");
+            System.out.print("Loaded users:\n");
             for (User user : users) {
                 System.out.print(user.toJson());
             }
@@ -45,6 +45,7 @@ public class UserService {
         try {
             return objectMapper.readValue(new File(USERS_FILE), objectMapper.getTypeFactory().constructCollectionType(List.class, User.class));
         } catch (IOException e) {
+            System.out.println("Error reading users file");
             return new ArrayList<>();
         }
     }
@@ -57,47 +58,19 @@ public class UserService {
         }
     }
 
-    public String registerUser(User newUser) {
+    public void registerUser(User newUser) {
         if (users.stream().anyMatch(user -> user.getEmail().equals(newUser.getEmail()))) {
-
-
-
-
             throw new IllegalArgumentException("Email already registered");
         } else if (users.stream().anyMatch(user -> user.getGithubId() == newUser.getGithubId())) {
             throw new IllegalArgumentException("Username already registered");
         }
-
         users.add(newUser);
         writeUsersToFile(users);
-
-        return newUser.toJson();
     }
 
     public boolean validateUser(int githubId) {
         return users.stream()
-                .filter(user -> user.getGithubId() == githubId)
-                .findFirst()
-                .isPresent();
+                .anyMatch(user -> user.getGithubId() == githubId);
     }
 
-//    public void deleteUser(Long userId) {
-//        Optional<User> userOptional = users.stream().filter(user -> user.getUserId() == userId).findFirst();
-//
-//        if (userOptional.isPresent()) {
-//            users = users.stream()
-//                    .filter(user -> user.getUserId() != userId)
-//                    .collect(Collectors.toList());
-//            writeUsersToFile(users);
-//        } else {
-//            throw new NoSuchElementException("User not found");
-//        }
-//    }
-
-//    public User handleOauth2Login (int githubId) {
-//    }
-
-//    public User handleOauth2Login () {
-        //TOdo czy my chcemy mieć obiekty usera?
-//    }
 }

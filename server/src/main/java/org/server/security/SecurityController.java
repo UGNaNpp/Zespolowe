@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.server.user.User;
+import org.server.user.UserService;
 import org.server.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -15,18 +17,20 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpResponse;
-import java.util.Arrays;
+import java.util.Iterator;
 
 @RestController
 @RequestMapping("/api/security")
 public class SecurityController {
     @Value("${front.mainPageUrl}")
     private String frontMainPage;
+    private final UserService userService;
 
     private final JwtUtil jwtUtil;
 
-    public SecurityController(JwtUtil jwtUtil) {
+    public SecurityController(JwtUtil jwtUtil, UserService userService) {
         this.jwtUtil = jwtUtil;
+        this.userService = userService;
     }
 
 
@@ -49,13 +53,29 @@ public class SecurityController {
                 ObjectMapper mapper = new ObjectMapper();
                 JsonNode node = mapper.readTree(ghResponse.body());
 
-                int id = node.get("id").asInt();
-                System.out.println("User GitHub id: " + id);
+                int gitHubId = node.get("id").asInt();
+                System.out.println("User GitHub id: " + gitHubId);
 
-                response.addCookie(jwtUtil.generateJwtHttpCookie(token));
-                return ResponseEntity.status(HttpStatus.OK)
-                        .header(HttpHeaders.LOCATION, frontMainPage)
-                        .build();
+                Iterator<String> fieldNames = node.fieldNames();
+                while (fieldNames.hasNext()) {
+                    String fieldName = fieldNames.next();
+                    System.out.println(fieldName + " " + node.get(fieldName));
+                    }
+
+                if (userService.validateUser(gitHubId)) {
+                    response.addCookie(jwtUtil.generateJwtHttpCookie(token));
+                    return ResponseEntity.status(HttpStatus.OK)
+                            .header(HttpHeaders.LOCATION, frontMainPage)
+                            .build();
+                } else {
+                    User user = new User(gitHubId, node.get("email").asText(), node.get("login").asText());
+                    System.out.println(user.toJson());
+                    userService.registerUser(user);
+                    return ResponseEntity
+                            .status(HttpStatus.UNAUTHORIZED)
+                            .body("User does not exist in our system");
+                }
+
             } else {
                 return new ResponseEntity<>("Incorrect GitHub Token", HttpStatus.UNAUTHORIZED);
             }
@@ -66,7 +86,7 @@ public class SecurityController {
     }
 
     @GetMapping("/delete-token")
-    public ResponseEntity<String> deleteJWTToken(HttpServletRequest request, HttpServletResponse response) throws URISyntaxException, IOException, InterruptedException {
+    public ResponseEntity<String> deleteJWTToken(HttpServletResponse response) {
         Cookie cookie = new Cookie("jwt", "");
         cookie.setMaxAge(0);
         cookie.setSecure(false);
