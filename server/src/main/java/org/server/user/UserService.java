@@ -28,6 +28,7 @@ public class UserService {
         if (!usersFile.exists()) {
             try {
                 usersFile.createNewFile();
+                System.out.println("Users file not found, creating new one");
             } catch (IOException e) {
                 throw new RuntimeException("Error creating users file", e);
             }
@@ -59,8 +60,8 @@ public class UserService {
     }
 
     public void registerUser(User newUser) {
-        if (users.stream().anyMatch(user -> user.getEmail().equals(newUser.getEmail()))) {
-            throw new IllegalArgumentException("Email already registered");
+        if (users.stream().anyMatch(user -> user.getLogin().equals(newUser.getLogin()))) {
+            throw new IllegalArgumentException("Login already registered");
         } else if (users.stream().anyMatch(user -> user.getGithubId() == newUser.getGithubId())) {
             throw new IllegalArgumentException("Username already registered");
         }

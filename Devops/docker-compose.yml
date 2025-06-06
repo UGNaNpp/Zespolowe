@@ -5,7 +5,7 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - "C:/Users/kopcz/IdeaProjects/Zespolowe/server/src/main/resources:/app/data"
+      - "C:/Users/kopcz/IdeaProjects/Zespolowe/server/src/main/resources/dev_configs:/app/data"
 
     env_file:
       - ../server/.env

@@ -56,19 +56,14 @@ public class SecurityController {
                 int gitHubId = node.get("id").asInt();
                 System.out.println("User GitHub id: " + gitHubId);
 
-                Iterator<String> fieldNames = node.fieldNames();
-                while (fieldNames.hasNext()) {
-                    String fieldName = fieldNames.next();
-                    System.out.println(fieldName + " " + node.get(fieldName));
-                    }
-
                 if (userService.validateUser(gitHubId)) {
                     response.addCookie(jwtUtil.generateJwtHttpCookie(token));
                     return ResponseEntity.status(HttpStatus.OK)
                             .header(HttpHeaders.LOCATION, frontMainPage)
                             .build();
-                } else {
-                    User user = new User(gitHubId, node.get("email").asText(), node.get("login").asText());
+                } else { // To tylko testowe podejście.
+                    User user = new User(gitHubId, node.get("avatar_url").asText(), node.get("login").asText(),
+                            node.get("name").asText());
                     System.out.println(user.toJson());
                     userService.registerUser(user);
                     return ResponseEntity
