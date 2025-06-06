@@ -26,6 +26,7 @@ public class ServerApplication {
         String frontUrl = System.getenv("FRONT_URL");
         String devicesJsonFilepath = System.getenv("DEVICES_JSON_FILEPATH");
         String usersJsonFilepath = System.getenv("USERS_FILEPATH");
+        String mediaFolderFilepath = System.getenv("MEDIA_FOLDER");
 
 
         if (jwtSecret == null || timeZone == null || jwtExpiration == null || frontUrl == null
@@ -39,6 +40,7 @@ public class ServerApplication {
             if (frontUrl == null) System.setProperty("FRONT_URL", dotenv.get("FRONT_URL"));
             if (devicesJsonFilepath == null) System.setProperty("DEVICES_JSON_FILEPATH", dotenv.get("DEVICES_JSON_FILEPATH"));
             if (usersJsonFilepath == null) System.setProperty("USERS_FILEPATH", dotenv.get("USERS_FILEPATH"));
+            if (mediaFolderFilepath == null) System.setProperty("MEDIA_FOLDER", dotenv.get("MEDIA_FOLDER"));
         } else {
             System.setProperty("JWT_SECRET", jwtSecret);
             System.setProperty("TIME_ZONE", timeZone);
@@ -46,6 +48,7 @@ public class ServerApplication {
             System.setProperty("FRONT_URL", frontUrl);
             System.setProperty("DEVICES_JSON_FILEPATH", devicesJsonFilepath);
             System.setProperty("USERS_FILEPATH", usersJsonFilepath);
+            System.setProperty("MEDIA_FOLDER", mediaFolderFilepath);
         }
 
         SpringApplication.run(ServerApplication.class, args);
