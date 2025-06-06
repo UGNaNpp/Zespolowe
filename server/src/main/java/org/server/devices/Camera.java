@@ -42,6 +42,10 @@ public class Camera extends Device {
     public boolean recordingMode = false;
     public boolean recordingVideo = false;
 
+    public  Camera(StreamProvider streamProvider) {
+        this.streamProvider = streamProvider;
+    }
+
     public void newTransmission(Byte[] transmission) {
 
         streamProvider.newFrame(this.id, transmission);
