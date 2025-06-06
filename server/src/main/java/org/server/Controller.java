@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -116,5 +117,13 @@ public class Controller {
         }
 
         return ResponseEntity.ok(resultMap);
+    }
+
+    @GetMapping("/avaible-disk-space")
+    public ResponseEntity<Long> avaibleDiskSpace() {
+        File f = new File("./tmp");
+        long size = f.getFreeSpace();
+        System.out.println("Available disk space: " + size);
+        return new ResponseEntity<>(size, HttpStatus.OK);
     }
 }
