@@ -6,16 +6,24 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
+import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.stereotype.Component;
 
 @Component
 public class DeviceMapper {
     private final HashMap<String, Device> deviceIPMap;
     private final TreeMap<Long, Device> deviceIDMap;
+
+    @Autowired
+    private AutowireCapableBeanFactory autowireCapableBeanFactory;
 
     @Value("${filepath.devices}")
     private String devicesConfigFilepath;
@@ -28,14 +36,15 @@ public class DeviceMapper {
 
     @PostConstruct
     public void init() {
-        loadDevicesFromJson();
+        //loadDevicesFromJson();
     }
 
-    private void loadDevicesFromJson() {
+    public void loadDevicesFromJson() {
         ObjectMapper objectMapper = new ObjectMapper();
         try (InputStream inputStream = new FileInputStream(devicesConfigFilepath)) {
             List<Camera> devices = objectMapper.readValue(inputStream, new TypeReference<List<Camera>>() {});
             for (Camera device : devices) {
+                autowireCapableBeanFactory.autowireBean(device);
                 addDeviceByIP(device.AssociatedIP, device);
             }
             System.out.println("Devices successfully loaded: " + deviceIPMap);

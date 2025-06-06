@@ -1,5 +1,6 @@
 package org.server;
 
+import jakarta.servlet.http.HttpServletResponse;
 import org.server.devices.DeviceMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,11 +25,17 @@ public class Controller {
 
     @GetMapping(
             value = "/{id}/stream",
-            produces = "multipart/x-mixed-replace;boundary=frame")
+            produces = "multipart/x-mixed-replace;boundary=frame12344321")
     public ResponseEntity<StreamingResponseBody> cameraStream(
-            @PathVariable("id") Long id
-    ) {
-        if (deviceMapper.getDeviceByID(id).whatAmI() == 0) {
+            @PathVariable("id") Long id,
+            HttpServletResponse response
+               ) {
+        response.setContentType("multipart/x-mixed-replace;boundary=frame12344321");
+        response.setHeader("Connection", "keep-alive");
+
+        int k = deviceMapper.getDeviceByID(id).whatAmI();
+
+        if (k != 0) {
             ResponseEntity.badRequest().body("Device is not camera");
         }
 
@@ -45,10 +52,11 @@ public class Controller {
                             frameData[i] = frame[i];
                         }
 
-                        outputStream.write(("--frame\r\n").getBytes());
-                        outputStream.write(("Content-Type: image/jpeg Content-Length: " + frame.length + "\r\n").getBytes());
+
+                        outputStream.write(("Content-Type: image/jpeg Content-Length: " + frame.length + "\r\n\r\n").getBytes());
                         outputStream.write(frameData);
-                        outputStream.write("\r\n".getBytes());
+                        outputStream.write(("\r\n--frame12344321\r\n").getBytes());
+                        //outputStream.write("\r\n".getBytes());
 
                         outputStream.flush();
                     } catch (IOException ioException) {
