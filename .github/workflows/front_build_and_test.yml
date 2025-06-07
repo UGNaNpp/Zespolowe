@@ -75,6 +75,7 @@ jobs:
 
       - name: Get Version and Commit Hash
         id: vars
+        working-directory: ./web_app
         run: |
           VERSION=$(node -p "require('./package.json').version")
           COMMIT=$(git rev-parse --short HEAD)
