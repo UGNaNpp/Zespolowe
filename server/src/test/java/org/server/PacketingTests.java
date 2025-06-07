@@ -26,7 +26,7 @@ import static reactor.core.publisher.Mono.when;
 
 @ExtendWith(MockitoExtension.class)
 public class PacketingTests {
-    @Mock
+    @Mock(lenient = true)
     private StreamProvider streamProvider;
 
     @InjectMocks
@@ -35,7 +35,7 @@ public class PacketingTests {
     @BeforeEach
     public void setup()
     {
-        //streamProvider = Mockito.mock(StreamProvider.class);
+//        streamProvider = Mockito.mock(StreamProvider.class);
     }
 
     @Test
@@ -189,13 +189,13 @@ public class PacketingTests {
             Byte[] frame = (Byte[]) invocation.getArguments()[1];
 
             assertEquals(frame.length, packetsPayloadCombined.length);
-            //assertArrayEquals(frame, packetsPayloadCombined);
+//            assertArrayEquals(frame, packetsPayloadCombined);
 
             return null;
         }).when(streamProvider).newFrame(anyLong(),any(Byte[].class));
 
         cam.newPacket(ArrayUtils.toPrimitive(packet0));
         cam.newPacket(ArrayUtils.toPrimitive(packet2));
-        //cam.newPacket(ArrayUtils.toPrimitive(packet1));
+//        cam.newPacket(ArrayUtils.toPrimitive(packet1));
     }
 }

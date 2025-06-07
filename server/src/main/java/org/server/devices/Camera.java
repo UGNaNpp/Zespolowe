@@ -5,11 +5,15 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.server.StreamProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
+
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
+
+
 
 import static java.util.Arrays.stream;
 import static org.server.UDPConfig.UDP_PREHEADER_INFO_SIZE;
@@ -36,11 +40,18 @@ import static org.server.UDPConfig.UDP_PREHEADER_INFO_SIZE;
 public class Camera extends Device {
     @Autowired
     private StreamProvider streamProvider;
+
+
+
     protected PacketAccumulator packetAccumulator = new PacketAccumulator();
     protected int heightResolution = -1;
     protected int widthResolution = -1;
     public boolean recordingMode = false;
     public boolean recordingVideo = false;
+
+    public  Camera(StreamProvider streamProvider) {
+        this.streamProvider = streamProvider;
+    }
 
     public void newTransmission(Byte[] transmission) {
 

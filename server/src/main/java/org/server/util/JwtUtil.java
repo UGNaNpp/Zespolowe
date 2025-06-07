@@ -48,7 +48,7 @@ public class JwtUtil {
                     .parseClaimsJws(token);
             return true;
         } catch (JwtException e) {
-            throw new IllegalArgumentException("Invalid JWT token");
+            return false;
         }
     }
 

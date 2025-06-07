@@ -1,17 +1,20 @@
 package org.server.devices;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -20,6 +23,12 @@ public class DeviceMapper {
     private final TreeMap<Long, Device> deviceIDMap;
 
     @Autowired
+    private AutowireCapableBeanFactory autowireCapableBeanFactory;
+
+    @Value("${filepath.devices}")
+    private String devicesConfigFilepath;
+
+//    @Autowired
     public DeviceMapper() {
         deviceIPMap = new HashMap<>();
         deviceIDMap = new TreeMap<>();
@@ -27,14 +36,15 @@ public class DeviceMapper {
 
     @PostConstruct
     public void init() {
-        loadDevicesFromJson();
+        //loadDevicesFromJson();
     }
 
-    private void loadDevicesFromJson() {
+    public void loadDevicesFromJson() {
         ObjectMapper objectMapper = new ObjectMapper();
-        try (InputStream inputStream = getClass().getResourceAsStream("/devices.json")) {
+        try (InputStream inputStream = new FileInputStream(devicesConfigFilepath)) {
             List<Camera> devices = objectMapper.readValue(inputStream, new TypeReference<List<Camera>>() {});
             for (Camera device : devices) {
+                autowireCapableBeanFactory.autowireBean(device);
                 addDeviceByIP(device.AssociatedIP, device);
             }
             System.out.println("Devices successfully loaded: " + deviceIPMap);
@@ -63,6 +73,11 @@ public class DeviceMapper {
     public Map<Long, Device> getAllDevices() {
         return this.deviceIDMap;
     }
+
+    public Long[] getAllCamerasIDs() {return deviceIDMap.entrySet().stream()
+            .filter(entry -> entry.getValue().whatAmI() == 1)
+            .map(Map.Entry::getKey)
+            .toArray(Long[]::new);}
 
 
     public Device getDeviceByIP(String ipv4) {
