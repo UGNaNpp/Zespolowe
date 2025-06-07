@@ -24,6 +24,7 @@ export default function Stream({ deviceId, dict }: Props) {
       {isOffline ? (
         <span>{dict.offline}</span>
       ) : (
+        // eslint-disable-next-line @next/next/no-img-element
         <img
           className={styles.stream}
           src={streamUrl}

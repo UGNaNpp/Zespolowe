@@ -1,11 +1,9 @@
 services:
-  cams-frontend:
-    build:
-      context: ../../web_app/
-      dockerfile: Dockerfile
-    container_name: cams_frontend
-    environment:
-      - ...
-      - ...
+  app:
+    image: my-nextjs-app:latest
+    env_file:
+      - .env
     ports:
-      - 
+      - "3000:3000"
+    volumes:
+      - .:/app

@@ -61,6 +61,8 @@ export default function Devices({ dict, ApiErrorsDict }: Props) {
     }).finally(() => {
       setLoading(false);
     });
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const toggleExpand = (id: number) => {

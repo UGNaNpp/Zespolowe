@@ -2,8 +2,11 @@ import Devices from '@/app/components/devices/Devices';
 import { getDictionary } from "@/app/[lang]/dictionaries";
 import NavBar from '@/app/components/navbar/NavBar';
 import styles from '@/app/[lang]/devices/devicesPageStyle.module.scss';
+import type { Props } from '@/types/routeParams';
+import type { Metadata } from 'next';
 
-export async function generateMetadata({ params }: { params: { lang: 'en' | 'pl' } }): Promise<Metadata> {
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const resolvedParams = await params;
   const dict = await getDictionary(resolvedParams.lang);
 
@@ -12,7 +15,7 @@ export async function generateMetadata({ params }: { params: { lang: 'en' | 'pl'
   };
 }
 
-export default async function LoginPage({ params }: { params: Promise<{ lang: 'en' | 'pl' }> }) {
+export default async function LoginPage({ params }: Props) {
   const { lang } = await params
   const dict = await getDictionary(lang)
 

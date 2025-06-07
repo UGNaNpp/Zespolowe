@@ -1,24 +1,38 @@
-### TODO: Rozbudowac to w przyszlosci
-
 name: Front-end CICD
 
 on:
   push:
-    # branches:
-    #   - main
   pull_request:
 
 jobs:
+  lint:
+    name: Run Linter
+    runs-on: ubuntu-latest
+    container:
+      image: node:23-alpine3.20
+    steps:
+      - uses: actions/checkout@v4.2.2
+      - working-directory: ./web_app
+        run: |
+          npm ci
+          npm run lint
+
   build:
     name: Build App
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request' # Jesli ktos chce przetestowac budowanie to zakomentowac cala linie
+    if: github.event_name == 'pull_request' || github.ref == 'refs/heads/main'
     container:
       image: node:23-alpine3.20
 
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4.2.2
+
+      - name: Run Linter
+        working-directory: ./web_app
+        run: |
+          npm ci
+          npm run lint
 
       - name: Build without Tests
         working-directory: ./web_app
@@ -71,11 +85,16 @@ jobs:
           username: ${{ env.DOCKERHUB_USERNAME }}
           password: ${{ env.DOCKERHUB_TOKEN }}
 
-      # TODO: DODAC W PROJEKCIE PRINT WERSJI
       - name: Get Version and Commit Hash
         id: vars
+        working-directory: ./web_app
         run: |
-          echo "COMMIT=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+          VERSION=$(node -p "require('./package.json').version")
+          COMMIT=$(git rev-parse --short HEAD)
+          IMAGE_TAG="${VERSION}.${COMMIT}"
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "COMMIT=$COMMIT" >> $GITHUB_ENV
+          echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
 
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v6.15.0
@@ -84,5 +103,5 @@ jobs:
           file: ./web_app/Dockerfile
           push: true
           tags: |
-            ${{ env.DOCKERHUB_USERNAME }}/s_cameras_front:${{ env.VERSION }}.${{ env.COMMIT }}
+            ${{ env.DOCKERHUB_USERNAME }}/s_cameras_front:${{ env.IMAGE_TAG }}
             ${{ env.DOCKERHUB_USERNAME }}/s_cameras_front:latest

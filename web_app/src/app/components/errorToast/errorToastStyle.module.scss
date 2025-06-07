@@ -1,0 +1,35 @@
+@import '@/app/_variables.scss';
+
+@keyframes fade-in-out {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  10% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  90% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+}
+
+.error_toast {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100vw;
+  background-color: #dc2626;
+  padding: 16px 24px;
+  border-radius: 0;
+  box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.2);
+  z-index: 9999;
+  animation: fade-in-out 5s ease-in-out forwards;
+  font-family: sans-serif;
+  text-align: center;
+}
