@@ -20,7 +20,7 @@ jobs:
   build:
     name: Build App
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request' || github.ref == 'refs/heads/main'
+    # if: github.event_name == 'pull_request' || github.ref == 'refs/heads/main'
     container:
       image: node:23-alpine3.20
 
@@ -63,7 +63,7 @@ jobs:
     name: Build & Push Docker Image
     runs-on: ubuntu-latest
     needs: [build, test]
-    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev-main'
+    # if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev-main'
 
     env:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
@@ -95,7 +95,9 @@ jobs:
         with:
           context: ./web_app
           file: ./web_app/Dockerfile
-          push: true
+          # push: true
+          build-args: |
+            BUILD_VERSION=${{ env.IMAGE_TAG }}
           tags: |
             ${{ env.DOCKERHUB_USERNAME }}/s_cameras_front:${{ env.IMAGE_TAG }}
             ${{ env.DOCKERHUB_USERNAME }}/s_cameras_front:latest
