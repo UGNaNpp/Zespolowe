@@ -175,6 +175,14 @@
             <scope>provided</scope>
         </dependency>
 
+
+<!-- https://mvnrepository.com/artifact/org.bytedeco/javacv -->
+<dependency>
+    <groupId>org.bytedeco</groupId>
+    <artifactId>javacv</artifactId>
+    <version>1.5.11</version>
+</dependency>
+
     </dependencies>
 
     <build>

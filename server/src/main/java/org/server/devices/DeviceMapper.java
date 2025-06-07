@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 
+import org.server.StreamProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
@@ -27,7 +28,6 @@ public class DeviceMapper {
 
     @Value("${filepath.devices}")
     private String devicesConfigFilepath;
-
 //    @Autowired
     public DeviceMapper() {
         deviceIPMap = new HashMap<>();
@@ -36,7 +36,8 @@ public class DeviceMapper {
 
     @PostConstruct
     public void init() {
-        //loadDevicesFromJson();
+//        loadDevicesFromJson();
+        addMockedCameras();
     }
 
     public void loadDevicesFromJson() {
@@ -52,6 +53,12 @@ public class DeviceMapper {
             e.printStackTrace();
             throw new RuntimeException("Failed to load devices from JSON", e);
         }
+    }
+
+    public void addMockedCameras() {
+        MockCamera camera = new MockCamera(15L, "src/main/resources/video/tiktok.mp4");
+        addDeviceByIP(camera.AssociatedIP, camera);
+        camera.startMockStreaming(5);
     }
 
     public void addDeviceByIP(String ipv4, Device device) {

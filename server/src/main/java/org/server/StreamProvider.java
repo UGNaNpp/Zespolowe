@@ -102,8 +102,6 @@ public class StreamProvider {
             );
         }
 
-
-
         // Return the CompletableFuture with a timeout applied.
         return lastFrames.get(deviceID).getRight();
     }
