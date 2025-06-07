@@ -24,8 +24,6 @@ public class StreamProvider {
             <Long,Pair<Long, CompletableFuture<Byte[]>>>();
 
     public synchronized void newFrame(Long deviceID, Byte[] frame) {
-        long newFrameTime = System.currentTimeMillis(); // Assuming frame ID is a timestamp or unique value.
-
         Pair<Long, CompletableFuture<Byte[]>> currentPair = lastFrames.get(deviceID);
 
         if(currentPair == null) {       // nikt nie czeka na to
@@ -36,25 +34,21 @@ public class StreamProvider {
 
         if(!future.isDone()) {
             future.complete(frame);
-
-            String FILEPATH = "test.jpeg";
+            // Zapis klatki do pliku
+            String FILEPATH = "tmp/test" + System.currentTimeMillis() + ".jpeg";
             File file = new File(FILEPATH);
-
             try {
-
                 // Initialize a pointer in file
                 // using OutputStream
                 OutputStream os = new FileOutputStream(file);
-
                 // Starting writing the bytes in it
                 os.write(ArrayUtils.toPrimitive(frame));
-
                 // Display message onconsole for successful
                 // execution
 //                System.out.println("Successfully byte inserted");
-
                 // Close the file connections
                 os.close();
+                System.out.println("Image saved to " + file.getAbsolutePath());
             }
 
             // Catch block to handle the exceptions

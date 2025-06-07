@@ -23,6 +23,7 @@ public class MockCamera extends Camera {
         this.name = "mock";
         this.AssociatedIP = AssociatedIP;
         this.AssociatedMAC = AssociatedMAC;
+        this.recordingMode = true;
     }
 
     public void startMockStreaming(int fps) {

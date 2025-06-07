@@ -28,6 +28,8 @@ public class DeviceMapper {
 
     @Value("${filepath.devices}")
     private String devicesConfigFilepath;
+    @Autowired
+    private StreamProvider streamProvider;
 
     //    @Autowired
     public DeviceMapper() {
@@ -76,6 +78,12 @@ public class DeviceMapper {
         {
             deviceIDMap.put(0L, device);
         }
+
+        if (device instanceof Camera camera && camera.isRecordingMode()) {
+            System.out.println("Camera is recording");
+            this.streamProvider.getLastFrame(device.id);
+        }
+
     }
 
 
