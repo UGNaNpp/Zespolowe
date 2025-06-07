@@ -5,6 +5,18 @@ on:
   pull_request:
 
 jobs:
+  lint:
+    name: Run Linter
+    runs-on: ubuntu-latest
+    container:
+      image: node:23-alpine3.20
+    steps:
+      - uses: actions/checkout@v4.2.2
+      - working-directory: ./web_app
+        run: |
+          npm ci
+          npm run lint
+
   build:
     name: Build App
     runs-on: ubuntu-latest
@@ -75,6 +87,7 @@ jobs:
 
       - name: Get Version and Commit Hash
         id: vars
+        working-directory: ./web_app
         run: |
           VERSION=$(node -p "require('./package.json').version")
           COMMIT=$(git rev-parse --short HEAD)
