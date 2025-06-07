@@ -4,28 +4,34 @@ import org.bytedeco.javacv.FFmpegFrameGrabber;
 import org.bytedeco.javacv.Java2DFrameConverter;
 
 import org.server.StreamProvider;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.io.File;
+
 
 public class MockCamera extends Camera {
-
     private final String videoPath;
 
-    public MockCamera(long id, String videoPath) {
+    public MockCamera(long id, String videoPath, String AssociatedIP, String AssociatedMAC) {
         this.id = id;
         this.videoPath = videoPath;
         this.name = "mock";
+        this.AssociatedIP = AssociatedIP;
+        this.AssociatedMAC = AssociatedMAC;
     }
 
     public void startMockStreaming(int fps) {
     Executors.newSingleThreadExecutor().submit(() -> {
         while (!Thread.currentThread().isInterrupted()) {
+                System.out.println("Mocked camera video exists? " + new File(videoPath).exists());
             try (FFmpegFrameGrabber grabber = new FFmpegFrameGrabber(videoPath)) {
                 grabber.start();
+
                 Java2DFrameConverter converter = new Java2DFrameConverter();
 
                 long frameDelay = 1000L / fps;
@@ -52,14 +58,13 @@ public class MockCamera extends Camera {
                     TimeUnit.MILLISECONDS.sleep(frameDelay);
                 }
 
-                grabber.stop(); // niepotrzebne z try-with-resources, ale nie zaszkodzi
+                grabber.stop();
             } catch (Exception e) {
                 e.printStackTrace();
-                break; // przerywamy zapętlanie, jeśli coś poszło źle
+                break;
             }
         }
     });
-
     }
 
     @Override
@@ -68,8 +73,23 @@ public class MockCamera extends Camera {
     }
 
     @Override
-    public void newTransmission(Byte[] transmission) {
-        // możesz np. zalogować info albo po prostu wywołać oryginalne zachowanie
-        super.newTransmission(transmission);
+    public final byte whatAmI() {
+        return 0;
+    }
+
+    @Override
+    public String toString() {
+        return "MockCamera{" +
+                "videoPath='" + videoPath + '\'' +
+                ", packetAccumulator=" + packetAccumulator +
+                ", heightResolution=" + heightResolution +
+                ", widthResolution=" + widthResolution +
+                ", recordingMode=" + recordingMode +
+                ", recordingVideo=" + recordingVideo +
+                ", id=" + id +
+                ", name='" + name + '\'' +
+                ", AssociatedIP='" + AssociatedIP + '\'' +
+                ", AssociatedMAC='" + AssociatedMAC + '\'' +
+                '}';
     }
 }

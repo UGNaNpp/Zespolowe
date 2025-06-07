@@ -57,7 +57,7 @@ public class ServerApplication {
     @Bean
     public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
         deviceMapper.loadDevicesFromJson();
-
+        deviceMapper.addMockedCameras();
         return args->{
 
         };

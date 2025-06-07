@@ -28,7 +28,8 @@ public class DeviceMapper {
 
     @Value("${filepath.devices}")
     private String devicesConfigFilepath;
-//    @Autowired
+
+    //    @Autowired
     public DeviceMapper() {
         deviceIPMap = new HashMap<>();
         deviceIDMap = new TreeMap<>();
@@ -37,7 +38,7 @@ public class DeviceMapper {
     @PostConstruct
     public void init() {
 //        loadDevicesFromJson();
-        addMockedCameras();
+//        addMockedCameras();
     }
 
     public void loadDevicesFromJson() {
@@ -56,9 +57,11 @@ public class DeviceMapper {
     }
 
     public void addMockedCameras() {
-        MockCamera camera = new MockCamera(15L, "src/main/resources/video/tiktok.mp4");
+        MockCamera camera = new MockCamera(15L, "src/main/resources/video/tiktok.mp4", "192.0.0.4", "00:00:00:00:00" +
+                ":00");
+        autowireCapableBeanFactory.autowireBean(camera);
         addDeviceByIP(camera.AssociatedIP, camera);
-        camera.startMockStreaming(5);
+        camera.startMockStreaming(30);
     }
 
     public void addDeviceByIP(String ipv4, Device device) {

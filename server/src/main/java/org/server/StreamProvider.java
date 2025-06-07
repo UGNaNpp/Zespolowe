@@ -20,9 +20,6 @@ import java.util.concurrent.TimeUnit;
 @Component("StreamProvider")
 public class StreamProvider {
 
-    @Autowired
-    private DeviceMapper deviceMapper;
-
     private ConcurrentHashMap<Long, Pair<Long, CompletableFuture<Byte[]>>> lastFrames = new ConcurrentHashMap
             <Long,Pair<Long, CompletableFuture<Byte[]>>>();
 
@@ -54,8 +51,7 @@ public class StreamProvider {
 
                 // Display message onconsole for successful
                 // execution
-                System.out.println("Successfully"
-                        + " byte inserted");
+//                System.out.println("Successfully byte inserted");
 
                 // Close the file connections
                 os.close();
