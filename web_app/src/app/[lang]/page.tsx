@@ -5,9 +5,9 @@ import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import api from "@/app/api/axios/axios";
 
-// JAK BEDZIE DZIALAL ENDPOINT DO USUWANIA URZADZEN TO DODAC
+// DODAC TUTAJ ZE JAK 401 - PRZEKIEROWANIE NA STRONE NA KTOREJ NAPIS ZE NIE MASZ DOSTEPU DO APLIKACJI
 
-export default function Home() {
+export default function HomePage() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const sentTokenRef = useRef(false);
