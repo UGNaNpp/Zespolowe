@@ -5,6 +5,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.server.StreamProvider;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,20 +83,31 @@ public class DeviceMapper {
         }
 
         if (device instanceof Camera camera && camera.isRecordingMode()) {
-            System.out.println("Camera is recording");
-            this.streamProvider.getLastFrame(device.id);
+            this.startRecording(camera);
         }
-
     }
 
-
+    private void startRecording(Camera camera) {
+        Thread.startVirtualThread(() -> {
+            while (true) {
+                try {
+                    this.streamProvider.getLastFrame(camera.id).get(); // blokujące pobranie ramki
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    break; // zakończ wątek jeśli zostanie przerwany
+                } catch (ExecutionException e) {
+                    e.printStackTrace(); // logowanie błędu z CompletableFuture
+                }
+            }
+        });
+    }
 
     public Map<Long, Device> getAllDevices() {
         return this.deviceIDMap;
     }
 
     public Long[] getAllCamerasIDs() {return deviceIDMap.entrySet().stream()
-            .filter(entry -> entry.getValue().whatAmI() == 1)
+            .filter(entry -> entry.getValue().whatAmI() == 0)
             .map(Map.Entry::getKey)
             .toArray(Long[]::new);}
 

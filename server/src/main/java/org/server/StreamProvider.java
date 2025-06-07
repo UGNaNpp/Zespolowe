@@ -48,7 +48,6 @@ public class StreamProvider {
 //                System.out.println("Successfully byte inserted");
                 // Close the file connections
                 os.close();
-                System.out.println("Image saved to " + file.getAbsolutePath());
             }
 
             // Catch block to handle the exceptions
