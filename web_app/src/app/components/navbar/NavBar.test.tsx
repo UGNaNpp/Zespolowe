@@ -28,11 +28,15 @@ describe('NavBar Component', () => {
   // });
 
   it('renders the title and subtitle links', () => {
-    render(<NavBar {...mockProps} />);
-    const titleLink = screen.getByText('Dashboard');
-    const subtitleLink = screen.getByText('Overview');
-    expect(titleLink).toBeInTheDocument();
+    const { container } = render(<NavBar {...mockProps} />);
+    
+    const dashboardLink = container.querySelector('a[href="/dashboard"]');
+    expect(dashboardLink).toBeInTheDocument();
+    expect(dashboardLink).toHaveTextContent('Dashboard');
+
+    const subtitleLink = container.querySelector('a[href="/dashboard/overview"]');
     expect(subtitleLink).toBeInTheDocument();
+    expect(subtitleLink).toHaveTextContent('Overview');
   });
 
   // it('toggles the menu when hamburger icon is clicked', () => {
