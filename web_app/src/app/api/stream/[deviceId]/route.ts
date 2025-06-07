@@ -1,7 +1,11 @@
-import { NextRequest } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
-export async function GET(req: NextRequest, { params }: { params: { deviceId: string } }) {
-  const backendStreamUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}${params.deviceId}/stream`;
+export async function GET(req: NextRequest) {
+  const { pathname } = req.nextUrl;
+  const parts = pathname.split('/');
+  const deviceId = parts[parts.length - 1]
+
+  const backendStreamUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}${deviceId}/stream`;
 
   const cookie = req.headers.get('cookie') || '';
 
@@ -12,10 +16,10 @@ export async function GET(req: NextRequest, { params }: { params: { deviceId: st
   });
 
   if (!response.ok || !response.body) {
-    return new Response('Stream error', { status: response.status });
+    return new NextResponse('Stream error', { status: response.status });
   }
 
-  return new Response(response.body, {
+  return new NextResponse(response.body, {
     headers: {
       'Content-Type': response.headers.get('Content-Type') ?? 'multipart/x-mixed-replace',
       'Cache-Control': 'no-cache',

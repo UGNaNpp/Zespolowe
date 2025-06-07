@@ -3,8 +3,18 @@ import { getDictionary } from "@/app/[lang]/dictionaries";
 import NavBar from "@/app/components/navbar/NavBar";
 import styles from '@/app/[lang]/stream/[deviceId]/streamPageStyle.module.scss';
 import type { Metadata } from 'next';
+import type { Lang } from '@/types/routeParams';
 
-export async function generateMetadata({ params }: { params: { lang: 'en' | 'pl' } }): Promise<Metadata> {
+type StreamParams = {
+  lang: Lang;
+  deviceId: string;
+};
+
+export type StreamProps = {
+  params: Promise<StreamParams>;
+};
+
+export async function generateMetadata({ params }: StreamProps): Promise<Metadata> {
   const resolvedParams = await params;
   const dict = await getDictionary(resolvedParams.lang);
 
@@ -13,7 +23,7 @@ export async function generateMetadata({ params }: { params: { lang: 'en' | 'pl'
   };
 }
 
-export default async function StreamPage({ params }: { params: Promise<{ lang: 'en' | 'pl'; deviceId: string }> }) {
+export default async function StreamPage({ params }: StreamProps) {
   const { lang, deviceId } = await params;
   const dict = await getDictionary(lang)
 
