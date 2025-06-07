@@ -1,16 +1,17 @@
+@import '@/app/_variables.scss';
+
 .main {
+  flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 100%;
 
   .menu {
     width: 50%;
     min-width: 60rem;
     min-height: 24rem;
-    background-color: #333;
+    background-color: $color-base-1;
     padding: 1rem;
-    border: 1px solid black;
     border-radius: 0.5rem;
 
     h2 {
@@ -18,15 +19,45 @@
     }
 
     .controls {
-      width: 100%;
-      margin-bottom: 1rem;
-      font-size: medium;
-
       display: flex;
 
       button {
-        font-size: medium;
-        font-weight: 700;
+        background-color: $color-gray;
+        padding: 0.4rem 0.5rem;
+        border-radius: 0.3rem;
+        border: 0;
+        span {
+          margin-right: 0.5rem;
+        }
+
+        &:hover {
+          background-color: $color-mid-dark-gray;
+        }
+      }
+
+      .controls_left {
+        width: 100%;
+        margin-bottom: 1rem;
+        display: flex;
+        gap: 1rem;
+
+        input {
+          border-radius: 0.3rem;
+          border: 1px solid $color-dark-gray;
+          padding: 0 0.5rem;
+          background-color: $color-mid-dark-gray;
+
+          &:focus {
+            // border: 1px solid red;
+            outline: 1px solid $color-base-2;
+          }
+        }
+      }
+
+      .controls_right {
+        button {
+          white-space: nowrap;
+        }
       }
     }
   }
@@ -40,18 +71,21 @@
 
     li {
       width: 100%;
-      background-color: #5e5e5e;
+      background-color: $color-mid-dark-gray;
       border-radius: 0.5rem;
 
       button {
         border: 0px solid;
-        background-color: #5e5e5e;
-        border-radius: 0.5rem;
+        background-color: $color-dark-gray;
+        border-radius: 0.3rem;
         padding: 0.5rem;
         width: 100%;
         display: flex;
         justify-content: space-between;
-        font-size: medium;
+
+        .deviceName {
+          font-size: medium;
+        }
       }
       
       .deviceDetails {
@@ -73,8 +107,8 @@
           justify-content: flex-end;
       
           button {
-            font-weight: 700;
-            background-color: #333;
+            background-color: $color-dark-gray;
+            padding: 0.4rem 0.5rem;
           }
         }
       }

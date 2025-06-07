@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Image from "next/image";
 import Link from "next/link";
-import styles from './NavBarStyle.module.scss';
+import styles from '@/app/components/navbar/NavBarStyle.module.scss';
 
 interface NavBarTitle {
   title: string;
@@ -12,7 +12,19 @@ interface NavBarTitle {
   subtitleUrl: string;
 }
 
-const NavBar: React.FC<NavBarTitle> = ({ title, titleUrl, subtitle, subtitleUrl }) => {
+type Props = NavBarTitle & {
+  dict: {
+    dashboard: string;
+    devices: string;
+    media: string;
+    notifications: string;
+    settings: string;
+    logout: string;
+    version: string;
+  };
+};
+
+const NavBar: React.FC<Props> = ({ title, titleUrl, subtitle, subtitleUrl, dict }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const openMenu = () => {
@@ -32,8 +44,8 @@ const NavBar: React.FC<NavBarTitle> = ({ title, titleUrl, subtitle, subtitleUrl 
             className={styles.logo}
             src="/logo.png"
             alt="SmartSecurity logo"
-            width={38}
-            height={38}
+            width={32}
+            height={32}
             priority
           />
         </Link>
@@ -63,13 +75,13 @@ const NavBar: React.FC<NavBarTitle> = ({ title, titleUrl, subtitle, subtitleUrl 
         <div className={styles.openMenuMain}>
           <div className={styles.openedMenuTop}>
             <div className={styles.logoAndHeader}>
-              <Link href="/">
+              <Link href="/dashboard">
                 <Image
                   className={styles.logo}
                   src="/logo.png"
                   alt="SmartSecurity logo"
-                  width={38}
-                  height={38}
+                  width={32}
+                  height={32}
                   priority
                 />
 
@@ -82,33 +94,33 @@ const NavBar: React.FC<NavBarTitle> = ({ title, titleUrl, subtitle, subtitleUrl 
           </div>
           <ul className={styles.menuList}>
             <li>
-              <Link href="/home">
+              <Link href="/dashboard">
                 <i className="fa-regular fa-bookmark"></i>
-                <span>Home</span>
+                <span>{dict.dashboard}</span>
               </Link>
             </li>
             <li>
               <Link href="/devices">
                 <i className="fa-regular fa-compass"></i>
-                <span>Devices</span>
+                <span>{dict.devices}</span>
               </Link>
             </li>
             <li>
               <Link href="/media">
                 <i className="fa-regular fa-folder-open"></i>
-                <span>Media</span>
+                <span>{dict.media}</span>
               </Link>
             </li>
             <li>
               <Link href="/notifications">
                 <i className="fa-regular fa-bell"></i>
-                <span>Notifications</span>
+                <span>{dict.notifications}</span>
               </Link>
             </li>
             <li>
               <Link href="/account">
-                <i className="fa-regular fa-circle-user"></i>
-                <span>Account</span>
+                <i className="fa-solid fa-gear"></i>
+                <span>{dict.settings}</span>
               </Link>
             </li>
           </ul>
@@ -117,12 +129,12 @@ const NavBar: React.FC<NavBarTitle> = ({ title, titleUrl, subtitle, subtitleUrl 
           <ul>
             <li>
               <Link href="/logout">
-                <i className="fa-regular fa-rectangle-xmark"></i>
-                <span>Logout</span>
+                <i className="fa-solid fa-arrow-right-from-bracket"></i>
+                <span>{dict.logout}</span>
               </Link>
             </li>
           </ul>
-          <span>App version: {appVersion}</span>
+          <span>{dict.version}: {appVersion}</span>
         </div>
       </div>
     </header>

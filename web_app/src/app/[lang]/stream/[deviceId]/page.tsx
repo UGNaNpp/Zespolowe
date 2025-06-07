@@ -1,11 +1,36 @@
-import Stream from "../../../components/stream/Stream";
+import Stream from "@/app/components/stream/Stream";
+import { getDictionary } from "@/app/[lang]/dictionaries";
+import NavBar from "@/app/components/navbar/NavBar";
+import styles from '@/app/[lang]/stream/[deviceId]/streamPageStyle.module.scss';
+import type { Metadata } from 'next';
+import type { Lang } from '@/types/routeParams';
 
-type Props = {
-  params: Promise<{ deviceId: string }>;
+type StreamParams = {
+  lang: Lang;
+  deviceId: string;
 };
 
-export default async function StreamPage({ params }: Props) {
-  const { deviceId } = await params;
+export type StreamProps = {
+  params: Promise<StreamParams>;
+};
 
-  return <Stream deviceId={deviceId} />;
+export async function generateMetadata({ params }: StreamProps): Promise<Metadata> {
+  const resolvedParams = await params;
+  const dict = await getDictionary(resolvedParams.lang);
+
+  return {
+    title: dict.stream.pageTitle
+  };
+}
+
+export default async function StreamPage({ params }: StreamProps) {
+  const { lang, deviceId } = await params;
+  const dict = await getDictionary(lang)
+
+  return(
+    <main className={styles.main}>
+      <NavBar title='Devices' titleUrl='/devices' subtitle='' subtitleUrl='' dict={dict.navBar} />
+      <Stream deviceId={deviceId} dict={dict.stream} />
+    </main>
+  );
 }

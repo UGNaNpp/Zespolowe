@@ -1,17 +1,48 @@
 {
   "login": {
-    "title": "Security cameras",
+    "pageTitle": "Log in",
+    "title": "Smart Security",
     "button": "Login with Github"
   },
-  "home": {
-    "home": "Home",
+  "navBar": {
+    "dashboard": "Dashboard",
     "devices": "Devices",
     "media": "Media",
     "notifications": "Notifications",
+    "settings": "Settings",
     "logout": "Logout",
     "version": "App version"
   },
   "devices": {
-    "title": "Devices"
+    "pageTitle": "Devices panel",
+    "title": "Devices",
+    "search": "Search devices...",
+    "sort": "Sort",
+    "addNew": "Add new device",
+    "ip": "IP address",
+    "mac": "MAC address",
+    "resolution": "Resolution",
+    "recordingMode": "Recording mode",
+    "recordingVideo": "Recording video",
+    "details": "Details",
+    "off": "off",
+    "on": "on",
+    "no": "no",
+    "yes": "yes"
+  },
+  "apiErrors": {
+    "unknown": "Request error occurred",
+    "400": "Bad request",
+    "401": "Unauthorized",
+    "403": "Forbidden",
+    "404": "Resource not found",
+    "500": "Server error"
+  },
+  "stream": {
+    "pageTitle": "Camera stream",
+    "offline": "Camera offline"
+  },
+  "dashboard": {
+    "pageTitle": "Dashboard"
   }
 }

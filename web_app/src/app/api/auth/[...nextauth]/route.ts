@@ -1,8 +1,5 @@
 import NextAuth from "next-auth"
 import GithubProvider from "next-auth/providers/github"
-// import { options } from './options'
-
-// TODO - PRZERZUCIC PONOWNIE DO OPTIONS
 
 const handler = NextAuth({
   providers: [
