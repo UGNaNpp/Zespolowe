@@ -16,6 +16,7 @@ type Props = {
 
 export default function Login({ dict }: Props) {
   const loginTitle = process.env.NEXT_PUBLIC_LOGIN_TITLE || dict.title;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { data: session, status } = useSession();
   const router = useRouter();
 

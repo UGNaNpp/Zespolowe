@@ -10,6 +10,7 @@ type ErrorDict = {
   "500": string;
 };
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
 type ApiRequestParams<T> = {
   endpoint: string;
   method: Method;
@@ -70,3 +71,4 @@ export async function apiRequest<T>({
     }
   }
 }
+/* eslint-enable @typescript-eslint/no-explicit-any */

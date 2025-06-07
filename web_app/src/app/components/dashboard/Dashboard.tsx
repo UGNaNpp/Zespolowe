@@ -9,7 +9,7 @@ type Props = {
 export default function Dashboard({ dict }: Props) {
   return(
     <main className={styles.main}>
-      <h1>Dashboard</h1>
+      <h1>{dict.pageTitle}</h1>
     </main>
   );
 }
