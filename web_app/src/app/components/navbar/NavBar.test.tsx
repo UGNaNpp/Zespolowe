@@ -10,6 +10,15 @@ describe('NavBar Component', () => {
     titleUrl: '/dashboard',
     subtitle: 'Overview',
     subtitleUrl: '/dashboard/overview',
+    dict: {
+      "dashboard": "Dashboard",
+      "devices": "Devices",
+      "media": "Media",
+      "notifications": "Notifications",
+      "settings": "Settings",
+      "logout": "Logout",
+      "version": "App version"
+    }
   };
 
   // it('renders the logo', () => {
