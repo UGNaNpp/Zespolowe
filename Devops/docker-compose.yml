@@ -12,3 +12,4 @@ services:
     environment:
       DEVICES_JSON_FILEPATH: /app/data/devices.json
       USERS_FILEPATH: /app/data/users.txt
+      MEDIA_FOLDER: /app/data/

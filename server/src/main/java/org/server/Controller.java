@@ -3,6 +3,7 @@ package org.server;
 import jakarta.servlet.http.HttpServletResponse;
 import org.server.devices.DeviceMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +14,7 @@ import jakarta.servlet.http.HttpServletRequest;
 
 
 
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -24,6 +26,9 @@ public class Controller {
     private DeviceMapper deviceMapper;
     @Autowired
     private StreamProvider streamProvider;
+
+    @Value("${filepath.media}")
+    private String mediaFilepath;
 
     @GetMapping(
             value = "/{id}/stream",
@@ -118,5 +123,12 @@ public class Controller {
         }
 
         return ResponseEntity.ok(resultMap);
+    }
+
+    @GetMapping("/avaible-disk-space")
+    public ResponseEntity<Long> avaibleDiskSpace() {
+        File f = new File(this.mediaFilepath);
+        long size = f.getFreeSpace();
+        return new ResponseEntity<>(size, HttpStatus.OK);
     }
 }

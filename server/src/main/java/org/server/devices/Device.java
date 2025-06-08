@@ -27,6 +27,10 @@ public abstract class Device {
     }
     abstract public void newPacket(byte[] packet);
     abstract public byte whatAmI();
+
+    public String getName() {
+        return name;
+    }
 }
 
 class PacketAccumulator{

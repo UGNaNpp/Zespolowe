@@ -41,17 +41,15 @@ public class Camera extends Device {
     @Autowired
     private StreamProvider streamProvider;
 
-
-
     protected PacketAccumulator packetAccumulator = new PacketAccumulator();
     protected int heightResolution = -1;
     protected int widthResolution = -1;
     public boolean recordingMode = false;
     public boolean recordingVideo = false;
 
-    public  Camera(StreamProvider streamProvider) {
-        this.streamProvider = streamProvider;
-    }
+//    public  Camera(StreamProvider streamProvider) {
+//        this.streamProvider = streamProvider;
+//    }
 
     public void newTransmission(Byte[] transmission) {
 
@@ -120,7 +118,7 @@ public class Camera extends Device {
     }
 
     @Override
-    public final byte whatAmI() {
+    public byte whatAmI() {
         return 0;
     }
 
@@ -176,6 +174,7 @@ public class Camera extends Device {
                 "AssociatedMAC='" + AssociatedMAC + '\'' +
                 ", AssociatedIP='" + AssociatedIP + '\'' +
                 ", recordingVideo=" + recordingVideo +
+                ", name=" + name +
                 ", recordingMode=" + recordingMode +
                 ", widthResolution=" + widthResolution +
                 ", heightResolution=" + heightResolution +
