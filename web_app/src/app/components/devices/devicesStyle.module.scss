@@ -31,7 +31,9 @@
         }
 
         &:hover {
+          cursor: pointer;
           background-color: $color-mid-dark-gray;
+          transition: background-color 0.2s ease;
         }
       }
 
@@ -48,7 +50,6 @@
           background-color: $color-mid-dark-gray;
 
           &:focus {
-            // border: 1px solid red;
             outline: 1px solid $color-base-2;
           }
         }
@@ -83,6 +84,10 @@
         display: flex;
         justify-content: space-between;
 
+        &:hover {
+          cursor: pointer;
+        }
+
         .deviceName {
           font-size: medium;
         }
@@ -109,6 +114,10 @@
           button {
             background-color: $color-dark-gray;
             padding: 0.4rem 0.5rem;
+
+            &:hover {
+              cursor: pointer;
+            }
           }
         }
       }

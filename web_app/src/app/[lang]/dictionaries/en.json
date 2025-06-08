@@ -44,5 +44,11 @@
   },
   "dashboard": {
     "pageTitle": "Dashboard"
+  },
+  "noaccess": {
+    "pageTitle": "No access",
+    "title": "No access to service",
+    "message": "Try going back to home page, clear cookies or contact the owner.",
+    "button": "Go to home page"
   }
 }

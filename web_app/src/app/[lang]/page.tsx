@@ -3,9 +3,8 @@
 import { useSession } from "next-auth/react";
 import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
+import { AxiosError } from "axios";
 import api from "@/app/api/axios/axios";
-
-// DODAC TUTAJ ZE JAK 401 - PRZEKIEROWANIE NA STRONE NA KTOREJ NAPIS ZE NIE MASZ DOSTEPU DO APLIKACJI
 
 export default function HomePage() {
   const { data: session, status } = useSession();
@@ -30,7 +29,13 @@ export default function HomePage() {
         sentTokenRef.current = true;
         router.push("/dashboard");
       } catch (error) {
-        console.error("Błąd przy przesyłaniu tokena do backendu:", error);
+        const err = error as AxiosError;
+        
+        if (err.response?.status === 401) {
+          router.push("/noaccess");
+        } else {
+          console.error("Błąd przy przesyłaniu tokena do backendu:", error);
+        }
       }
     };
 
