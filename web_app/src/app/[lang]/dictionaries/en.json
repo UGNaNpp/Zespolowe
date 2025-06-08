@@ -50,5 +50,12 @@
     "title": "No access to service",
     "message": "Try going back to home page, clear cookies or contact the owner.",
     "button": "Go to home page"
+  },
+  "device": {
+    "pageTitle": "Device",
+    "off": "off",
+    "on": "on",
+    "no": "no",
+    "yes": "yes"
   }
 }

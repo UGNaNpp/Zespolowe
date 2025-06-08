@@ -163,7 +163,7 @@ export default function Devices({ dict, ApiErrorsDict }: Props) {
                     {device.recordingVideo ? dict.yes : dict.no}
                   </p>
                   <p className={styles.buttonParagrapgh}>
-                    <Link href={`/stream/${device.id}`}>
+                    <Link href={`/device/${device.id}`}>
                       <button className={styles.streamButton}>{dict.details}</button>
                     </Link>
                   </p>

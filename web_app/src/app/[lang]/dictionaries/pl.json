@@ -25,8 +25,8 @@
     "recordingMode": "Tryb nagrywania",
     "recordingVideo": "Nagrywanie wideo",
     "details": "Szczegóły",
-    "off": "Wyłączony",
-    "on": "Włączony",
+    "off": "wyłączony",
+    "on": "włączony",
     "no": "nie",
     "yes": "tak"
   },
@@ -50,5 +50,28 @@
     "title": "Brak dostępu do systemu",
     "message": "Spróbuj wrócić na główną stronę, usunąć ciasteczka lub skontaktuj się z właścicielem.",
     "button": "Powrót na stronę główną"
+  },
+  "device": {
+    "pageTitle": "Urządzenie",
+    "off": "wyłączony",
+    "on": "włączony",
+    "no": "nie",
+    "yes": "tak",
+    "connection": "Ustawienia połączenia",
+    "resolution": "Rozdzielczość",
+    "recordingSettings": "Ustawienia nagrywania",
+    "recordingMode": "Tryb nagrywania",
+    "recordingVideo": "Nagrywanie wideo",
+    "ip": "Adres IP",
+    "mac": "Adres MAC",
+    "id": "ID urządzenia",
+    "px": "pikesli",
+    "isup": "Połącznie",
+    "connecting": "Łączenie",
+    "online": "Online",
+    "offline": "Offline",
+    "edit": "Edytuj ustawienia",
+    "delete": "Usuń urządzenie",
+    "stream": "Zobacz podgląd"
   }
 }
