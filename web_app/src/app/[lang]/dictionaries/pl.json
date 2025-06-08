@@ -44,5 +44,11 @@
   },
   "dashboard": {
     "pageTitle": "Panel główny"
+  },
+  "noaccess": {
+    "pageTitle": "Brak dostępu",
+    "title": "Brak dostępu do systemu",
+    "message": "Spróbuj wrócić na główną stronę, usunąć ciasteczka lub skontaktuj się z właścicielem.",
+    "button": "Powrót na stronę główną"
   }
 }

@@ -1,11 +1,11 @@
 services:
   spring:
-    build: '../server'
-#    image: mkopczewski/zespolowe:basic
+    # build: '../server'
+    image: mkopczewski/zespolowe:latest
     ports:
       - "8080:8080"
     volumes:
-      - "C:/Users/kopcz/IdeaProjects/Zespolowe/server/src/main/resources/dev_configs:/app/data"
+      - "/home/mdomino/zespolowe-volume:/app/data"
 
     env_file:
       - ../server/.env
