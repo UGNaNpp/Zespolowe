@@ -74,4 +74,11 @@ public class UserService {
                 .anyMatch(user -> user.getGithubId() == githubId);
     }
 
+    public List<User> getUsers() {
+        return users;
+    }
+
+    public void deleteUser(int userGithubId) {
+        users.removeIf(user -> user.getGithubId() == userGithubId);
+    }
 }

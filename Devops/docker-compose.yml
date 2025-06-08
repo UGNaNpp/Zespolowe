@@ -1,7 +1,7 @@
 services:
   spring:
     build: '../server'
-#    image: mkopczewski/zespolowe:latest
+    # image: mkopczewski/zespolowe:latest
     ports:
       - "8080:8080"
     volumes:
@@ -12,5 +12,5 @@ services:
       - ../server/.env
     environment:
       DEVICES_JSON_FILEPATH: /app/data/devices.json
-      USERS_FILEPATH: /app/data/users.txt
+      USERS_FILEPATH: /app/data/users.json
       MEDIA_FOLDER: /app/data/media

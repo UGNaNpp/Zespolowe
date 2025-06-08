@@ -1,6 +1,8 @@
 package org.server;
 
 import jakarta.servlet.http.HttpServletResponse;
+import org.server.devices.Camera;
+import org.server.devices.Device;
 import org.server.devices.DeviceMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -78,6 +80,24 @@ public class Controller {
             }
         };
         return ResponseEntity.ok().body(responseBody);
+    }
+
+    @GetMapping("/is-camera-avaible/{id}")
+    ResponseEntity<Boolean> cameraState(@PathVariable("id") Long id) {
+        long timeoutMillis = 1000;
+        Device device = deviceMapper.getDeviceByID(id);
+        if (!(device instanceof Camera)) return ResponseEntity.badRequest().body(false);
+        try {
+            Future<Byte[]> futureFrame = streamProvider.getLastFrame(id);
+            Byte[] frame = futureFrame.get(timeoutMillis, TimeUnit.MILLISECONDS);
+
+            boolean isValid = frame != null && frame.length > 0;
+            return ResponseEntity.ok(true);
+        } catch (TimeoutException e) {
+            return ResponseEntity.ok(false);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(false);
+        }
     }
 
 

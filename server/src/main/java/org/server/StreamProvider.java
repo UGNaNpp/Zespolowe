@@ -59,9 +59,9 @@ public class StreamProvider {
             }
         }
         else {
-            //future.cancel(true);
-            //future = new CompletableFuture<>();
-            //future.completeOnTimeout(frame,10,TimeUnit.MILLISECONDS);
+            future.cancel(true);
+            future = new CompletableFuture<>();
+            future.completeOnTimeout(frame,10,TimeUnit.MILLISECONDS);
         }
         //lastFrames.put(deviceID, new ImmutablePair<>(newFrameId, new CompletableFuture<>()));
     }
