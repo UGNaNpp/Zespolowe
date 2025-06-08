@@ -31,6 +31,9 @@ public class DeviceMapper {
 
     @Value("${filepath.devices}")
     private String devicesConfigFilepath;
+
+    @Value("${filepath.media}")
+    private String mediaConfigFilepath;
     @Autowired
     private StreamProvider streamProvider;
 
@@ -62,8 +65,7 @@ public class DeviceMapper {
     }
 
     public void addMockedCameras() {
-        MockCamera camera = new MockCamera(15L, "src/main/resources/video/tiktok.mp4", "192.0.0.4", "00:00:00:00:00" +
-                ":00");
+        MockCamera camera = new MockCamera(15L,  mediaConfigFilepath + "/tiktok.mp4", "192.0.0.4", "00:00:00:00:00:00");
         autowireCapableBeanFactory.autowireBean(camera);
         addDeviceByIP(camera.AssociatedIP, camera);
         camera.startMockStreaming(30);
@@ -91,7 +93,7 @@ public class DeviceMapper {
         Thread.startVirtualThread(() -> {
             while (true) {
                 try {
-                    this.streamProvider.getLastFrame(camera.id).get(); // blokujące pobranie ramki
+                    this.streamProvider.getLastFrame(camera.id).get(); // przetwarzanie obrazu mimo że nikt nie czeka
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                     break; // zakończ wątek jeśli zostanie przerwany
