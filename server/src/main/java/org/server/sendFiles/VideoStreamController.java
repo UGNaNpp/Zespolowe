@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.File;
 
+@Deprecated
 @Controller
 public class VideoStreamController {
 

@@ -32,7 +32,6 @@ public class MockCamera extends Camera {
                 System.out.println("Mocked camera video exists? " + new File(videoPath).exists());
             try (FFmpegFrameGrabber grabber = new FFmpegFrameGrabber(videoPath)) {
                 grabber.start();
-
                 Java2DFrameConverter converter = new Java2DFrameConverter();
 
                 long frameDelay = 1000L / fps;

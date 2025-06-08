@@ -5,13 +5,15 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.server.devices.DeviceMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Component;
-
-
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
@@ -19,6 +21,9 @@ import java.util.concurrent.TimeUnit;
 @EnableAsync
 @Component("StreamProvider")
 public class StreamProvider {
+
+    @Value("${filepath.media}")
+    private String mediaFilepath;
 
     private ConcurrentHashMap<Long, Pair<Long, CompletableFuture<Byte[]>>> lastFrames = new ConcurrentHashMap
             <Long,Pair<Long, CompletableFuture<Byte[]>>>();
@@ -29,34 +34,29 @@ public class StreamProvider {
         if(currentPair == null) {       // nikt nie czeka na to
             return;
         }
-
         CompletableFuture<Byte[]> future = currentPair.getRight();
 
         if(!future.isDone()) {
             future.complete(frame);
-            // Zapis klatki do pliku
-            String FILEPATH = "tmp/test" + System.currentTimeMillis() + ".jpeg";
+            LocalDateTime now = LocalDateTime.now();
+            String formattedDate = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            String FILEPATH = mediaFilepath + "/frames/" + formattedDate + "/" + System.currentTimeMillis() + ".jpeg";
+
             File file = new File(FILEPATH);
-            try {
-                // Initialize a pointer in file
-                // using OutputStream
-                OutputStream os = new FileOutputStream(file);
-                // Starting writing the bytes in it
-                os.write(ArrayUtils.toPrimitive(frame));
-                // Display message onconsole for successful
-                // execution
-//                System.out.println("Successfully byte inserted");
-                // Close the file connections
-                os.close();
+            File parentDir = file.getParentFile();
+
+            if (parentDir != null && !parentDir.exists()) {
+                parentDir.mkdirs(); // kosztowna tylko przy pierwszym wywołaniu dla danej daty
             }
 
+            try (OutputStream os = new FileOutputStream(file)) {
+                os.write(ArrayUtils.toPrimitive(frame));
+            }
             // Catch block to handle the exceptions
             catch (Exception e) {
-
                 // Display exception on console
                 System.out.println("Exception: " + e);
             }
-
         }
         else {
             //future.cancel(true);
