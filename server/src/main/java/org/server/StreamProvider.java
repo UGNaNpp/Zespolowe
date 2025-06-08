@@ -20,15 +20,10 @@ import java.util.concurrent.TimeUnit;
 @Component("StreamProvider")
 public class StreamProvider {
 
-    @Autowired
-    private DeviceMapper deviceMapper;
-
     private ConcurrentHashMap<Long, Pair<Long, CompletableFuture<Byte[]>>> lastFrames = new ConcurrentHashMap
             <Long,Pair<Long, CompletableFuture<Byte[]>>>();
 
     public synchronized void newFrame(Long deviceID, Byte[] frame) {
-        long newFrameTime = System.currentTimeMillis(); // Assuming frame ID is a timestamp or unique value.
-
         Pair<Long, CompletableFuture<Byte[]>> currentPair = lastFrames.get(deviceID);
 
         if(currentPair == null) {       // nikt nie czeka na to
@@ -39,24 +34,18 @@ public class StreamProvider {
 
         if(!future.isDone()) {
             future.complete(frame);
-
-            String FILEPATH = "test.jpeg";
+            // Zapis klatki do pliku
+            String FILEPATH = "tmp/test" + System.currentTimeMillis() + ".jpeg";
             File file = new File(FILEPATH);
-
             try {
-
                 // Initialize a pointer in file
                 // using OutputStream
                 OutputStream os = new FileOutputStream(file);
-
                 // Starting writing the bytes in it
                 os.write(ArrayUtils.toPrimitive(frame));
-
                 // Display message onconsole for successful
                 // execution
-                System.out.println("Successfully"
-                        + " byte inserted");
-
+//                System.out.println("Successfully byte inserted");
                 // Close the file connections
                 os.close();
             }
@@ -101,8 +90,6 @@ public class StreamProvider {
                     new ImmutablePair<>(0L, new CompletableFuture<>())
             );
         }
-
-
 
         // Return the CompletableFuture with a timeout applied.
         return lastFrames.get(deviceID).getRight();
