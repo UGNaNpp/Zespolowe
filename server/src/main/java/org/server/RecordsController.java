@@ -59,9 +59,11 @@ public class RecordsController {
                 .collect(Collectors.toList());
             return new ResponseEntity<>(result, HttpStatus.OK);
         } catch (IOException e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(Collections.emptyList() ,HttpStatus.OK);
         }
     }
+
+
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<String> handleInvalidDateFormat(MethodArgumentTypeMismatchException ex) {
