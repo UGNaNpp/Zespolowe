@@ -184,7 +184,9 @@ public void streamFramesBefore(
     public ResponseEntity<String> handleInvalidDateFormat(MethodArgumentTypeMismatchException ex) {
         if (ex.getRequiredType() == LocalDate.class) {
             return new ResponseEntity<>("Invalid date format. Expected format: yyyy-MM-dd", HttpStatus.BAD_REQUEST);
-        }
+        } else if (ex.getRequiredType() == LocalDateTime.class) {
+        return new ResponseEntity<>("Invalid datetime format. Expected format: yyyy-MM-dd'T'HH:mm:ss", HttpStatus.BAD_REQUEST);
+    }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 }
