@@ -19,6 +19,8 @@ LABEL authors="Michał Kopczewski"
 WORKDIR /opt/app
 EXPOSE 8080
 
+RUN apt-get update && apt-get install -y ffmpeg && rm -rf /var/lib/apt/lists/* && ffmpeg -version
+
 COPY --from=builder /opt/app/target/*.jar /opt/app/app.jar
 
 

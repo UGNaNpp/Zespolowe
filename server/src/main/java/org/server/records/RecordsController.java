@@ -1,8 +1,11 @@
-package org.server;
+package org.server.records;
 
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -10,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Instant;
@@ -26,6 +31,12 @@ import java.util.stream.Stream;
 public class RecordsController {
     @Value("${filepath.media}")
     private String mediaFilePath;
+
+    private RecordsService recordsService;
+
+    public RecordsController(RecordsService recordsService) {
+        this.recordsService = recordsService;
+    }
 
     @GetMapping("/size")
     public ResponseEntity<Long> getRecordsSize() {
@@ -79,7 +90,6 @@ public class RecordsController {
             Path cameraFolder = Path.of(mediaFilePath, "frames", targetDate, cameraId);
 
             if (!Files.exists(cameraFolder) || !Files.isDirectory(cameraFolder)) {
-                System.out.println(cameraFolder);
                 return ResponseEntity.badRequest().build();
             }
 
@@ -117,67 +127,126 @@ public class RecordsController {
     }
 
     @GetMapping(value = "/stream/{cameraId:\\d+}/{datetime}/{fps}", produces = "multipart/x-mixed-replace; boundary=frame")
-public void streamFramesBefore(
+    public void streamFramesBefore(
         @PathVariable String cameraId,
         @PathVariable String datetime,
         @PathVariable int fps,
         HttpServletResponse response) {
 
-    try {
-        LocalDateTime target = LocalDateTime.parse(datetime);
-        String targetDate = target.toLocalDate().toString();
-        Path cameraFolder = Path.of(mediaFilePath, "frames", targetDate, cameraId);
+        try {
+            LocalDateTime target = LocalDateTime.parse(datetime);
+            String targetDate = target.toLocalDate().toString();
+            Path cameraFolder = Path.of(mediaFilePath, "frames", targetDate, cameraId);
 
-        if (!Files.exists(cameraFolder) || !Files.isDirectory(cameraFolder)) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return;
-        }
-
-        List<Path> images = Files.list(cameraFolder)
-                .filter(p -> p.toString().endsWith(".jpeg"))
-                .filter(p -> {
-                    try {
-                        long timestamp = Long.parseLong(p.getFileName().toString().replace(".jpeg", ""));
-                        LocalDateTime fileTime = Instant.ofEpochMilli(timestamp)
-                                .atZone(ZoneId.systemDefault())
-                                .toLocalDateTime();
-                        return !fileTime.isAfter(target);
-                    } catch (NumberFormatException e) {
-                        return false;
-                    }
-                })
-                .sorted(Comparator.comparingLong(p ->
-                        Long.parseLong(p.getFileName().toString().replace(".jpeg", ""))))
-                .toList();
-
-        response.setStatus(HttpServletResponse.SC_OK);
-        response.setContentType("multipart/x-mixed-replace; boundary=frame");
-
-        long delayMillis = 1000L / Math.max(fps, 1);
-
-        try (ServletOutputStream out = response.getOutputStream()) {
-            for (Path image : images) {
-                byte[] content = Files.readAllBytes(image);
-
-                out.println("--frame");
-                out.println("Content-Type: image/jpeg");
-                out.println("Content-Length: " + content.length);
-                out.println();
-                out.write(content);
-                out.println();
-                out.flush();
-
-                Thread.sleep(delayMillis);
+            if (!Files.exists(cameraFolder) || !Files.isDirectory(cameraFolder)) {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                return;
             }
+
+            List<Path> images = Files.list(cameraFolder)
+                    .filter(p -> p.toString().endsWith(".jpeg"))
+                    .filter(p -> {
+                        try {
+                            long timestamp = Long.parseLong(p.getFileName().toString().replace(".jpeg", ""));
+                            LocalDateTime fileTime = Instant.ofEpochMilli(timestamp)
+                                    .atZone(ZoneId.systemDefault())
+                                    .toLocalDateTime();
+                            return !fileTime.isAfter(target);
+                        } catch (NumberFormatException e) {
+                            return false;
+                        }
+                    })
+                    .sorted(Comparator.comparingLong(p ->
+                            Long.parseLong(p.getFileName().toString().replace(".jpeg", ""))))
+                    .toList();
+
+            response.setStatus(HttpServletResponse.SC_OK);
+            response.setContentType("multipart/x-mixed-replace; boundary=frame");
+
+            long delayMillis = 1000L / Math.max(fps, 1);
+
+            try (ServletOutputStream out = response.getOutputStream()) {
+                for (Path image : images) {
+                    byte[] content = Files.readAllBytes(image);
+
+                    out.println("--frame");
+                    out.println("Content-Type: image/jpeg");
+                    out.println("Content-Length: " + content.length);
+                    out.println();
+                    out.write(content);
+                    out.println();
+                    out.flush();
+
+                    Thread.sleep(delayMillis);
+                }
+            }
+
+        } catch (DateTimeParseException e) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        } catch (IOException | InterruptedException e) {
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
-
-    } catch (DateTimeParseException e) {
-        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-    } catch (IOException | InterruptedException e) {
-        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
     }
-}
 
+    @GetMapping("/video")
+    public void getVideo(
+            @RequestParam long cameraId,
+            @RequestParam LocalDateTime startDateTime,
+            @RequestParam LocalDateTime stopDateTime,
+            HttpServletResponse response
+    ) {
+        try {
+            Path concatFilePath = recordsService.generateFFmpegConcatFile(cameraId, startDateTime, stopDateTime);
+            Path videoFileName = recordsService.generateVideo(concatFilePath);
+            response.setContentType("video/mp4");
+            response.setHeader("Content-Disposition", "attachment; filename=\"output.mp4\"");
+            response.setHeader("Cache-Control", "no-cache");
+            try (InputStream in = Files.newInputStream(videoFileName);
+                 OutputStream out = response.getOutputStream()) {
+                in.transferTo(out);
+                out.flush();
+            } finally {
+//                Files.deleteIfExists(concatFilePath);
+//                Files.deleteIfExists(videoFileName);
+            }
+        } catch (IOException e) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        } catch (InterruptedException e) {
+            System.out.println("Generating Video Interrupted");
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Deprecated
+    @GetMapping("/video/tescik/")
+    public void getVideoTest(
+            @RequestParam long cameraId,
+            @RequestParam LocalDateTime startDateTime,
+            @RequestParam LocalDateTime stopDateTime,
+            HttpServletResponse response
+    ) {
+        try {
+//            Path concatFilePath = recordsService.generateFFmpegConcatFile(cameraId, startDateTime, stopDateTime);
+            Path concatFilePath = Path.of(mediaFilePath,"frames", "2025-06-09", "8", "4b0d97f0d6-ffmpeg-list.txt");
+            Path videoFileName = recordsService.generateVideo(concatFilePath);
+            response.setContentType("video/mp4");
+            response.setHeader("Content-Disposition", "attachment; filename=\"output.mp4\"");
+            response.setHeader("Cache-Control", "no-cache");
+            try (InputStream in = Files.newInputStream(videoFileName);
+                 OutputStream out = response.getOutputStream()) {
+                in.transferTo(out);
+                out.flush();
+            } finally {
+//                Files.deleteIfExists(concatFilePath);
+//                Files.deleteIfExists(videoFileName);
+            }
+        } catch (IOException e) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        } catch (InterruptedException e) {
+            System.out.println("Generating Video Interrupted");
+            throw new RuntimeException(e);
+        }
+    }
 
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
