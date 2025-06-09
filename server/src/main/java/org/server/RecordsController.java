@@ -3,9 +3,8 @@ package org.server;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -36,17 +35,39 @@ public class RecordsController {
         }
     }
 
-    @GetMapping("/avaible-days")
+    @GetMapping("/available-days")
     public List<LocalDate> getRecordsAvailableDays() {
         try (Stream<Path> paths = Files.list(Path.of(mediaFilePath + "/frames/"))) {
             return paths
                     .filter(Files::isDirectory)
-                        .map(Path::getFileName)                     // -> "2025-06-08"
+                        .map(Path::getFileName)
                         .map(Path::toString)
                         .map(LocalDate::parse)
                     .collect(Collectors.toList());
         } catch (IOException e) {
             return Collections.emptyList();
         }
+    }
+
+    @GetMapping("/available-cameras-by-date/{date}")
+    public ResponseEntity<List<String>> getRecordsAvailableCamerasByDate(@PathVariable LocalDate date) {
+        try (Stream<Path> paths = Files.list(Path.of(mediaFilePath + "/frames/" + date))) {
+            List<String> result = paths
+                .filter(Files::isDirectory)
+                .map(Path::getFileName)
+                .map(Path::toString)
+                .collect(Collectors.toList());
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        } catch (IOException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<String> handleInvalidDateFormat(MethodArgumentTypeMismatchException ex) {
+        if (ex.getRequiredType() == LocalDate.class) {
+            return new ResponseEntity<>("Invalid date format. Expected format: yyyy-MM-dd", HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 }
