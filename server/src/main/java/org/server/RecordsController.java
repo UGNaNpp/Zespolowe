@@ -1,5 +1,7 @@
 package org.server;
 
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -71,7 +73,6 @@ public class RecordsController {
             @PathVariable String cameraId,
             @PathVariable String datetime) {     // w formacie ISO 8601 yyyy-MM-ddTHH:mm:ss
 
-
         try {
             LocalDateTime target = LocalDateTime.parse(datetime);
             String targetDate = target.toLocalDate().toString();
@@ -114,6 +115,69 @@ public class RecordsController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
+    @GetMapping(value = "/stream/{cameraId:\\d+}/{datetime}/{fps}", produces = "multipart/x-mixed-replace; boundary=frame")
+public void streamFramesBefore(
+        @PathVariable String cameraId,
+        @PathVariable String datetime,
+        @PathVariable int fps,
+        HttpServletResponse response) {
+
+    try {
+        LocalDateTime target = LocalDateTime.parse(datetime);
+        String targetDate = target.toLocalDate().toString();
+        Path cameraFolder = Path.of(mediaFilePath, "frames", targetDate, cameraId);
+
+        if (!Files.exists(cameraFolder) || !Files.isDirectory(cameraFolder)) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return;
+        }
+
+        List<Path> images = Files.list(cameraFolder)
+                .filter(p -> p.toString().endsWith(".jpeg"))
+                .filter(p -> {
+                    try {
+                        long timestamp = Long.parseLong(p.getFileName().toString().replace(".jpeg", ""));
+                        LocalDateTime fileTime = Instant.ofEpochMilli(timestamp)
+                                .atZone(ZoneId.systemDefault())
+                                .toLocalDateTime();
+                        return !fileTime.isAfter(target);
+                    } catch (NumberFormatException e) {
+                        return false;
+                    }
+                })
+                .sorted(Comparator.comparingLong(p ->
+                        Long.parseLong(p.getFileName().toString().replace(".jpeg", ""))))
+                .toList();
+
+        response.setStatus(HttpServletResponse.SC_OK);
+        response.setContentType("multipart/x-mixed-replace; boundary=frame");
+
+        long delayMillis = 1000L / Math.max(fps, 1);
+
+        try (ServletOutputStream out = response.getOutputStream()) {
+            for (Path image : images) {
+                byte[] content = Files.readAllBytes(image);
+
+                out.println("--frame");
+                out.println("Content-Type: image/jpeg");
+                out.println("Content-Length: " + content.length);
+                out.println();
+                out.write(content);
+                out.println();
+                out.flush();
+
+                Thread.sleep(delayMillis);
+            }
+        }
+
+    } catch (DateTimeParseException e) {
+        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+    } catch (IOException | InterruptedException e) {
+        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+    }
+}
+
 
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
