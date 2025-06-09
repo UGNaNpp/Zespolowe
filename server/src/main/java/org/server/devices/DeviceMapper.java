@@ -68,7 +68,7 @@ public class DeviceMapper {
         MockCamera camera = new MockCamera(15L,  mediaConfigFilepath + "/tiktok.mp4", "192.0.0.4", "00:00:00:00:00:00");
         autowireCapableBeanFactory.autowireBean(camera);
         addDeviceByIP(camera.AssociatedIP, camera);
-        camera.startMockStreaming(30);
+        camera.startMockStreaming(5);
     }
 
     public void addDeviceByIP(String ipv4, Device device) {
