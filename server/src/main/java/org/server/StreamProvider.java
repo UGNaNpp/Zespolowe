@@ -28,8 +28,10 @@ public class StreamProvider {
     private ConcurrentHashMap<Long, Pair<Long, CompletableFuture<Byte[]>>> lastFrames = new ConcurrentHashMap
             <Long,Pair<Long, CompletableFuture<Byte[]>>>();
 
+
     public synchronized void newFrame(Long deviceID, Byte[] frame) {
         Pair<Long, CompletableFuture<Byte[]>> currentPair = lastFrames.get(deviceID);
+        String deviceName = deviceID.toString();
 
         if(currentPair == null) {       // nikt nie czeka na to
             return;
@@ -38,25 +40,7 @@ public class StreamProvider {
 
         if(!future.isDone()) {
             future.complete(frame);
-            LocalDateTime now = LocalDateTime.now();
-            String formattedDate = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-            String FILEPATH = mediaFilepath + "/frames/" + formattedDate + "/" + System.currentTimeMillis() + ".jpeg";
-
-            File file = new File(FILEPATH);
-            File parentDir = file.getParentFile();
-
-            if (parentDir != null && !parentDir.exists()) {
-                parentDir.mkdirs(); // kosztowna tylko przy pierwszym wywołaniu dla danej daty
-            }
-
-            try (OutputStream os = new FileOutputStream(file)) {
-                os.write(ArrayUtils.toPrimitive(frame));
-            }
-            // Catch block to handle the exceptions
-            catch (Exception e) {
-                // Display exception on console
-                System.out.println("Exception: " + e);
-            }
+            saveFrame(deviceID, frame);
         }
         else {
             future.cancel(true);
@@ -64,6 +48,28 @@ public class StreamProvider {
             future.completeOnTimeout(frame,10,TimeUnit.MILLISECONDS);
         }
         //lastFrames.put(deviceID, new ImmutablePair<>(newFrameId, new CompletableFuture<>()));
+    }
+
+    private void saveFrame(Long deviceID, Byte[] frame) {
+        LocalDateTime now = LocalDateTime.now();
+        String formattedDate = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        String FILEPATH = mediaFilepath + "/frames/" + formattedDate + "/" + deviceID + "/" + System.currentTimeMillis() + ".jpeg";
+
+        File file = new File(FILEPATH);
+        File parentDir = file.getParentFile();
+
+        if (parentDir != null && !parentDir.exists()) {
+            parentDir.mkdirs(); // kosztowna tylko przy pierwszym wywołaniu dla danej daty
+        }
+
+        try (OutputStream os = new FileOutputStream(file)) {
+            os.write(ArrayUtils.toPrimitive(frame));
+        }
+        // Catch block to handle the exceptions
+        catch (Exception e) {
+            // Display exception on console
+            System.out.println("Exception: " + e);
+        }
     }
 
     public CompletableFuture<Byte[]> getLastFrameTimeout(Long deviceID, long timeoutMillis) {

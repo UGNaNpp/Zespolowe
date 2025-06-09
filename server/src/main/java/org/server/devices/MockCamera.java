@@ -27,43 +27,43 @@ public class MockCamera extends Camera {
     }
 
     public void startMockStreaming(int fps) {
-    Executors.newSingleThreadExecutor().submit(() -> {
-        while (!Thread.currentThread().isInterrupted()) {
-                System.out.println("Mocked camera video exists? " + new File(videoPath).exists());
-            try (FFmpegFrameGrabber grabber = new FFmpegFrameGrabber(videoPath)) {
-                grabber.start();
-                Java2DFrameConverter converter = new Java2DFrameConverter();
+        Executors.newSingleThreadExecutor().submit(() -> {
+            while (!Thread.currentThread().isInterrupted()) {
+                    System.out.println("Mocked camera video exists? " + new File(videoPath).exists());
+                try (FFmpegFrameGrabber grabber = new FFmpegFrameGrabber(videoPath)) {
+                    grabber.start();
+                    Java2DFrameConverter converter = new Java2DFrameConverter();
 
-                long frameDelay = 1000L / fps;
+                    long frameDelay = 1000L / fps;
 
-                while (!Thread.currentThread().isInterrupted()) {
-                    var frame = grabber.grabImage();
-                    if (frame == null) break; // koniec filmu
+                    while (!Thread.currentThread().isInterrupted()) {
+                        var frame = grabber.grabImage();
+                        if (frame == null) break; // koniec filmu
 
-                    BufferedImage image = converter.convert(frame);
+                        BufferedImage image = converter.convert(frame);
 
-                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    ImageIO.write(image, "jpeg", baos);
-                    baos.flush();
-                    byte[] byteArray = baos.toByteArray();
-                    baos.close();
+                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        ImageIO.write(image, "jpeg", baos);
+                        baos.flush();
+                        byte[] byteArray = baos.toByteArray();
+                        baos.close();
 
-                    Byte[] boxed = new Byte[byteArray.length];
-                    for (int i = 0; i < byteArray.length; i++) {
-                        boxed[i] = byteArray[i];
+                        Byte[] boxed = new Byte[byteArray.length];
+                        for (int i = 0; i < byteArray.length; i++) {
+                            boxed[i] = byteArray[i];
+                        }
+
+                        newTransmission(boxed);
+
+                        TimeUnit.MILLISECONDS.sleep(frameDelay);
                     }
 
-                    newTransmission(boxed);
-
-                    TimeUnit.MILLISECONDS.sleep(frameDelay);
+                    grabber.stop();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    break;
                 }
-
-                grabber.stop();
-            } catch (Exception e) {
-                e.printStackTrace();
-                break;
             }
-        }
     });
     }
 
