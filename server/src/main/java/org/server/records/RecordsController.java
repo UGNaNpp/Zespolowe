@@ -10,9 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
@@ -21,6 +20,8 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.MalformedURLException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -134,7 +135,7 @@ public class RecordsController {
     }
 
     @GetMapping(value = "/stream/{cameraId:\\d+}/{datetime}/{fps}", produces = "multipart/x-mixed-replace; boundary=frame")
-    public void streamFramesBefore(
+    public void streamFramesAfter(
         @PathVariable String cameraId,
         @PathVariable String datetime,
         @PathVariable int fps,
@@ -200,9 +201,9 @@ public class RecordsController {
             @RequestParam long cameraId,
             @RequestParam LocalDateTime startDateTime,
             @RequestParam LocalDateTime stopDateTime,
+            @RequestParam int frameRate,
             HttpServletResponse response
     ) {
-        int frameRate = 10;
 
         try {
             List<Path> images = imagesPathsListForVideo(cameraId, startDateTime, stopDateTime);
@@ -252,23 +253,22 @@ public class RecordsController {
     public ResponseEntity<String> saveVideoToDisk(
             @RequestParam long cameraId,
             @RequestParam LocalDateTime startDateTime,
-            @RequestParam LocalDateTime stopDateTime
+            @RequestParam LocalDateTime stopDateTime,
+            @RequestParam int frameRate
     ) {
-        int frameRate = 10;
-
         try {
             List<Path> images = imagesPathsListForVideo(cameraId, startDateTime, stopDateTime);
             if (images.isEmpty()) {
-                return ResponseEntity.noContent().build();
+                return ResponseEntity.badRequest().body("No images in directory");
             }
 
-            BufferedImage firstImage = ImageIO.read(images.get(0).toFile());
+            BufferedImage firstImage = ImageIO.read(images.getFirst().toFile());
             int width = firstImage.getWidth();
             int height = firstImage.getHeight();
 
-            // Ustal ścieżkę docelową (np. videos/video_<id>.mp4)
             String filename = "video_" + cameraId + "_" + System.currentTimeMillis() + ".mp4";
-            Path outputPath = Paths.get("videos").resolve(filename);
+
+            Path outputPath = Path.of(mediaFilePath, "videos").resolve(filename);
             Files.createDirectories(outputPath.getParent());
 
             FFmpegFrameRecorder recorder = new FFmpegFrameRecorder(outputPath.toString(), width, height);
@@ -293,7 +293,7 @@ public class RecordsController {
             recorder.stop();
             recorder.release();
 
-            return ResponseEntity.ok("/videos/" + filename);
+            return new ResponseEntity<>(filename, HttpStatus.CREATED);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -301,6 +301,32 @@ public class RecordsController {
                     .body("Błąd przy generowaniu wideo: " + e.getMessage());
         }
     }
+
+    @GetMapping("/video/download/{filename}")
+    public ResponseEntity<Resource> downloadVideo(@PathVariable String filename) throws IOException {
+        Path file = Path.of(mediaFilePath, "videos").resolve(filename).normalize();
+        Resource resource = new UrlResource(file.toUri());
+        if (!resource.exists() || !resource.isReadable()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        String contentType = Files.probeContentType(file);
+        if (contentType == null) {
+            contentType = "application/octet-stream";
+        }
+
+        return ResponseEntity.ok()
+            .contentType(MediaType.parseMediaType(contentType))
+            .header(HttpHeaders.CONTENT_DISPOSITION,
+                    ContentDisposition
+                        .attachment()
+                        .filename(resource.getFilename(), StandardCharsets.UTF_8)
+                        .build()
+                        .toString())
+            .body(resource);
+    }
+
+
 
 
 
