@@ -44,7 +44,12 @@
   },
   "stream": {
     "pageTitle": "Podgląd kamery",
-    "offline": "Kamera jest offline"
+    "offline": "Kamera jest offline",
+    "seconds": "sekund",
+    "minute": "minuta",
+    "minutes": "minut",
+    "startRecording": "Rozpocznij nagrywanie",
+    "ip": "Adres IP"
   },
   "dashboard": {
     "pageTitle": "Panel główny"

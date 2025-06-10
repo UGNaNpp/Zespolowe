@@ -44,7 +44,12 @@
   },
   "stream": {
     "pageTitle": "Camera stream",
-    "offline": "Camera offline"
+    "offline": "Camera offline",
+    "seconds": "seconds",
+    "minute": "minute",
+    "minutes": "minutes",
+    "startRecording": "Start recording",
+    "ip": "IP address"
   },
   "dashboard": {
     "pageTitle": "Dashboard"
