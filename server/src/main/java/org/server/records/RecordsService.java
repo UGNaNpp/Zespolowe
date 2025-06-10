@@ -17,12 +17,13 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+@Deprecated
 @Component
 public class RecordsService { // Just simple FFmpeg util service
     @Value("${filepath.media}")
     private String mediaFilePath;
 
-    Path generateFFmpegConcatFile(Long cameraId, LocalDateTime startDateTime,
+    List<Path> imagesPathsListForVideo(Long cameraId, LocalDateTime startDateTime,
                                          LocalDateTime stopDateTime) throws IOException {
 
         Path directory = Path.of(mediaFilePath, "frames",startDateTime.toLocalDate().toString(), cameraId.toString());
@@ -47,51 +48,11 @@ public class RecordsService { // Just simple FFmpeg util service
                     }
                 })
                 .toList();
-
         }
+        return images;
 
-    if (images.size() < 2) throw new IllegalArgumentException("Need at least 2 images to compute durations");
 
-    Path parentDir = outputListFile.getParent();
-
-    try (BufferedWriter writer = Files.newBufferedWriter(outputListFile)) {
-        for (int i = 0; i < images.size() - 1; i++) {
-            Path current = images.get(i);
-            Path next = images.get(i + 1);
-
-            long t1 = Long.parseLong(current.getFileName().toString().replace(".jpeg", ""));
-            long t2 = Long.parseLong(next.getFileName().toString().replace(".jpeg", ""));
-            double duration = (t2 - t1) / 1000.0;
-
-            writer.write("file '" + current.toAbsolutePath() + "'\n");
-            writer.write("duration " + duration + "\n");
-        }
-        // Ostatni plik należy zapisać bez duration.
-        writer.write("file '" + images.get(images.size() - 1).toAbsolutePath() + "'\n");
-    }
-    return outputListFile;
 }
 
-    Path generateVideo(Path configFile) throws IOException, InterruptedException {
-        String outputPath = configFile.getFileName().toString().replace("-ffmpeg-list.txt", "-video.mp4");
-
-         ProcessBuilder pb = new ProcessBuilder(
-                "ffmpeg",
-                "-f", "concat",
-                "-safe", "0",
-                "-i", configFile.toAbsolutePath().toString(),
-                "-vsync", "vfr",
-//                "-pix_fmt", "yuv420p",
-                outputPath
-        );
-        pb.inheritIO();
-        Process process = pb.start();
-        int exitCode = process.waitFor();
-        if (exitCode != 0) {
-            throw new RuntimeException("FFmpeg failed with code " + exitCode);
-        }
-
-    return Path.of(outputPath);
-    }
 
 }

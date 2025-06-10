@@ -2,6 +2,10 @@ package org.server.records;
 
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;
+import org.bytedeco.ffmpeg.global.avcodec;
+import org.bytedeco.javacv.FFmpegFrameRecorder;
+import org.bytedeco.javacv.Frame;
+import org.bytedeco.javacv.Java2DFrameConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
@@ -12,11 +16,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -195,58 +202,140 @@ public class RecordsController {
             @RequestParam LocalDateTime stopDateTime,
             HttpServletResponse response
     ) {
+        int frameRate = 10;
+
         try {
-            Path concatFilePath = recordsService.generateFFmpegConcatFile(cameraId, startDateTime, stopDateTime);
-            Path videoFileName = recordsService.generateVideo(concatFilePath);
-            response.setContentType("video/mp4");
-            response.setHeader("Content-Disposition", "attachment; filename=\"output.mp4\"");
-            response.setHeader("Cache-Control", "no-cache");
-            try (InputStream in = Files.newInputStream(videoFileName);
-                 OutputStream out = response.getOutputStream()) {
-                in.transferTo(out);
-                out.flush();
-            } finally {
-//                Files.deleteIfExists(concatFilePath);
-//                Files.deleteIfExists(videoFileName);
+            List<Path> images = imagesPathsListForVideo(cameraId, startDateTime, stopDateTime);
+            if (images.isEmpty()) {
+                response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+                return;
             }
-        } catch (IOException e) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-        } catch (InterruptedException e) {
-            System.out.println("Generating Video Interrupted");
-            throw new RuntimeException(e);
+
+            BufferedImage firstImage = ImageIO.read(images.get(0).toFile());
+            int width = firstImage.getWidth();
+            int height = firstImage.getHeight();
+
+            response.setContentType("video/webm");
+            response.setHeader("Content-Disposition", "inline; filename=\"video.webm\"");
+
+            try (ServletOutputStream out = response.getOutputStream()) {
+                FFmpegFrameRecorder recorder = new FFmpegFrameRecorder(out, width, height);
+                recorder.setFrameRate(frameRate);
+                recorder.setVideoCodec(avcodec.AV_CODEC_ID_VP8); // VP8 zamiast H264
+                recorder.setFormat("webm");
+                recorder.setPixelFormat(0); // yuv420p
+
+                recorder.start();
+                Java2DFrameConverter converter = new Java2DFrameConverter();
+
+                for (Path path : images) {
+                    BufferedImage img = ImageIO.read(path.toFile());
+                    if (img.getWidth() != width || img.getHeight() != height) {
+                        System.err.println("Pomijam obraz o innym rozmiarze: " + path);
+                        continue;
+                    }
+                    Frame frame = converter.convert(img);
+                    recorder.record(frame);
+                }
+
+                recorder.stop();
+                recorder.release();
+            }
+
+        } catch (Exception e) {
+//            e.printStackTrace();
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }
 
-    @Deprecated
-    @GetMapping("/video/tescik/")
-    public void getVideoTest(
+    @PostMapping("/video/save")
+    public ResponseEntity<String> saveVideoToDisk(
             @RequestParam long cameraId,
             @RequestParam LocalDateTime startDateTime,
-            @RequestParam LocalDateTime stopDateTime,
-            HttpServletResponse response
+            @RequestParam LocalDateTime stopDateTime
     ) {
+        int frameRate = 10;
+
         try {
-//            Path concatFilePath = recordsService.generateFFmpegConcatFile(cameraId, startDateTime, stopDateTime);
-            Path concatFilePath = Path.of(mediaFilePath,"frames", "2025-06-09", "8", "4b0d97f0d6-ffmpeg-list.txt");
-            Path videoFileName = recordsService.generateVideo(concatFilePath);
-            response.setContentType("video/mp4");
-            response.setHeader("Content-Disposition", "attachment; filename=\"output.mp4\"");
-            response.setHeader("Cache-Control", "no-cache");
-            try (InputStream in = Files.newInputStream(videoFileName);
-                 OutputStream out = response.getOutputStream()) {
-                in.transferTo(out);
-                out.flush();
-            } finally {
-//                Files.deleteIfExists(concatFilePath);
-//                Files.deleteIfExists(videoFileName);
+            List<Path> images = imagesPathsListForVideo(cameraId, startDateTime, stopDateTime);
+            if (images.isEmpty()) {
+                return ResponseEntity.noContent().build();
             }
-        } catch (IOException e) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-        } catch (InterruptedException e) {
-            System.out.println("Generating Video Interrupted");
-            throw new RuntimeException(e);
+
+            BufferedImage firstImage = ImageIO.read(images.get(0).toFile());
+            int width = firstImage.getWidth();
+            int height = firstImage.getHeight();
+
+            // Ustal ścieżkę docelową (np. videos/video_<id>.mp4)
+            String filename = "video_" + cameraId + "_" + System.currentTimeMillis() + ".mp4";
+            Path outputPath = Paths.get("videos").resolve(filename);
+            Files.createDirectories(outputPath.getParent());
+
+            FFmpegFrameRecorder recorder = new FFmpegFrameRecorder(outputPath.toString(), width, height);
+            recorder.setFrameRate(frameRate);
+            recorder.setVideoCodec(avcodec.AV_CODEC_ID_H264);
+            recorder.setFormat("mp4");
+            recorder.setPixelFormat(0); // yuv420p
+
+            recorder.start();
+            Java2DFrameConverter converter = new Java2DFrameConverter();
+
+            for (Path path : images) {
+                BufferedImage img = ImageIO.read(path.toFile());
+                if (img.getWidth() != width || img.getHeight() != height) {
+                    System.err.println("Pomijam obraz o innym rozmiarze: " + path);
+                    continue;
+                }
+                Frame frame = converter.convert(img);
+                recorder.record(frame);
+            }
+
+            recorder.stop();
+            recorder.release();
+
+            return ResponseEntity.ok("/videos/" + filename);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Błąd przy generowaniu wideo: " + e.getMessage());
         }
     }
+
+
+
+
+
+    private List<Path> imagesPathsListForVideo(Long cameraId, LocalDateTime startDateTime,
+                                     LocalDateTime stopDateTime) throws IOException {
+
+    Path directory = Path.of(mediaFilePath, "frames",startDateTime.toLocalDate().toString(), cameraId.toString());
+    String randomFilename = UUID.randomUUID().toString().replace("-", "").substring(0,10) + "-ffmpeg-list.txt";
+    Path outputListFile = Path.of(directory.toString(), randomFilename);
+    List<Path> images = new ArrayList<>();
+
+
+    try (Stream<Path> stream = Files.list(directory)) {
+        images = stream
+            .filter(p -> p.toString().endsWith(".jpeg"))
+            .filter(p -> {
+                String name = p.getFileName().toString().replace(".jpeg", "");
+                try {
+                    long timestamp = Long.parseLong(name);
+                    LocalDateTime fileTime = Instant.ofEpochMilli(timestamp)
+                            .atZone(ZoneId.systemDefault())
+                            .toLocalDateTime();
+                    return !fileTime.isBefore(startDateTime) && !fileTime.isAfter(stopDateTime);
+                } catch (NumberFormatException e) {
+                    return false;
+                }
+            })
+            .toList();
+    }
+    return images;
+
+
+}
 
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
