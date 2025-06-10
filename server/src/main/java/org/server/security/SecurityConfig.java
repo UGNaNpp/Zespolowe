@@ -35,7 +35,7 @@ public class SecurityConfig {
                 .and()
                 .authorizeHttpRequests(auth -> auth
                                 .requestMatchers("/public/**", "/api/security/verify", "/api/security/delete-token",
-                                        "/actuator/health", "/records/video**").permitAll()
+                                        "/actuator/health").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .exceptionHandling()
