@@ -28,7 +28,11 @@
     "off": "wyłączony",
     "on": "włączony",
     "no": "nie",
-    "yes": "tak"
+    "yes": "tak",
+    "isup": "Połącznie",
+    "connecting": "Łączenie",
+    "online": "Online",
+    "offline": "Offline"
   },
   "apiErrors": {
     "unknown": "Wystąpił błąd żadania",

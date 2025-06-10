@@ -25,6 +25,10 @@ type Props = {
     on: string;
     no: string;
     yes: string;
+    isup: string;
+    connecting: string;
+    online: string;
+    offline: string;
   },
   deviceFormDict: {
     "addNew": string;
@@ -69,6 +73,8 @@ export default function Devices({ dict, deviceFormDict, ApiErrorsDict }: Props) 
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const [showAddForm, setShowAddForm] = useState(false);
   const [refreshFlag, setRefreshFlag] = useState(false);
+  const [upDevices, setUpDevices] = useState<Device[]>([]);
+  const [pingLoaded, setPingLoaded] = useState(false);
 
   useEffect(() => {
     apiRequest<Device[]>({
@@ -85,6 +91,22 @@ export default function Devices({ dict, deviceFormDict, ApiErrorsDict }: Props) 
       dict: ApiErrorsDict,
     }).finally(() => {
       setLoading(false);
+    });
+
+    apiRequest<Device[]>({
+      endpoint: `/active-cameras`,
+      method: "GET",
+      onSuccess: (data) => {
+        setUpDevices(data)
+      },
+      onError: (errMsg) => {
+        setError(errMsg);
+        setToastMessage(errMsg);
+        setShowToast(true);
+      },
+      dict: ApiErrorsDict,
+    }).finally(() => {
+      setPingLoaded(true);
     });
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -176,6 +198,16 @@ export default function Devices({ dict, deviceFormDict, ApiErrorsDict }: Props) 
                     expandedId === device.id ? styles.expanded : ""
                   }`}
                 >
+                  <p className={styles.deviceStatus}>
+                    <strong className={styles.statusLabel}>{dict.isup}:</strong>{' '}
+                    {!pingLoaded ? (
+                      <span className={styles.statusLoading}>{dict.connecting}...</span>
+                    ) : upDevices[device.id] ? (
+                      <span className={styles.statusOnline}>{dict.online}</span>
+                    ) : (
+                      <span className={styles.statusOffline}>{dict.offline}</span>
+                    )}
+                  </p>
                   <p>
                     <strong>{dict.ip}:</strong> {device.AssociatedIP}
                   </p>

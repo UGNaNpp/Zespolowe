@@ -134,6 +134,20 @@ export default function Devices({ deviceId, dict, deviceFormDict, ApiErrorsDict 
       setLoading(false);
     });
 
+    apiRequest<boolean>({
+      endpoint: `/is-camera-avaible/${deviceId}`,
+      method: "GET",
+      onSuccess: (data) => {
+        setDevicePingStatus(data)
+      },
+      onError: (errMsg) => {
+        setError(errMsg);
+        setToastMessage(errMsg);
+        setShowToast(true);
+      },
+      dict: ApiErrorsDict,
+    })
+
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -165,7 +179,7 @@ export default function Devices({ deviceId, dict, deviceFormDict, ApiErrorsDict 
               </div>
               <div>
                 <div><strong>{dict.resolution}</strong></div>
-                {device.widthResolution} x {device.heightResolution} {dict.px}
+                <span className={styles.resolutionDetails}>{device.widthResolution} x {device.heightResolution} {dict.px}</span>
               </div>
               <div>
                 <div><strong>{dict.recordingSettings}</strong></div>

@@ -29,7 +29,7 @@ export default async function StreamPage({ params }: StreamProps) {
 
   return(
     <main className={styles.main}>
-      <NavBar title='Devices' titleUrl='/devices' subtitle='' subtitleUrl='' dict={dict.navBar} />
+      <NavBar title={`Device ${deviceId}`} titleUrl={`/device/${deviceId}`} subtitle='stream' subtitleUrl={`/stream/${deviceId}`} dict={dict.navBar} />
       <Stream deviceId={deviceId} dict={dict.stream} />
     </main>
   );

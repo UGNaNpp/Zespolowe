@@ -120,10 +120,67 @@
             }
           }
         }
+
+        .deviceStatus {
+          display: flex;
+          align-items: center;
+
+          .statusLabel {
+            margin-right: 0.5rem;
+          }
+
+          .statusLoading {
+            display: inline-flex;
+            align-items: center;
+
+            &::before {
+              content: '';
+              display: inline-block;
+              width: 8px;
+              height: 8px;
+              border: 2px solid $color-gray;
+              border-top: 2px solid transparent;
+              border-radius: 50%;
+              margin-right: 6px;
+              animation: spin 1s linear infinite;
+            }
+          }
+
+          .statusOnline, .statusOffline {
+            display: inline-flex;
+            align-items: center;
+          }
+
+          .statusOnline::before {
+            content: '';
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background-color: #22c55e;
+            border-radius: 50%;
+            margin-right: 6px;
+          }
+
+          .statusOffline::before {
+            content: '';
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background-color: #dc2626;
+            border-radius: 50%;
+            margin-right: 6px;
+          }
+        }
       }
     }
   }
 }
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
 
 .modalOverlay {
   position: fixed;
