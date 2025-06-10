@@ -72,6 +72,29 @@
     "offline": "Offline",
     "edit": "Edytuj ustawienia",
     "delete": "Usuń urządzenie",
-    "stream": "Zobacz podgląd"
+    "stream": "Zobacz podgląd",
+    "deleteConfirm": "Czy na pewno chcesz usunąć tę urządzenie?"
+  },
+  "deviceForm": {
+    "addNew": "Dodaj nowe urządzenie",
+    "modify": "Edytuj urządzenie",
+    "name": "Nazwa",
+    "ip": "Adres IP",
+    "mac": "Adres MAC",
+    "resolution": "Rozdzielczość",
+    "recordingMode": "Tryb nagrywania",
+    "recordingVideo": "Nagrywanie wideo",
+    "save": "Zapisz",
+    "add": "Dodaj",
+    "required": "Wymagane",
+    "maxName": "Nazwa musi mieć od 1 do 20 znaków",
+    "invalidIP": "Niepoprawny adres IP",
+    "invalidMAC": "Niepoprawny adres MAC",
+    "widthPositive": "Szerokość musi być dodatnia",
+    "widthMax": "Szerokość max 3840 (4K)",
+    "heightPositive": "Wysokość musi być dodatnia",
+    "heightMax": "Wysokość max 2160 (4K)",
+    "updated": "Zaktualizowano urządzenie",
+    "added": "Dodano nowe urządzenie"
   }
 }

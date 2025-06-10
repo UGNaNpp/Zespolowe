@@ -1,31 +1,63 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { apiRequest } from "@/app/api/axios/apiRequest";
 import { Device } from "@/types/device";
 import styles from "@/app/components/device/deviceStyle.module.scss";
 import Link from "next/link";
 import { ErrorToast } from "@/app/components/errorToast/ErrorToast";
+import { DeviceEditForm } from "@/app/components/deviceForm/deviceForm";
+
 
 type Props = {
   deviceId: string;
   dict: {
     pageTitle: string;
-    title: string;
-    search: string;
-    sort: string;
-    addNew: string;
-    ip: string;
-    mac: string;
-    resolution: string;
-    recordingMode: string;
-    recordingVideo: string;
-    details: string;
     off: string;
     on: string;
     no: string;
     yes: string;
-  };
+    connection: string;
+    resolution: string;
+    recordingSettings: string;
+    recordingMode: string;
+    recordingVideo: string;
+    ip: string;
+    mac: string;
+    id: string;
+    px: string;
+    isup: string;
+    connecting: string;
+    online: string;
+    offline: string;
+    edit: string;
+    delete: string;
+    stream: string;
+    deleteConfirm: string;
+  },
+  deviceFormDict: {
+    "addNew": string;
+    "modify": string;
+    "name": string;
+    "ip": string;
+    "mac": string;
+    "resolution": string;
+    "recordingMode": string;
+    "recordingVideo": string;
+    "save": string;
+    "add": string;
+    "required": string;
+    "maxName": string;
+    "invalidIP": string;
+    "invalidMAC": string;
+    "widthPositive": string;
+    "widthMax": string;
+    "heightPositive": string;
+    "heightMax": string;
+    "updated": string;
+    "added": string;
+  },
   ApiErrorsDict: {
     "unknown": string;
     "400": string;
@@ -36,55 +68,79 @@ type Props = {
   }
 };
 
-export default function Devices({ deviceId, dict, ApiErrorsDict }: Props) {
+export default function Devices({ deviceId, dict, deviceFormDict, ApiErrorsDict }: Props) {
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState<string>("");
   const [device, setDevice] = useState<Device | undefined>();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [devicePingStatus, setDevicePingStatus] = useState<boolean | null>(null);
+  const [showConfirmDelete, setShowConfirmDelete] = useState(false);
+  const [showEditForm, setShowEditForm] = useState(false);
 
-  // testowy
-  useEffect(() => {
-  const testDevice: Device = {
-    id: 1,
-    name: 'Test Device',
-    AssociatedIP: '192.168.0.100',
-    AssociatedMAC: '00:1A:2B:3C:4D:5E',
-    heightResolution: 1080,
-    widthResolution: 1920,
-    recordingMode: true,
-    recordingVideo: false,
+  const router = useRouter();
+
+  const handleDeleteClick = () => {
+    setShowConfirmDelete(true);
   };
 
-  setDevice(testDevice);
-  setLoading(false);
-}, []);
+  const cancelDelete = () => {
+    setShowConfirmDelete(false);
+  };
 
-  // useEffect(() => {
-  //   apiRequest<Device[]>({
-  //     endpoint: `/devices/${deviceId}`,
-  //     method: "GET",
-  //     onSuccess: (data) => {
-  //       setDevices(Object.values(data));
-  //     },
-  //     onError: (errMsg) => {
-  //       setError(errMsg);
-  //       setToastMessage(errMsg);
-  //       setShowToast(true);
-  //     },
-  //     dict: ApiErrorsDict,
-  //   }).finally(() => {
-  //     setLoading(false);
-  //   });
+  const confirmDelete = () => {
+    setShowConfirmDelete(false);
+    setLoading(true);
 
-  // // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, []);
+    apiRequest<void>({
+      endpoint: `/devices/id/${deviceId}`,
+      method: "DELETE",
+      onSuccess: () => {
+        setShowToast(true);
+        router.push("/devices");
+      },
+      onError: (errMsg) => {
+        setToastMessage(errMsg);
+        setShowToast(true);
+      },
+      dict: ApiErrorsDict,
+    }).finally(() => {
+      setLoading(false);
+    });
+  };
+
+  const handleEditClick = () => {
+    setShowEditForm(true);
+  };
+
+  const cancelEditClick = () => {
+    setShowEditForm(false);
+  }
+
+  useEffect(() => {
+    apiRequest<Device>({
+      endpoint: `/devices/id/${deviceId}`,
+      method: "GET",
+      onSuccess: (data) => {
+        setDevice(data);
+      },
+      onError: (errMsg) => {
+        setError(errMsg);
+        setToastMessage(errMsg);
+        setShowToast(true);
+      },
+      dict: ApiErrorsDict,
+    }).finally(() => {
+      setLoading(false);
+    });
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <>
     <main className={styles.main}>
-      {!loading && !error && (
+      {!loading && !error && device && (
         <div className={styles.menu}>
           <div>
             <h2>{device.name}</h2>
@@ -121,8 +177,8 @@ export default function Devices({ deviceId, dict, ApiErrorsDict }: Props) {
             </div>
           </div>
           <div className={styles.controls}>
-            <button>{dict.edit}</button>
-            <button className={styles.deleteButton}>{dict.delete}</button>
+            <button onClick={handleEditClick}>{dict.edit}</button>
+            <button className={styles.deleteButton} onClick={handleDeleteClick}>{dict.delete}</button>
           </div>
           <Link href={`/stream/${device.id}`}>
             <button className={styles.streamButton}>{dict.stream}</button>
@@ -130,6 +186,31 @@ export default function Devices({ deviceId, dict, ApiErrorsDict }: Props) {
         </div>
       )}
     </main>
+    {showConfirmDelete && (
+      <div className={styles.modalOverlay}>
+        <div className={styles.confirmModal}>
+          <p>{dict.deleteConfirm}</p>
+          <div className={styles.modalButtons}>
+            <button onClick={confirmDelete}>{dict.yes}</button>
+            <button onClick={cancelDelete}>{dict.no}</button>
+          </div>
+        </div>
+      </div>
+    )}
+    {showEditForm && device && (
+      <div className={styles.modalOverlay}>
+        <div className={styles.formModal}>
+          <DeviceEditForm
+            device={device}
+            deviceId={deviceId}
+            modify={true}
+            dict={deviceFormDict}
+            ApiErrorsDict={ApiErrorsDict}
+            onClose={cancelEditClick}
+          />
+        </div>
+      </div>
+    )}
     <ErrorToast
       message={toastMessage}
       show={showToast}

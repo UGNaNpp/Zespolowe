@@ -31,7 +31,7 @@ export default async function DevicePage({ params }: DeviceProps) {
   return(
     <main className={styles.main}>
       <NavBar title='Devices' titleUrl='/devices' subtitle={deviceId} subtitleUrl='' dict={dict.navBar} />
-      <Device deviceId={deviceId} dict={dict.device} ApiErrorsDict={dict.apiErrors} />
+      <Device deviceId={deviceId} dict={dict.device} deviceFormDict={dict.deviceForm} ApiErrorsDict={dict.apiErrors} />
     </main>
   );
 }

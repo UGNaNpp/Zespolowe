@@ -6,6 +6,7 @@ import { Device } from "@/types/device";
 import styles from "@/app/components/devices/devicesStyle.module.scss";
 import Link from "next/link";
 import { ErrorToast } from "@/app/components/errorToast/ErrorToast";
+import { DeviceEditForm } from "@/app/components/deviceForm/deviceForm";
 
 type Props = {
   dict: {
@@ -24,7 +25,29 @@ type Props = {
     on: string;
     no: string;
     yes: string;
-  };
+  },
+  deviceFormDict: {
+    "addNew": string;
+    "modify": string;
+    "name": string;
+    "ip": string;
+    "mac": string;
+    "resolution": string;
+    "recordingMode": string;
+    "recordingVideo": string;
+    "save": string;
+    "add": string;
+    "required": string;
+    "maxName": string;
+    "invalidIP": string;
+    "invalidMAC": string;
+    "widthPositive": string;
+    "widthMax": string;
+    "heightPositive": string;
+    "heightMax": string;
+    "updated": string;
+    "added": string;
+  },
   ApiErrorsDict: {
     "unknown": string;
     "400": string;
@@ -35,7 +58,7 @@ type Props = {
   }
 };
 
-export default function Devices({ dict, ApiErrorsDict }: Props) {
+export default function Devices({ dict, deviceFormDict, ApiErrorsDict }: Props) {
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState<string>("");
   const [devices, setDevices] = useState<Device[]>([]);
@@ -44,6 +67,8 @@ export default function Devices({ dict, ApiErrorsDict }: Props) {
   const [expandedId, setExpandedId] = useState<number | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [refreshFlag, setRefreshFlag] = useState(false);
 
   useEffect(() => {
     apiRequest<Device[]>({
@@ -63,7 +88,7 @@ export default function Devices({ dict, ApiErrorsDict }: Props) {
     });
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [refreshFlag]);
 
   const toggleExpand = (id: number) => {
     setExpandedId((prev) => (prev === id ? null : id));
@@ -76,6 +101,14 @@ export default function Devices({ dict, ApiErrorsDict }: Props) {
   const toggleSortOrder = () => {
     setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
   };
+
+  const handleAddClick = () => {
+    setShowAddForm(true);
+  };
+
+  const cancelAddClick = () => {
+    setShowAddForm(false);
+  }
 
   const getFilteredAndSortedDevices = () => {
     return devices
@@ -117,8 +150,7 @@ export default function Devices({ dict, ApiErrorsDict }: Props) {
             </div>
             <div className={styles.controls_right}>
               <button onClick={() => {
-                  setToastMessage("Funkcja dodawania jeszcze niegotowa");
-                  setShowToast(true);
+                  handleAddClick()
                 }}>
                 {dict.addNew}
               </button>
@@ -174,6 +206,22 @@ export default function Devices({ dict, ApiErrorsDict }: Props) {
         </div>
       )}
     </main>
+    {showAddForm && (
+      <div className={styles.modalOverlay}>
+        <div className={styles.formModal}>
+          <DeviceEditForm
+            modify={false}
+            dict={deviceFormDict}
+            ApiErrorsDict={ApiErrorsDict}
+            onClose={cancelAddClick}
+            successPostAction={() => {
+              setRefreshFlag(prev => !prev);
+              cancelAddClick();
+            }}
+          />
+        </div>
+      </div>
+    )}
     <ErrorToast
       message={toastMessage}
       show={showToast}

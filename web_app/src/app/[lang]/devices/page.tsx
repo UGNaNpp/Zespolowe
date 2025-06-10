@@ -22,7 +22,7 @@ export default async function DevicesPage({ params }: Props) {
   return(
     <main className={styles.main}>
       <NavBar title='Devices' titleUrl='/devices' subtitle='' subtitleUrl='' dict={dict.navBar} />
-      <Devices dict={dict.devices} ApiErrorsDict={dict.apiErrors} />
+      <Devices dict={dict.devices} deviceFormDict={dict.deviceForm} ApiErrorsDict={dict.apiErrors} />
     </main>
   );
 }
