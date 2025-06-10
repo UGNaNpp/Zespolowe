@@ -12,7 +12,7 @@ api.interceptors.response.use(
   async error => {
     const status = error.response?.status;
 
-    if (status === 403 || status === 500 || status === 401) {
+    if (status === 403 || status === 500) {
       try {
         await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}api/security/delete-token`);
 

@@ -31,7 +31,9 @@
         }
 
         &:hover {
+          cursor: pointer;
           background-color: $color-mid-dark-gray;
+          transition: background-color 0.2s ease;
         }
       }
 
@@ -48,7 +50,6 @@
           background-color: $color-mid-dark-gray;
 
           &:focus {
-            // border: 1px solid red;
             outline: 1px solid $color-base-2;
           }
         }
@@ -83,6 +84,10 @@
         display: flex;
         justify-content: space-between;
 
+        &:hover {
+          cursor: pointer;
+        }
+
         .deviceName {
           font-size: medium;
         }
@@ -109,6 +114,128 @@
           button {
             background-color: $color-dark-gray;
             padding: 0.4rem 0.5rem;
+
+            &:hover {
+              cursor: pointer;
+            }
+          }
+        }
+
+        .deviceStatus {
+          display: flex;
+          align-items: center;
+
+          .statusLabel {
+            margin-right: 0.5rem;
+          }
+
+          .statusLoading {
+            display: inline-flex;
+            align-items: center;
+
+            &::before {
+              content: '';
+              display: inline-block;
+              width: 8px;
+              height: 8px;
+              border: 2px solid $color-gray;
+              border-top: 2px solid transparent;
+              border-radius: 50%;
+              margin-right: 6px;
+              animation: spin 1s linear infinite;
+            }
+          }
+
+          .statusOnline, .statusOffline {
+            display: inline-flex;
+            align-items: center;
+          }
+
+          .statusOnline::before {
+            content: '';
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background-color: #22c55e;
+            border-radius: 50%;
+            margin-right: 6px;
+          }
+
+          .statusOffline::before {
+            content: '';
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background-color: #dc2626;
+            border-radius: 50%;
+            margin-right: 6px;
+          }
+        }
+      }
+    }
+  }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .formModal {
+  display: flex;
+  flex-direction: column;
+  background-color: $color-base-1;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  width: 100%;
+  max-width: 30rem;
+
+  }
+
+  .confirmModal {
+    background-color: $color-base-1;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    max-width: 20rem;
+
+    .modalButtons {
+      margin-top: 1rem;
+      display: flex;
+      justify-content: space-around;
+      gap: 1rem;
+
+      button {
+        width: 100%;
+        padding: 0.4rem 1rem;
+        border-radius: 0.3rem;
+        border: none;
+        background-color: $color-gray;
+
+        &:hover {
+          background-color: $color-mid-dark-gray;
+        }
+
+        &:first-child {
+          background-color: #dc2626;
+
+          &:hover {
+            background-color: rgba(220, 38, 38, 0.6);
           }
         }
       }

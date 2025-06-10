@@ -15,14 +15,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function LoginPage({ params }: Props) {
+export default async function DevicesPage({ params }: Props) {
   const { lang } = await params
   const dict = await getDictionary(lang)
 
   return(
     <main className={styles.main}>
       <NavBar title='Devices' titleUrl='/devices' subtitle='' subtitleUrl='' dict={dict.navBar} />
-      <Devices dict={dict.devices} ApiErrorsDict={dict.apiErrors} />
+      <Devices dict={dict.devices} deviceFormDict={dict.deviceForm} ApiErrorsDict={dict.apiErrors} />
     </main>
   );
 }

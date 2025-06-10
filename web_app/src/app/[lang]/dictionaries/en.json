@@ -28,7 +28,11 @@
     "off": "off",
     "on": "on",
     "no": "no",
-    "yes": "yes"
+    "yes": "yes",
+    "isup": "Connection",
+    "connecting": "Loading",
+    "online": "Online",
+    "offline": "Offline"
   },
   "apiErrors": {
     "unknown": "Request error occurred",
@@ -40,9 +44,66 @@
   },
   "stream": {
     "pageTitle": "Camera stream",
-    "offline": "Camera offline"
+    "offline": "Camera offline",
+    "seconds": "seconds",
+    "minute": "minute",
+    "minutes": "minutes",
+    "startRecording": "Start recording",
+    "ip": "IP address"
   },
   "dashboard": {
     "pageTitle": "Dashboard"
+  },
+  "noaccess": {
+    "pageTitle": "No access",
+    "title": "No access to service",
+    "message": "Try going back to home page, clear cookies or contact the owner.",
+    "button": "Go to home page"
+  },
+  "device": {
+    "pageTitle": "Urządzenie",
+    "off": "off",
+    "on": "on",
+    "no": "no",
+    "yes": "yes",
+    "connection": "Connection settings",
+    "resolution": "Resolution",
+    "recordingSettings": "Recording settings",
+    "recordingMode": "Recording mode",
+    "recordingVideo": "Recording video",
+    "ip": "IP address",
+    "mac": "MAC address",
+    "id": "Device ID",
+    "px": "pixels",
+    "isup": "Connection",
+    "connecting": "Loading",
+    "online": "Online",
+    "offline": "Offline",
+    "edit": "Edit settings",
+    "delete": "Delete device",
+    "stream": "Watch live",
+    "deleteConfirm": "Are you sure you want to delete this device?"
+  },
+  "deviceForm": {
+    "addNew": "Add new device",
+    "modify": "Edit device",
+    "name": "Name",
+    "ip": "IP address",
+    "mac": "MAC address",
+    "resolution": "Resolution",
+    "recordingMode": "Recording mode",
+    "recordingVideo": "Recording video",
+    "save": "Save",
+    "add": "Add",
+    "required": "Required",
+    "maxName": "Name must be at most 20 characters long",
+    "invalidIP": "Invalid IP address",
+    "invalidMAC": "Invalid MAC address",
+    "widthPositive": "Width must be positive",
+    "widthMax": "Maximum width is 3840 (4K)",
+    "heightPositive": "Height must be positive",
+    "heightMax": "Maximum height is 2160 (4K)",
+    "updated": "Updated the device",
+    "added": "Added new device"
   }
 }
