@@ -118,7 +118,7 @@ const NavBar: React.FC<Props> = ({ title, titleUrl, subtitle, subtitleUrl, dict 
               </Link>
             </li>
             <li>
-              <Link href="/account">
+              <Link href="/settings">
                 <i className="fa-solid fa-gear"></i>
                 <span>{dict.settings}</span>
               </Link>
