@@ -52,7 +52,19 @@
     "ip": "Adres IP"
   },
   "dashboard": {
-    "pageTitle": "Panel główny"
+    "pageTitle": "Panel główny",
+    "used": "Zajęte",
+    "free": "Wolne",
+    "greeting": "Cześć",
+    "quickAccess": "Szybki dostęp",
+    "discSpaceUsed": "Zajęta przestrzeń dyskowa",
+    "devicesQuickAccess": "Szybki dostęp do urządzeń",
+    "devicesOnline": "Urządzenia online",
+    "noDevicesAvailable": "Brak dostępnych urządzeń online",
+    "loadingDevices": "Ładowanie dostępnych urządzeń...",
+    "devices": "Urządzenia",
+    "media": "Multimedia",
+    "settings": "Ustawienia"
   },
   "noaccess": {
     "pageTitle": "Brak dostępu",
