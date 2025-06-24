@@ -40,12 +40,6 @@ public class RecordsController {
     @Value("${filepath.media}")
     private String mediaFilePath;
 
-    private RecordsService recordsService;
-
-    public RecordsController(RecordsService recordsService) {
-        this.recordsService = recordsService;
-    }
-
     @GetMapping("/size")
     public ResponseEntity<Long> getRecordsSize() {
         try (Stream<Path> paths = Files.walk(Path.of(mediaFilePath))) {
@@ -325,11 +319,6 @@ public class RecordsController {
                         .toString())
             .body(resource);
     }
-
-
-
-
-
 
 
     private List<Path> imagesPathsListForVideo(Long cameraId, LocalDateTime startDateTime,

@@ -1,5 +1,6 @@
 package org.server.user;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -78,7 +79,8 @@ public class UserService {
         return users;
     }
 
-    public void deleteUser(int userGithubId) {
-        users.removeIf(user -> user.getGithubId() == userGithubId);
+    public void deleteUser(String ghLogin) {
+        users.removeIf(user -> user.getLogin().equals(ghLogin));
+        writeUsersToFile(users);
     }
 }

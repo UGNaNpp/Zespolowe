@@ -23,10 +23,24 @@ public class UserController {
         return ResponseEntity.ok(userService.getUsers());
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<User> deleteUser(@PathVariable int id) {
-        userService.deleteUser(id);
-        return new ResponseEntity<>(HttpStatus.OK);
+    @PostMapping("/add-user-by-login")
+    public ResponseEntity<?> addUser(@RequestBody String githubUsername) {
+        try {
+            User newUser = User.fetchFromGithubApi(githubUsername);
+            userService.registerUser(newUser);
+            return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
+        }
+        catch (Exception e) {
+            if (e instanceof IllegalArgumentException) {
+                return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            } else return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @DeleteMapping("/{ghLogin}")
+    public ResponseEntity<User> deleteUser(@PathVariable String ghLogin) {
+        userService.deleteUser(ghLogin);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 
