@@ -1,16 +1,26 @@
 services:
   spring:
-    build: '../server'
-#    image: mkopczewski/zespolowe:recording
+    image: mkopczewski/zespolowe:latest
     ports:
       - "8080:8080"
     volumes:
-      - "C:/Users/kopcz/IdeaProjects/Zespolowe/server/src/main/resources/dev_configs:/app/data"
-      - "C:/Users/kopcz/IdeaProjects/Zespolowe/Media:/app/data/media/"
+      - "<Ścieżka do folderu plików konfiguracyjnych>:/app/data"
+      - "<Ścieżka do folderu w którym chcemy zapisać nagrania z kamer>:/app/data/media/"
 
     env_file:
-      - ../server/.env
+      - .env-server
     environment:
       DEVICES_JSON_FILEPATH: /app/data/devices.json
-      USERS_FILEPATH: /app/data/users.json
-      MEDIA_FOLDER: /app/data/media
+      USERS_FILEPATH: /app/data/users.txt
+      MEDIA_FOLDER: /app/data/
+
+  app:
+    image: my-nextjs-app:latest
+    env_file:
+      - .env-front
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+
+
