@@ -22,7 +22,7 @@ export default async function DashboardPage({ params }: Props) {
   return (
     <main className={styles.main}>
       <NavBar title='Dashboard' titleUrl='/dashboard' subtitle='' subtitleUrl='' dict={dict.navBar} />
-      <Dashboard dict={dict.dashboard} />
+      <Dashboard dict={dict.dashboard} ApiErrorsDict={dict.apiErrors} />
     </main>
   );
 }

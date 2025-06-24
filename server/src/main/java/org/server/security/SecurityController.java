@@ -61,16 +61,7 @@ public class SecurityController {
                     return ResponseEntity.status(HttpStatus.OK)
                             .header(HttpHeaders.LOCATION, frontMainPage)
                             .build();
-                } else { // To tylko testowe podejście.
-                    User user = new User(gitHubId, node.get("avatar_url").asText(), node.get("login").asText(),
-                            node.get("name").asText());
-                    System.out.println(user.toJson());
-                    userService.registerUser(user);
-                    return ResponseEntity
-                            .status(HttpStatus.UNAUTHORIZED)
-                            .body("User does not exist in our system");
-                }
-
+                } else return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
             } else {
                 return new ResponseEntity<>("Incorrect GitHub Token", HttpStatus.UNAUTHORIZED);
             }

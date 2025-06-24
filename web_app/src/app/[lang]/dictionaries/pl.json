@@ -25,10 +25,14 @@
     "recordingMode": "Tryb nagrywania",
     "recordingVideo": "Nagrywanie wideo",
     "details": "Szczegóły",
-    "off": "Wyłączony",
-    "on": "Włączony",
+    "off": "wyłączony",
+    "on": "włączony",
     "no": "nie",
-    "yes": "tak"
+    "yes": "tak",
+    "isup": "Połącznie",
+    "connecting": "Łączenie",
+    "online": "Online",
+    "offline": "Offline"
   },
   "apiErrors": {
     "unknown": "Wystąpił błąd żadania",
@@ -40,15 +44,78 @@
   },
   "stream": {
     "pageTitle": "Podgląd kamery",
-    "offline": "Kamera jest offline"
+    "offline": "Kamera jest offline",
+    "seconds": "sekund",
+    "minute": "minuta",
+    "minutes": "minut",
+    "startRecording": "Rozpocznij nagrywanie",
+    "ip": "Adres IP"
   },
   "dashboard": {
-    "pageTitle": "Panel główny"
+    "pageTitle": "Panel główny",
+    "used": "Zajęte",
+    "free": "Wolne",
+    "greeting": "Cześć",
+    "quickAccess": "Szybki dostęp",
+    "discSpaceUsed": "Zajęta przestrzeń dyskowa",
+    "devicesQuickAccess": "Szybki dostęp do urządzeń",
+    "devicesOnline": "Urządzenia online",
+    "noDevicesAvailable": "Brak dostępnych urządzeń online",
+    "loadingDevices": "Ładowanie dostępnych urządzeń...",
+    "devices": "Urządzenia",
+    "media": "Multimedia",
+    "settings": "Ustawienia"
   },
   "noaccess": {
     "pageTitle": "Brak dostępu",
     "title": "Brak dostępu do systemu",
     "message": "Spróbuj wrócić na główną stronę, usunąć ciasteczka lub skontaktuj się z właścicielem.",
     "button": "Powrót na stronę główną"
+  },
+  "device": {
+    "pageTitle": "Urządzenie",
+    "off": "wyłączony",
+    "on": "włączony",
+    "no": "nie",
+    "yes": "tak",
+    "connection": "Ustawienia połączenia",
+    "resolution": "Rozdzielczość",
+    "recordingSettings": "Ustawienia nagrywania",
+    "recordingMode": "Tryb nagrywania",
+    "recordingVideo": "Nagrywanie wideo",
+    "ip": "Adres IP",
+    "mac": "Adres MAC",
+    "id": "ID urządzenia",
+    "px": "pikesli",
+    "isup": "Połącznie",
+    "connecting": "Łączenie",
+    "online": "Online",
+    "offline": "Offline",
+    "edit": "Edytuj ustawienia",
+    "delete": "Usuń urządzenie",
+    "stream": "Zobacz podgląd",
+    "deleteConfirm": "Czy na pewno chcesz usunąć tę urządzenie?"
+  },
+  "deviceForm": {
+    "addNew": "Dodaj nowe urządzenie",
+    "modify": "Edytuj urządzenie",
+    "name": "Nazwa",
+    "ip": "Adres IP",
+    "mac": "Adres MAC",
+    "resolution": "Rozdzielczość",
+    "recordingMode": "Tryb nagrywania",
+    "recordingVideo": "Nagrywanie wideo",
+    "save": "Zapisz",
+    "add": "Dodaj",
+    "required": "Wymagane",
+    "maxName": "Nazwa musi mieć od 1 do 20 znaków",
+    "invalidIP": "Niepoprawny adres IP",
+    "invalidMAC": "Niepoprawny adres MAC",
+    "widthPositive": "Szerokość musi być dodatnia",
+    "widthMax": "Szerokość max 3840 (4K)",
+    "heightPositive": "Wysokość musi być dodatnia",
+    "heightMax": "Wysokość max 2160 (4K)",
+    "updated": "Zaktualizowano urządzenie",
+    "added": "Dodano nowe urządzenie"
   }
 }

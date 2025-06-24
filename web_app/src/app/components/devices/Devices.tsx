@@ -6,6 +6,7 @@ import { Device } from "@/types/device";
 import styles from "@/app/components/devices/devicesStyle.module.scss";
 import Link from "next/link";
 import { ErrorToast } from "@/app/components/errorToast/ErrorToast";
+import { DeviceEditForm } from "@/app/components/deviceForm/deviceForm";
 
 type Props = {
   dict: {
@@ -24,7 +25,33 @@ type Props = {
     on: string;
     no: string;
     yes: string;
-  };
+    isup: string;
+    connecting: string;
+    online: string;
+    offline: string;
+  },
+  deviceFormDict: {
+    "addNew": string;
+    "modify": string;
+    "name": string;
+    "ip": string;
+    "mac": string;
+    "resolution": string;
+    "recordingMode": string;
+    "recordingVideo": string;
+    "save": string;
+    "add": string;
+    "required": string;
+    "maxName": string;
+    "invalidIP": string;
+    "invalidMAC": string;
+    "widthPositive": string;
+    "widthMax": string;
+    "heightPositive": string;
+    "heightMax": string;
+    "updated": string;
+    "added": string;
+  },
   ApiErrorsDict: {
     "unknown": string;
     "400": string;
@@ -35,7 +62,7 @@ type Props = {
   }
 };
 
-export default function Devices({ dict, ApiErrorsDict }: Props) {
+export default function Devices({ dict, deviceFormDict, ApiErrorsDict }: Props) {
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState<string>("");
   const [devices, setDevices] = useState<Device[]>([]);
@@ -44,6 +71,10 @@ export default function Devices({ dict, ApiErrorsDict }: Props) {
   const [expandedId, setExpandedId] = useState<number | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [refreshFlag, setRefreshFlag] = useState(false);
+  const [upDevices, setUpDevices] = useState<Device[]>([]);
+  const [pingLoaded, setPingLoaded] = useState(false);
 
   useEffect(() => {
     apiRequest<Device[]>({
@@ -62,8 +93,24 @@ export default function Devices({ dict, ApiErrorsDict }: Props) {
       setLoading(false);
     });
 
+    apiRequest<Device[]>({
+      endpoint: `/active-cameras`,
+      method: "GET",
+      onSuccess: (data) => {
+        setUpDevices(data)
+      },
+      onError: (errMsg) => {
+        setError(errMsg);
+        setToastMessage(errMsg);
+        setShowToast(true);
+      },
+      dict: ApiErrorsDict,
+    }).finally(() => {
+      setPingLoaded(true);
+    });
+
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [refreshFlag]);
 
   const toggleExpand = (id: number) => {
     setExpandedId((prev) => (prev === id ? null : id));
@@ -76,6 +123,14 @@ export default function Devices({ dict, ApiErrorsDict }: Props) {
   const toggleSortOrder = () => {
     setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
   };
+
+  const handleAddClick = () => {
+    setShowAddForm(true);
+  };
+
+  const cancelAddClick = () => {
+    setShowAddForm(false);
+  }
 
   const getFilteredAndSortedDevices = () => {
     return devices
@@ -117,8 +172,7 @@ export default function Devices({ dict, ApiErrorsDict }: Props) {
             </div>
             <div className={styles.controls_right}>
               <button onClick={() => {
-                  setToastMessage("Funkcja dodawania jeszcze niegotowa");
-                  setShowToast(true);
+                  handleAddClick()
                 }}>
                 {dict.addNew}
               </button>
@@ -144,6 +198,16 @@ export default function Devices({ dict, ApiErrorsDict }: Props) {
                     expandedId === device.id ? styles.expanded : ""
                   }`}
                 >
+                  <p className={styles.deviceStatus}>
+                    <strong className={styles.statusLabel}>{dict.isup}:</strong>{' '}
+                    {!pingLoaded ? (
+                      <span className={styles.statusLoading}>{dict.connecting}...</span>
+                    ) : upDevices[device.id] ? (
+                      <span className={styles.statusOnline}>{dict.online}</span>
+                    ) : (
+                      <span className={styles.statusOffline}>{dict.offline}</span>
+                    )}
+                  </p>
                   <p>
                     <strong>{dict.ip}:</strong> {device.AssociatedIP}
                   </p>
@@ -163,7 +227,7 @@ export default function Devices({ dict, ApiErrorsDict }: Props) {
                     {device.recordingVideo ? dict.yes : dict.no}
                   </p>
                   <p className={styles.buttonParagrapgh}>
-                    <Link href={`/stream/${device.id}`}>
+                    <Link href={`/device/${device.id}`}>
                       <button className={styles.streamButton}>{dict.details}</button>
                     </Link>
                   </p>
@@ -174,6 +238,22 @@ export default function Devices({ dict, ApiErrorsDict }: Props) {
         </div>
       )}
     </main>
+    {showAddForm && (
+      <div className={styles.modalOverlay}>
+        <div className={styles.formModal}>
+          <DeviceEditForm
+            modify={false}
+            dict={deviceFormDict}
+            ApiErrorsDict={ApiErrorsDict}
+            onClose={cancelAddClick}
+            successPostAction={() => {
+              setRefreshFlag(prev => !prev);
+              cancelAddClick();
+            }}
+          />
+        </div>
+      </div>
+    )}
     <ErrorToast
       message={toastMessage}
       show={showToast}
