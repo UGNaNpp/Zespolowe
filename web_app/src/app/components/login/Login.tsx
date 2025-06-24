@@ -34,8 +34,8 @@ export default function Login({ dict }: Props) {
             className={styles.logo}
             src="/logo.png"
             alt="SmartSecurity logo"
-            width={38}
-            height={38}
+            width={30}
+            height={30}
             priority
           />
           {loginTitle}
