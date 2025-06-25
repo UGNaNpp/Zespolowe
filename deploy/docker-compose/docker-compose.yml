@@ -1,9 +1,22 @@
 services:
-  app:
-    image: my-nextjs-app:latest
+  spring:
+    image: mkopczewski/zespolowe:latest
+    ports:
+      - "8080:8080"
+    volumes:
+      - "/home/mdomino/zespolowe-volume:/app/data"
+      - "/home/mdomino/zespolowe-volume-media:/app/data/media/"
+
+    env_file:
+      - ../../server/.env
+    environment:
+      DEVICES_JSON_FILEPATH: /app/data/devices.json
+      USERS_FILEPATH: /app/data/users.json
+      MEDIA_FOLDER: /app/data/media
+
+  next-app:
+    image: matdomino/s_cameras_front:latest
     env_file:
       - .env
     ports:
       - "3000:3000"
-    volumes:
-      - .:/app
