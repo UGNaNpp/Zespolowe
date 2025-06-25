@@ -16,4 +16,4 @@ spec:
               service:
                 name: {{ .Values.nextapp.nextServiceName }}
                 port:
-                  number: {{ .Values.nextapp.servicePort  }}
+                  number: {{ .Values.nextapp.servicePort }}

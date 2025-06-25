@@ -1,6 +1,6 @@
 nextapp:
-  nextServiceName: smarthome-next-service
-  nextDeploymentName: smarthome-next-deployment
+  nextServiceName: next-app-service
+  nextDeploymentName: next-app-deployment
   serviceType: ClusterIP
   repository: matdomino/s_cameras_front
   label: latest

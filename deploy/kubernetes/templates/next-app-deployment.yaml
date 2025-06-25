@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.nextapp.nextDeploymentName }}
+spec:
+  replicas: {{ .Values.nextapp.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.nextapp.nextDeploymentName }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.nextapp.nextDeploymentName }}
+    spec:
+      containers:
+        - name: {{ .Values.nextapp.nextServiceName }}
+          image: "{{ .Values.nextapp.repository }}:{{ .Values.nextapp.label }}"
+          imagePullPolicy: {{ .Values.nextapp.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.nextapp.port }}
+          env:
+            - name: NEXTAUTH_URL
+              value: "{{ .Values.nextapp.env.NEXTAUTH_URL }}"
+            - name: GITHUB_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.nextapp.secrets.GITHUB_CLIENT_ID.name }}
+                  key: {{ .Values.nextapp.secrets.GITHUB_CLIENT_ID.key }}
+            - name: GITHUB_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.nextapp.secrets.GITHUB_CLIENT_SECRET.name }}
+                  key: {{ .Values.nextapp.secrets.GITHUB_CLIENT_SECRET.key }}
+            - name: NEXTAUTH_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.nextapp.secrets.NEXTAUTH_SECRET.name }}
+                  key: {{ .Values.nextapp.secrets.NEXTAUTH_SECRET.key }}
+          resources:
+            requests:
+              memory: "{{ .Values.nextapp.resources.requests.memory }}"
+              cpu: "{{ .Values.nextapp.resources.requests.cpu }}"
+            limits:
+              memory: "{{ .Values.nextapp.resources.limits.memory }}"
+              cpu: "{{ .Values.nextapp.resources.limits.cpu }}"
+          # livenessProbe:
+          #   httpGet:
+          #     path: {{ .Values.spring.livenessProbe.path }}
+          #     port: {{ .Values.spring.port }}
+          #   initialDelaySeconds: {{ .Values.spring.livenessProbe.initialDelaySeconds }}
+          #   periodSeconds: {{ .Values.spring.livenessProbe.periodSeconds }}
+          # readinessProbe:
+          #   httpGet:
+          #     path: {{ .Values.spring.readinessProbe.path }}
+          #     port: {{ .Values.spring.port }}
+          #   initialDelaySeconds: {{ .Values.spring.readinessProbe.initialDelaySeconds }}
+          #   periodSeconds: {{ .Values.spring.readinessProbe.periodSeconds }}

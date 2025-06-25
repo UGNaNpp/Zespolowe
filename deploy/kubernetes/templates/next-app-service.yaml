@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.nextapp.nextServiceName }}
+spec:
+  ports:
+    - port: {{ .Values.nextapp.servicePort }}
+      targetPort: {{ .Values.nextapp.port }}
+  selector:
+    app: {{ .Values.nextapp.nextDeploymentName }}
+  type: {{ .Values.nextapp.serviceType }}
