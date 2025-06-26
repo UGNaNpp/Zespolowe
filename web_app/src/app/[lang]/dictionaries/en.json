@@ -138,5 +138,11 @@
     "cancel": "Cancel",
     "addedUser": "Added new user",
     "notFound": "User not found"
+  },
+  "notfound": {
+    "pageTitle": "404",
+    "title": "404",
+    "message": "Could not find requested page",
+    "button": "Go to home page"
   }
 }

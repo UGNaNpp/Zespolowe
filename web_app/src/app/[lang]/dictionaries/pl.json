@@ -138,5 +138,11 @@
     "cancel": "Anuluj",
     "addedUser": "Użytkownik został dodany",
     "notFound": "Nie znaleziono użytkownika"
+  },
+  "notfound": {
+    "pageTitle": "404",
+    "title": "404",
+    "message": "Nie znaleziono żądanej strony",
+    "button": "Powrót na stronę główną"
   }
 }
