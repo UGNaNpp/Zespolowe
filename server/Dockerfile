@@ -14,7 +14,7 @@ COPY src src/
 RUN --mount=type=cache,target=/root/.m2 \
     ./mvnw clean install -DskipTests
 
-FROM eclipse-temurin:23-alpine AS final
+FROM eclipse-temurin:23-jdk AS final
 LABEL authors="Michał Kopczewski"
 WORKDIR /opt/app
 EXPOSE 8080
