@@ -1,12 +1,12 @@
 services:
   spring:
-    # build: '../server'
-    image: mkopczewski/zespolowe:latest
+    build: '../server'
+#    image: mkopczewski/zespolowe:recording
     ports:
       - "8080:8080"
     volumes:
-      - "/home/mdomino/zespolowe-volume:/app/data"
-      - "/home/mdomino/zespolowe-volume-media:/app/data/media/"
+      - "C:/Users/kopcz/IdeaProjects/Zespolowe/server/src/main/resources/dev_configs:/app/data"
+      - "C:/Users/kopcz/IdeaProjects/Zespolowe/Media:/app/data/media/"
 
     env_file:
       - ../server/.env
