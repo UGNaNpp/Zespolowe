@@ -9,7 +9,7 @@ nextapp:
   servicePort: 80
   port: 3000
   env:
-    NEXTAUTH_URL: http://localhost:3000/
+    NEXTAUTH_URL: http://localhost:80/
   secrets:
     name: next-app-secret
     type: Opaque
@@ -22,15 +22,14 @@ nextapp:
     NEXTAUTH_SECRET:
       name: next-app-secret
       key: NEXTAUTH_SECRET
-  # DODAC ENDPOINT DO TESTOWANIA LIVENESSPROBE I READINESSPROBE
-  # livenessProbe:
-  #   path:
-  #   initialDelaySeconds: 120
-  #   periodSeconds: 30
-  # readinessProbe:
-  #   path:
-  #   initialDelaySeconds: 120
-  #   periodSeconds: 30
+  livenessProbe:
+    path: /health
+    initialDelaySeconds: 120
+    periodSeconds: 30
+  readinessProbe:
+    path: /health
+    initialDelaySeconds: 120
+    periodSeconds: 30
   resources:
     requests:
       memory: "512Mi"
