@@ -1,7 +1,7 @@
 services:
   spring:
     build: '../server'
-#    image: mkopczewski/zespolowe:recording
+    # image: mkopczewski/zespolowe:latest
     ports:
       - "8080:8080"
     volumes:
