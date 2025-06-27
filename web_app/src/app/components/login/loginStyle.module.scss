@@ -1,3 +1,5 @@
+@import '@/app/_variables.scss';
+
 .background {
   width: 100vw;
   height: 100vh;
@@ -9,16 +11,18 @@
   justify-content: center;
 
   .mainForm {
-    width: 40rem;
-    padding: 2rem;
+    width: 25rem;
+    padding: 1.5rem;
     border-radius: 1rem;
-    background-color: rgba(0, 0, 0, 0.4);
+    background-color: rgba(0, 0, 0, 0.7);
     backdrop-filter: blur(10px);
     word-break: break-word;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 
     h2 {
-      font-size: 2rem;
-      margin-bottom: 2.5rem;
+      margin-bottom: 1.5rem;
       display: flex;
       gap: 0.5rem;
     }
@@ -26,21 +30,22 @@
     .buttonDiv {
       display: flex;
       justify-content: center;
-      margin-bottom: 1rem;
 
       button {
-        font-size: 1rem;
         font-weight: 600;
-        padding: 1rem;
+        padding: 0.8rem 1rem;
+
         border-radius: 0.5rem;
         display: flex;
         gap: 0.5rem;
-        border: 1px solid #0d1117;
-        background-color: #161b22;
+        // border: 1px solid #0d1117;
+        border: 0;
+        background-color: $color-mid-dark-gray;
 
         &:hover {
           cursor: pointer;
-          background-color: #0d1117;
+          background-color: $color-dark-gray;
+          transition: background-color 0.2s ease;
         }
       }
     }

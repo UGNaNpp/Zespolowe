@@ -52,7 +52,19 @@
     "ip": "IP address"
   },
   "dashboard": {
-    "pageTitle": "Dashboard"
+    "pageTitle": "Dashboard",
+    "used": "Used",
+    "free": "Free",
+    "greeting": "Hello",
+    "quickAccess": "Quick access",
+    "discSpaceUsed": "Used disc space",
+    "devicesQuickAccess": "Quick access to devices",
+    "devicesOnline": "Devices online",
+    "noDevicesAvailable": "No online devices available",
+    "loadingDevices": "Loading available devices...",
+    "devices": "Devices",
+    "media": "Media",
+    "settings": "Settings"
   },
   "noaccess": {
     "pageTitle": "No access",

@@ -8,6 +8,11 @@ const locales = ["en", "pl"];
 const defaultLocale = "en";
 
 function getLocale(request: NextRequest): string {
+  const cookieLocale = request.cookies.get('NEXT_LOCALE')?.value;
+  if (cookieLocale && locales.includes(cookieLocale)) {
+    return cookieLocale;
+  }
+
   const negotiatorHeaders: Record<string, string> = {};
   request.headers.forEach((value, key) => {
     negotiatorHeaders[key] = value;
