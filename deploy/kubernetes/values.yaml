@@ -1,0 +1,48 @@
+nextapp:
+  nextServiceName: next-app-service
+  nextDeploymentName: next-app-deployment
+  serviceType: ClusterIP
+  repository: matdomino/s_cameras_front
+  label: latest
+  pullPolicy: IfNotPresent
+  replicaCount: 2
+  servicePort: 80
+  port: 3000
+  env:
+    NEXTAUTH_URL: http://localhost:80/
+  secrets:
+    name: next-app-secret
+    type: Opaque
+    GITHUB_CLIENT_ID: 
+      name: next-app-secret
+      key: GITHUB_CLIENT_ID
+    GITHUB_CLIENT_SECRET: 
+      name: next-app-secret
+      key: GITHUB_CLIENT_SECRET
+    NEXTAUTH_SECRET:
+      name: next-app-secret
+      key: NEXTAUTH_SECRET
+  livenessProbe:
+    path: /health
+    initialDelaySeconds: 120
+    periodSeconds: 30
+  readinessProbe:
+    path: /health
+    initialDelaySeconds: 120
+    periodSeconds: 30
+  resources:
+    requests:
+      memory: "512Mi"
+      cpu: "1"
+    limits:
+      memory: "2Gi"
+      cpu: "2"
+
+nginx:
+  name: at-app-nginx-ingress
+  rewriteTarget: /
+  ingressClassName: nginx
+  host: localhost
+  nextpath: /
+  pathType: Prefix
+  port: 80

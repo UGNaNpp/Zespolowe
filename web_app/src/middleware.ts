@@ -43,8 +43,9 @@ export async function middleware(request: NextRequest) {
   const isAuth = !!token;
 
   const isAuthPage = pathname.endsWith("/login");
+  const isHealthPage  = pathname.endsWith("/health");
 
-  if (!isAuth && !isAuthPage) {
+  if (!isAuth && !isAuthPage && !isHealthPage) {
     return NextResponse.redirect(new URL(`/${locale}/login`, request.url));
   }
 

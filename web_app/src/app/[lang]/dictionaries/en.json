@@ -117,5 +117,32 @@
     "heightMax": "Maximum height is 2160 (4K)",
     "updated": "Updated the device",
     "added": "Added new device"
+  },
+  "settings": {
+    "pageTitle": "Settings",
+    "language": "Language",
+    "pickLanguage": "Set language",
+    "userDeleted": "was removed from the users",
+    "users": "Users",
+    "noUsers": "Loading...",
+    "delete": "Remove",
+    "deleteConfirm":"Are you sure you want to remove this user?",
+    "yes": "Yes",
+    "no": "No",
+    "addUser": "Add user"
+  },
+  "addUserForm": {
+    "addUser": "Add user",
+    "login": "Username",
+    "add": "Add",
+    "cancel": "Cancel",
+    "addedUser": "Added new user",
+    "notFound": "User not found"
+  },
+  "notfound": {
+    "pageTitle": "404",
+    "title": "404",
+    "message": "Could not find requested page",
+    "button": "Go to home page"
   }
 }

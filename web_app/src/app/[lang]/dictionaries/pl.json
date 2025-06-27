@@ -117,5 +117,32 @@
     "heightMax": "Wysokość max 2160 (4K)",
     "updated": "Zaktualizowano urządzenie",
     "added": "Dodano nowe urządzenie"
+  },
+  "settings": {
+    "pageTitle": "Ustawienia",
+    "language": "Język",
+    "pickLanguage": "Wybierz język",
+    "userDeleted": "został usunięty z listy użytkowników",
+    "users": "Użytkownicy",
+    "noUsers": "Ładowanie...",
+    "delete": "Usuń",
+    "deleteConfirm":"Czy na pewno chcesz usunąć tego użytkownika?",
+    "yes": "Tak",
+    "no": "Nie",
+    "addUser": "Dodaj użytkownika"
+  },
+  "addUserForm": {
+    "addUser": "Dodaj użytkownika",
+    "login": "Nazwa użytkownika",
+    "add": "Dodaj",
+    "cancel": "Anuluj",
+    "addedUser": "Użytkownik został dodany",
+    "notFound": "Nie znaleziono użytkownika"
+  },
+  "notfound": {
+    "pageTitle": "404",
+    "title": "404",
+    "message": "Nie znaleziono żądanej strony",
+    "button": "Powrót na stronę główną"
   }
 }
