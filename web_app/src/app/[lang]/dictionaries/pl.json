@@ -8,7 +8,6 @@
     "dashboard": "Panel główny",
     "devices": "Urządzenia",
     "media": "Multimedia",
-    "notifications": "Powiadomienia",
     "settings": "Ustawienia",
     "logout": "Wyloguj się",
     "version": "Wersja"
@@ -137,7 +136,9 @@
     "add": "Dodaj",
     "cancel": "Anuluj",
     "addedUser": "Użytkownik został dodany",
-    "notFound": "Nie znaleziono użytkownika"
+    "notFound": "Nie znaleziono użytkownika",
+    "loginRequired": "Login jest wymagany",
+    "loginNotOnlySpaces": "Login nie może zawierać tylko spacji"
   },
   "notfound": {
     "pageTitle": "404",

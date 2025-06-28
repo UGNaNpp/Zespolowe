@@ -1,9 +1,6 @@
-import { render } from '@testing-library/react';
-// import { render, screen } from '@testing-library/react';
+import { render, fireEvent } from '@testing-library/react';
 import NavBar from '@/app/components/navbar/NavBar';
 import '@testing-library/jest-dom';
-
-// TODO - POPRAWIC TEN TEST
 
 describe('NavBar Component', () => {
   const mockProps = {
@@ -15,18 +12,11 @@ describe('NavBar Component', () => {
       "dashboard": "Dashboard",
       "devices": "Devices",
       "media": "Media",
-      "notifications": "Notifications",
       "settings": "Settings",
       "logout": "Logout",
       "version": "App version"
     }
   };
-
-  // it('renders the logo', () => {
-  //   render(<NavBar {...mockProps} />);
-  //   const logo = screen.getByAltText('SmartSecurity logo');
-  //   expect(logo).toBeInTheDocument();
-  // });
 
   it('renders the title and subtitle links', () => {
     const { container } = render(<NavBar {...mockProps} />);
@@ -40,11 +30,19 @@ describe('NavBar Component', () => {
     expect(subtitleLink).toHaveTextContent('Overview');
   });
 
-  // it('toggles the menu when hamburger icon is clicked', () => {
-  //   render(<NavBar {...mockProps} />);
-  //   const hamburgerIcon = screen.getByRole('button');
-  //   fireEvent.click(hamburgerIcon);
-  //   const menu = screen.getByTestId('menu');
-  //   expect(menu).toHaveClass('menuOpen');
-  // });
+  it('toggles the menu when hamburger icon is clicked', () => {
+    const { container } = render(<NavBar {...mockProps} />);
+    const hamburgerIcon = container.querySelector('.hamburger');
+
+    expect(hamburgerIcon).toBeInTheDocument();
+
+    if (hamburgerIcon) {
+      fireEvent.click(hamburgerIcon);
+    }
+
+    const menu = container.querySelector(`.menu`);
+    expect(menu).toBeInTheDocument();
+
+    expect(menu?.className).toContain('menuOpen');
+  });
 });
