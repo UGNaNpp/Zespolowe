@@ -144,5 +144,31 @@
     "title": "404",
     "message": "Nie znaleziono żądanej strony",
     "button": "Powrót na stronę główną"
+  },
+  "media": {
+    "pageTitle": "Multimedia",
+    "recordNotFound": "Nie znaleziono nagrania w podanym czasie",
+    "recordDateMismatch": "Data końcowa nie może być wcześniejsza niż początkowa",
+    "recordDateInFuture": "Data końcowa nie może być w przyszłości",
+    "recordingSub1": "Eksport nagrania od",
+    "recordingSub2": "do",
+    "recordingStarted": "Pobieranie nagrania rozpoczęte",
+    "downloadingError": "Błąd pobierania",
+    "unknownError": "nieznany bład pobierania",
+    "recordingNotFound": "Nie znaleziono nagrania",
+    "missingInput": "Podaj początek i koniec nagrania",
+    "controlsMenuTitle": "Odtwarzanie nagrania z przedziału czasowego",
+    "date": "Wybierz datę",
+    "devices": "Wybierz urządzenie",
+    "fps": "FPS",
+    "time": "Wybierz godzinę",
+    "chooseAll": "Wybierz datę, kamerę i godzinę",
+    "play": "Odtwórz",
+    "goBack": "Powrót",
+    "recording": "Nagranie z dnia",
+    "recordingStart": "Początek nagrania",
+    "recordingStop": "Koniec nagrania",
+    "exportFPS": "FPS eksportu",
+    "saveRecording": "Pobbierz nagranie"
   }
 }
