@@ -122,8 +122,6 @@ export default function Media({ dict, ApiErrorsDict }: Props) {
 
   const handleVideoError = () => {
     setVideoError(true);
-    setToastMessage(dict.recordNotFound);
-    setShowToast(true);
   };
 
   const handleExport = () => {
@@ -233,8 +231,8 @@ export default function Media({ dict, ApiErrorsDict }: Props) {
                         ))}
                       </select>
                     </label>
-                    <label>
-                      {dict.fps}: {selectedFps}
+                    <label className={styles.fps}>
+                      {dict.fps}: {selectedFps.padStart(2, '0')}
                       <input
                         type="range"
                         min="1"
@@ -255,28 +253,30 @@ export default function Media({ dict, ApiErrorsDict }: Props) {
                         onChange={(e) => setSelectedTime(e.target.value)}
                       />
                     </label>
-                    <button
-                      onClick={() => {
-                        if (selectedDevice && selectedDate && selectedTime) {
-                          const [hours, minutes, seconds] = selectedTime.split(':').map(Number);
-                          const date = new Date();
-                          date.setHours(hours, minutes + 5, seconds);
-                          const pad = (n: number) => n.toString().padStart(2, '0');
-                          const newStopTime = `${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
+                    <div>
+                      <button
+                        onClick={() => {
+                          if (selectedDevice && selectedDate && selectedTime) {
+                            const [hours, minutes, seconds] = selectedTime.split(':').map(Number);
+                            const date = new Date();
+                            date.setHours(hours, minutes + 5, seconds);
+                            const pad = (n: number) => n.toString().padStart(2, '0');
+                            const newStopTime = `${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
 
-                          setExportStartTime(selectedTime);
-                          setExportStopTime(newStopTime);
-                          setVideoError(false);
-                          setStreamKey(Date.now());
-                          setShowVideo(true);
-                        } else {
-                          setToastMessage(dict.chooseAll);
-                          setShowToast(true);
-                        }
-                      }}
-                    >
-                      {dict.play}
-                    </button>
+                            setExportStartTime(selectedTime);
+                            setExportStopTime(newStopTime);
+                            setVideoError(false);
+                            setStreamKey(Date.now());
+                            setShowVideo(true);
+                          } else {
+                            setToastMessage(dict.chooseAll);
+                            setShowToast(true);
+                          }
+                        }}
+                      >
+                        {dict.play}
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -289,42 +289,47 @@ export default function Media({ dict, ApiErrorsDict }: Props) {
                     setVideoError(false);
                   }}
                 >
+                  <i className="fa-solid fa-arrow-left"></i>
                   {dict.goBack}
                 </button>
                 <h2>{dict.recording} {selectedDate} {selectedTime}</h2>
-                <div className={styles.videoBox}>
-                  {!videoError && (
-                    //eslint-disable-next-line @next/next/no-img-element
+                <div className={styles.streamBox}>
+                  {videoError ? (
+                    <span>{dict.recordNotFound}</span>
+                  ) : (
+                    // eslint-disable-next-line @next/next/no-img-element
                     <img
                       key={streamKey}
                       src={`/api/recordstream?id=${selectedDevice}&date=${selectedDate}&time=${selectedTime}&fps=${selectedFps}&t=${streamKey}`}
                       alt=""
-                      className={styles.streamImage}
+                      className={styles.stream}
                       onError={handleVideoError}
                     />
                   )}
                 </div>
                 <div className={styles.videoControlls}>
-                  <label>
-                    {dict.recordingStart}:
-                    <input
-                      type="time"
-                      step="1"
-                      value={exportStartTime}
-                      onChange={(e) => setExportStartTime(e.target.value)}
-                    />
-                  </label>
-                  <label>
-                    {dict.recordingStop}:
-                    <input
-                      type="time"
-                      step="1"
-                      value={exportStopTime}
-                      onChange={(e) => setExportStopTime(e.target.value)}
-                    />
-                  </label>
-                  <label>
-                    {dict.exportFPS}: {exportFps}
+                  <div className={styles.controllsTime}>
+                    <label>
+                      {dict.recordingStart}:
+                      <input
+                        type="time"
+                        step="1"
+                        value={exportStartTime}
+                        onChange={(e) => setExportStartTime(e.target.value)}
+                      />
+                    </label>
+                    <label>
+                      {dict.recordingStop}:
+                      <input
+                        type="time"
+                        step="1"
+                        value={exportStopTime}
+                        onChange={(e) => setExportStopTime(e.target.value)}
+                      />
+                    </label>
+                  </div>
+                  <label className={styles.fps}>
+                    {dict.exportFPS}: {exportFps.padStart(2, '0')}
                     <input
                       type="range"
                       min="1"
@@ -334,7 +339,7 @@ export default function Media({ dict, ApiErrorsDict }: Props) {
                       onChange={(e) => setExportFps(e.target.value)}
                     />
                   </label>
-                  <button onClick={handleExport}>
+                  <button className={styles.downloadButton} onClick={handleExport}>
                     {dict.saveRecording}
                   </button>
                 </div>

@@ -20,7 +20,7 @@ export default async function MediaPage({ params }: Props) {
 
     return(
     <main className={styles.main}>
-      <NavBar title='Devices' titleUrl='/devices' subtitle='' subtitleUrl='' dict={dict.navBar} />
+      <NavBar title='Media' titleUrl='/media' subtitle='' subtitleUrl='' dict={dict.navBar} />
       <Media dict={dict.media} ApiErrorsDict={dict.apiErrors} />
     </main>
   );
