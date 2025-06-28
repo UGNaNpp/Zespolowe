@@ -39,6 +39,8 @@ type Props = {
     "cancel": string;
     "addedUser": string;
     "notFound": string;
+    "loginRequired": string;
+    "loginNotOnlySpaces": string;
   }
 };
 
