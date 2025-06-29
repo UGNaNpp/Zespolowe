@@ -33,14 +33,9 @@ export default function Stream({ deviceId, dict, ApiErrorsDict }: Props) {
   const [device, setDevice] = useState<Device | undefined>();
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState<string>("");
-  const [recordingDuration, setRecordingDuration] = useState<string>("30");
 
   const handleError = () => {
     setIsOffline(true);
-  };
-
-  const onStartRecording = () => {
-    console.log(`NAGRYWANIE`);
   };
 
   useEffect(() => {
@@ -77,29 +72,7 @@ export default function Stream({ deviceId, dict, ApiErrorsDict }: Props) {
       </div>
       { device && (
         <>
-        <div className={styles.controls}>
-          <div className={styles.controlsLeft}>
-            <h2>{device.name}</h2>
-          </div>
-          <div className={styles.controlRight}>
-            <select
-              value={recordingDuration}
-              onChange={(e) => setRecordingDuration(e.target.value)}
-              className={styles.dropdown}
-            >
-              <option value="30">30 {dict.seconds}</option>
-              <option value="60">1 {dict.minute}</option>
-              <option value="300">5 {dict.minutes}</option>
-              <option value="600">10 {dict.minutes}</option>
-            </select>
-            <button
-              className={styles.recordButton}
-              onClick={onStartRecording}
-            >
-              {dict.startRecording}
-            </button>
-          </div>
-        </div>
+        <h2>{device.name}</h2>
         <div className={styles.info}>
           {dict.ip}: {device.AssociatedIP}
         </div>

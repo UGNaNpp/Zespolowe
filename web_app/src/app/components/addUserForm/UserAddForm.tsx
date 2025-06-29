@@ -15,6 +15,8 @@ type Props = {
     "cancel": string;
     "addedUser": string;
     "notFound": string;
+    "loginRequired": string;
+    "loginNotOnlySpaces": string;
   },
   ApiErrorsDict: {
     "unknown": string;
@@ -33,8 +35,8 @@ export function UserAddForm({ dict, ApiErrorsDict, onClose }: Props) {
 
   const validationSchema = Yup.object({
     login: Yup.string()
-      .required("Login jest wymagany")
-      .test("not-empty", "Login nie może zawierać tylko spacji", (value) =>
+      .required(dict.loginRequired)
+      .test("not-empty", dict.loginNotOnlySpaces, (value) =>
         !!value?.trim()
       ),
   });

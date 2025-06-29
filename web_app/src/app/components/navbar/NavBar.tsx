@@ -17,7 +17,6 @@ type Props = NavBarTitle & {
     dashboard: string;
     devices: string;
     media: string;
-    notifications: string;
     settings: string;
     logout: string;
     version: string;

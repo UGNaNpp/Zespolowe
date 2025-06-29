@@ -8,7 +8,6 @@
     "dashboard": "Dashboard",
     "devices": "Devices",
     "media": "Media",
-    "notifications": "Notifications",
     "settings": "Settings",
     "logout": "Logout",
     "version": "App version"
@@ -137,12 +136,40 @@
     "add": "Add",
     "cancel": "Cancel",
     "addedUser": "Added new user",
-    "notFound": "User not found"
+    "notFound": "User not found",
+    "loginRequired": "Login is required",
+    "loginNotOnlySpaces": "Login cannot be only spaces"
   },
   "notfound": {
     "pageTitle": "404",
     "title": "404",
     "message": "Could not find requested page",
     "button": "Go to home page"
+  },
+  "media": {
+    "pageTitle": "Media",
+    "recordNotFound": "Recording not found at the specified time.",
+    "recordDateMismatch": "The end date cannot be earlier than the start date",
+    "recordDateInFuture": "The end date cannot be in the future",
+    "recordingSub1": "Export recording from",
+    "recordingSub2": "to",
+    "recordingStarted": "Recording download started",
+    "downloadingError": "Download error",
+    "unknownError": "Unknown download error",
+    "recordingNotFound": "Recording not found",
+    "missingInput": "Please provide the start and end of the recording",
+    "controlsMenuTitle": "Playback of recording from a time range",
+    "date": "Select date",
+    "devices": "Select device",
+    "fps": "FPS",
+    "time": "Select time",
+    "chooseAll": "Select date, camera, and time",
+    "play": "Play",
+    "goBack": "Go back",
+    "recording": "Recording from",
+    "recordingStart": "Recording start",
+    "recordingStop": "Recording end",
+    "exportFPS": "Export FPS",
+    "saveRecording": "Download recording"
   }
 }

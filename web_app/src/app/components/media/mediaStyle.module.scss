@@ -1,0 +1,111 @@
+@import '@/app/_variables.scss';
+
+.main {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  h2 {
+    margin-bottom: 1rem;
+  }
+
+  .controlsMenu, .videoMenu {
+    background-color: $color-base-1;
+    padding: 1rem;
+    border-radius: 0.5rem;
+
+    button {
+      background-color: $color-gray;
+      padding: 0.4rem 0.5rem;
+      border-radius: 0.3rem;
+      border: 0;
+    }
+
+    input, select {
+      margin-left: 0.5rem;
+      border-radius: 0.3rem;
+      border: 1px solid $color-dark-gray;
+      padding: 0 0.5rem;
+      background-color: $color-mid-dark-gray;
+    }
+
+    .fps {
+      display: flex;
+      align-items: center;
+
+      input {
+        padding: 0;
+      }
+    }
+  }
+
+  .controlsMenu {
+    .controls {
+      width: 100%;
+
+      .controlsTop {
+        gap: 1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+      }
+
+      .controlsBottom {
+        margin-top: 0.5rem;
+      }
+
+      button {
+        margin-top: 1rem;
+      }
+    }
+  }
+
+  .videoMenu {
+    width: 50%;
+    min-width: 60rem;
+
+    h2 {
+      margin-top: 1rem;
+    }
+
+    .backButton {
+      i {
+        margin-right: 0.5rem;
+      }
+    }
+
+    .streamBox {
+      padding: 0;
+      width: 100%;
+      height: 40dvh;
+      background-color: black;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      .stream {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
+    }
+
+    .videoControlls {
+      margin-top: 0.5rem;
+    }
+
+    .controllsTime{
+      margin-bottom: 0.5rem;
+      display: flex;
+      flex-direction: row;
+      gap: 1rem;
+    }
+
+    .downloadButton {
+      margin-top: 1rem;
+      background-color: $color-mid-dark-gray;
+    }
+  }
+}
