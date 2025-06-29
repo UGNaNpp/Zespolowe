@@ -5,7 +5,7 @@ nextapp:
   repository: matdomino/s_cameras_front
   label: latest
   pullPolicy: IfNotPresent
-  replicaCount: 2
+  replicaCount: 1
   servicePort: 80
   port: 3000
   env:
@@ -37,6 +37,56 @@ nextapp:
     limits:
       memory: "2Gi"
       cpu: "2"
+
+spring:
+  apiServiceName: spring-api-service
+  apiDeploymentName: spring-api-deployment
+  serviceType: ClusterIP
+  repository: mkopczewski/zespolowe
+  label: latest
+  pullPolicy: IfNotPresent
+  replicaCount: 1
+  servicePort: 8080
+  port: 8080
+  env:
+    TIME_ZONE: Europe/Warsaw
+    JWT_EXPIRATION: "36000000"
+    FRONT_URL: http://localhost:80/
+    DEVICES_JSON_FILEPATH: /app/data/devices.json
+    USERS_FILEPATH: /app/data/users.json
+    MEDIA_FOLDER: /app/data/media
+    SPRING_LOGGING_LEVEL_ROOT: INFO
+    SPRING_LOGGING_LEVEL_ORG_SPRINGFRAMEWORK: WARN
+  secrets:
+    name: spring-api-secrets
+    type: Opaque
+    JWT_SECRET: 
+      name: spring-api-secrets
+      key: JWT_SECRET
+  resources:
+    requests:
+      memory: "512Mi"
+      cpu: "1"
+    limits:
+      memory: "2Gi"
+      cpu: "2"
+  persistence:
+    data:
+      pvClaimName: spring-data-pv
+      pvcClaimName: spring-data-pvc
+      type: local
+      path: /run/desktop/mnt/host/c/Users/mdomi/AppData/Local/Docker/wsl/data/zespolowe-volume
+      size: 1Gi
+      accessModes: ReadWriteOnce
+      storageClassName: ""
+    media:
+      pvClaimName: spring-media-pv
+      pvcClaimName: spring-media-pvc
+      type: local
+      path: /run/desktop/mnt/host/c/Users/mdomi/AppData/Local/Docker/wsl/data/zespolowe-volume-media
+      size: 1Gi
+      accessModes: ReadWriteOnce
+      storageClassName: ""
 
 nginx:
   name: at-app-nginx-ingress

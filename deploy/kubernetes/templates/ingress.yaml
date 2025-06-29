@@ -4,6 +4,14 @@ metadata:
   name: {{ .Values.nginx.name }}
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: {{ .Values.nginx.rewriteTarget }}
+    nginx.ingress.kubernetes.io/proxy-pass-header: "Set-Cookie"
+    nginx.ingress.kubernetes.io/proxy-pass-header: "Cookie"
+    nginx.ingress.kubernetes.io/ignore-headers: "Cache-Control, Expires"
+    nginx.ingress.kubernetes.io/proxy-http-version: "1.1"
+    nginx.ingress.kubernetes.io/proxy-set-header: "Upgrade $http_upgrade"
+    nginx.ingress.kubernetes.io/proxy-set-header: "Connection 'upgrade'"
+    nginx.ingress.kubernetes.io/proxy-set-header: "Host $host"
+    nginx.ingress.kubernetes.io/proxy-cache-bypass: "$http_upgrade"
 spec:
   ingressClassName: {{ .Values.nginx.ingressClassName }}
   rules:
@@ -17,3 +25,10 @@ spec:
                 name: {{ .Values.nextapp.nextServiceName }}
                 port:
                   number: {{ .Values.nextapp.servicePort }}
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ .Values.spring.apiServiceName }}
+                port:
+                  number: {{ .Values.spring.servicePort }}

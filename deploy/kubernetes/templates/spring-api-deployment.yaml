@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.spring.apiDeploymentName }}
+spec:
+  replicas: {{ .Values.spring.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.spring.apiDeploymentName }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.spring.apiDeploymentName }}
+    spec:
+      containers:
+        - name: {{ .Values.spring.apiServiceName }}
+          image: "{{ .Values.spring.repository }}:{{ .Values.spring.label }}"
+          imagePullPolicy: {{ .Values.spring.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.spring.port }}
+          env:
+            - name: TIME_ZONE
+              value: {{ .Values.spring.env.TIME_ZONE }}
+            - name: JWT_EXPIRATION
+              value: "{{ .Values.spring.env.JWT_EXPIRATION }}"
+            - name: FRONT_URL
+              value: {{ .Values.spring.env.FRONT_URL }}
+            - name: DEVICES_JSON_FILEPATH
+              value: {{ .Values.spring.env.DEVICES_JSON_FILEPATH }}
+            - name: USERS_FILEPATH
+              value: {{ .Values.spring.env.USERS_FILEPATH }}
+            - name: MEDIA_FOLDER
+              value: {{ .Values.spring.env.MEDIA_FOLDER }}
+            - name: SPRING_LOGGING_LEVEL_ROOT
+              value: {{ .Values.spring.env.SPRING_LOGGING_LEVEL_ROOT }}
+            - name: SPRING_LOGGING_LEVEL_ORG_SPRINGFRAMEWORK
+              value: {{ .Values.spring.env.SPRING_LOGGING_LEVEL_ORG_SPRINGFRAMEWORK }}
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.spring.secrets.JWT_SECRET.name }}
+                  key: {{ .Values.spring.secrets.JWT_SECRET.key }}
+          resources:
+            requests:
+              memory: "{{ .Values.spring.resources.requests.memory }}"
+              cpu: "{{ .Values.spring.resources.requests.cpu }}"
+            limits:
+              memory: "{{ .Values.spring.resources.limits.memory }}"
+              cpu: "{{ .Values.spring.resources.limits.cpu }}"
+          volumeMounts:
+            - name: config-volume
+              mountPath: /app/data
+            - name: spring-media-volume
+              mountPath: /app/data/media
+      volumes:
+        - name: config-volume
+          configMap:
+            name: app-config 
+        - name: spring-media-volume
+          persistentVolumeClaim:
+            claimName: {{ .Values.spring.persistence.media.pvcClaimName }}
+        

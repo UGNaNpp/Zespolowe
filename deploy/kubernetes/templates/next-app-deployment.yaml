@@ -43,15 +43,15 @@ spec:
             limits:
               memory: "{{ .Values.nextapp.resources.limits.memory }}"
               cpu: "{{ .Values.nextapp.resources.limits.cpu }}"
-          livenessProbe:
-            httpGet:
-              path: {{ .Values.nextapp.livenessProbe.path }}
-              port: {{ .Values.nextapp.port }}
-            initialDelaySeconds: {{ .Values.nextapp.livenessProbe.initialDelaySeconds }}
-            periodSeconds: {{ .Values.nextapp.livenessProbe.periodSeconds }}
-          readinessProbe:
-            httpGet:
-              path: {{ .Values.nextapp.readinessProbe.path }}
-              port: {{ .Values.nextapp.port }}
-            initialDelaySeconds: {{ .Values.nextapp.readinessProbe.initialDelaySeconds }}
-            periodSeconds: {{ .Values.nextapp.readinessProbe.periodSeconds }}
+          # livenessProbe:
+          #   httpGet:
+          #     path: {{ .Values.nextapp.livenessProbe.path }}
+          #     port: {{ .Values.nextapp.port }}
+          #   initialDelaySeconds: {{ .Values.nextapp.livenessProbe.initialDelaySeconds }}
+          #   periodSeconds: {{ .Values.nextapp.livenessProbe.periodSeconds }}
+          # readinessProbe:
+          #   httpGet:
+          #     path: {{ .Values.nextapp.readinessProbe.path }}
+          #     port: {{ .Values.nextapp.port }}
+          #   initialDelaySeconds: {{ .Values.nextapp.readinessProbe.initialDelaySeconds }}
+          #   periodSeconds: {{ .Values.nextapp.readinessProbe.periodSeconds }}

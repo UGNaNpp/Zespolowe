@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Values.spring.persistence.data.pvcClaimName }}
+spec:
+  storageClassName: {{ .Values.spring.persistence.data.storageClassName }}
+  accessModes:
+    - {{ .Values.spring.persistence.data.accessModes }}
+  resources:
+    requests:
+      storage: {{ .Values.spring.persistence.data.size }}

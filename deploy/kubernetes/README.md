@@ -5,10 +5,11 @@ Linux:
 helm install smarthome-app . \
   --set nextapp.clientid="{GITHUB_CLIENT_ID}" \
   --set nextapp.clientsecret="{GITHUB_CLIENT_SECRET}" \
-  --set nextapp.nextauthsecret="{NEXT_AUTH_SECRET}"
+  --set nextapp.nextauthsecret="{NEXT_AUTH_SECRET}" \
+  --set spring.jwtsecret="{JWT_SECRET}"
 ```
 
 Windows:
 ```
-helm install smarthome-app . --set nextapp.clientid="{GITHUB_CLIENT_ID}" --set nextapp.clientsecret="{GITHUB_CLIENT_SECRET}" --set nextapp.nextauthsecret="{NEXT_AUTH_SECRET}"
+helm install smarthome-app . --set nextapp.clientid="{GITHUB_CLIENT_ID}" --set nextapp.clientsecret="{GITHUB_CLIENT_SECRET}" --set nextapp.nextauthsecret="{NEXT_AUTH_SECRET}" --set spring.jwtsecret="{JWT_SECRET}"
 ```
